@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class Author implements Entity, Copyable<Author> {
+public final class Author implements Entity {
 	public final int A_ID;
 	public final String A_FNAME;
 	public final String A_LNAME;
@@ -48,10 +48,6 @@ public final class Author implements Entity, Copyable<Author> {
 
 	public String getKeyName() {
 		return "A_ID";
-	}
-
-	public final Author copy() {
-		return new Author(A_ID, A_FNAME, A_LNAME, A_MNAME, A_DOB, A_BIO);
 	}
 
 }

@@ -57,10 +57,11 @@ public class HashMap<K, V> {
 		return get(key) != null;
 	}
 
-	public void put(K key, V value) {
+	public boolean put(K key, V value) {
 		int hash = (key.hashCode() & 0x7fffffff) % table.length;
 		int initialHash = -1;
 		int indexOfDeletedEntry = -1;
+		boolean result = true;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
 						&& !table[hash].getKey().equals(key))) {
@@ -76,14 +77,16 @@ public class HashMap<K, V> {
 			size++;
 		} else if (initialHash != hash)
 			if (table[hash] != DELETED_ENTRY && table[hash] != null
-					&& table[hash].getKey().equals(key))
+					&& table[hash].getKey().equals(key)) {
 				table[hash].setValue(value);
-			else {
+				result = false;
+			} else {
 				table[hash] = new HashEntry(key, value);
 				size++;
 			}
 		if (size >= maxSize)
 			resize();
+		return result;
 	}
 
 	private void resize() {

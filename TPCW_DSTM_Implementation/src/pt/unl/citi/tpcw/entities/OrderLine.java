@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class OrderLine implements Entity, Copyable<OrderLine> {
+public final class OrderLine implements Entity {
 	public final int OL_ID;
 	public final int OL_O_ID;
 	// public final Order OL_O;
@@ -53,8 +53,4 @@ public final class OrderLine implements Entity, Copyable<OrderLine> {
 		return "OL_ID";
 	}
 
-	public final OrderLine copy() {
-		return new OrderLine(OL_ID, OL_O_ID, OL_I_ID, OL_QTY, OL_DISCOUNT,
-				OL_COMMENT);
-	}
 }

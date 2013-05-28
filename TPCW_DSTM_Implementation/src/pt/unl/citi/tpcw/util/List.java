@@ -1,6 +1,5 @@
 package pt.unl.citi.tpcw.util;
 
-import org.deuce.Atomic;
 
 public class List<T> {
 	static class Node<T> {

@@ -50,29 +50,29 @@ public class Executor implements DatabaseExecutorInterface {
 	static RBTree addresses;
 	@Bootstrap(id = 4)
 	static RBTree customers;
+//	static HashMap<Integer, Customer> customers;
 	@Bootstrap(id = 5)
 	static RBTree orders;
+//	static HashMap<Integer, Order> orders;
 	@Bootstrap(id = 6)
 	static LastOrders lastOrders;
 	@Bootstrap(id = 7)
 	static HashMap<Integer, Order> lastCustomerOrder;
 	@Bootstrap(id = 8)
-	static RBTree orderLines;
-	@Bootstrap(id = 9)
 	// static RBTree items;
 	static Item[] items; // fixed-size!
-	@Bootstrap(id = 10)
+	@Bootstrap(id = 9)
 	static HashMap<String, List<Item>> itemsBySubject;
-	@Bootstrap(id = 11)
+	@Bootstrap(id = 10)
 	static HashMap<String, List<Item>> itemsByAuthorLastName;
-	@Bootstrap(id = 12)
+	@Bootstrap(id = 11)
 	static HashMap<String, List<Item>> itemsByTitle;
-	@Bootstrap(id = 13)
+	@Bootstrap(id = 12)
 	static RBTree ccXacts;
-	@Bootstrap(id = 14)
-	static RBTree shopCarts;
-	@Bootstrap(id = 15)
-	static RBTree shopCartLines;
+//	static HashMap<Integer, CCXact> ccXacts;
+	@Bootstrap(id = 13)
+//	static RBTree shopCarts;
+	static HashMap<Integer, ShoppingCart> shopCarts;
 
 	public Executor(TPM_counter tpm_counter) {
 		this.counter = tpm_counter;
@@ -89,7 +89,7 @@ public class Executor implements DatabaseExecutorInterface {
 		System.out.println("AUTHORS created.");
 		createAddresses();
 		System.out.println("ADDRESSES created.");
-		createCustomers();
+		createCustomers(num_customers);
 		System.out.println("CUSTOMERS created.");
 		createOrders();
 		System.out.println("ORDERS created.");
@@ -97,8 +97,6 @@ public class Executor implements DatabaseExecutorInterface {
 		System.out.println("LAST_ORDERS created.");
 		createLastCustomerOrders(num_customers);
 		System.out.println("LAST_CUSTOMER_ORDER created.");
-		createOrderLines();
-		System.out.println("ORDER_LINES created.");
 		// items = new RBTree();
 		createItems(num_items);
 		System.out.println("ITEMS created.");
@@ -112,23 +110,18 @@ public class Executor implements DatabaseExecutorInterface {
 		System.out.println("CCXACT created.");
 		createShoppingCarts();
 		System.out.println("SHOPPING_CART created.");
-		createShoppingCartLines();
-		System.out.println("SHOPPING_CART_LINES created.");
-	}
-
-	@Atomic
-	private final void createShoppingCartLines() {
-		shopCartLines = new RBTree();
 	}
 
 	@Atomic
 	private final void createShoppingCarts() {
-		shopCarts = new RBTree();
+//		shopCarts = new RBTree();
+		shopCarts = new HashMap<Integer, ShoppingCart>();
 	}
 
 	@Atomic
 	private final void createCcxact() {
 		ccXacts = new RBTree();
+//		ccXacts = new HashMap<Integer, CCXact>();
 	}
 
 	@Atomic
@@ -152,11 +145,6 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void createOrderLines() {
-		orderLines = new RBTree();
-	}
-
-	@Atomic
 	private final void createLastCustomerOrders(final int num_customers) {
 		lastCustomerOrder = new HashMap<Integer, Order>(num_customers);
 	}
@@ -169,11 +157,13 @@ public class Executor implements DatabaseExecutorInterface {
 	@Atomic
 	private final void createOrders() {
 		orders = new RBTree();
+//		orders = new HashMap<Integer, Order>();
 	}
 
 	@Atomic
-	private final void createCustomers() {
+	private final void createCustomers(final int num_customers) {
 		customers = new RBTree();
+//		customers = new HashMap<Integer, Customer>(num_customers);
 	}
 
 	@Atomic
@@ -229,6 +219,7 @@ public class Executor implements DatabaseExecutorInterface {
 	@Atomic
 	public static final void insertCustomer(int key, Customer val) {
 		final boolean b = customers.insert(key, val);
+//		final boolean b = customers.put(key, val);
 		if (!b)
 			throw new Error("Customer(" + key + ") already exists.");
 	}
@@ -236,6 +227,7 @@ public class Executor implements DatabaseExecutorInterface {
 	@Atomic
 	public static final Customer getCustomer(int key) {
 		return (Customer) customers.find(key);
+//		return customers.get(key);
 	}
 
 	@Atomic
@@ -248,10 +240,7 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final List<Author> getAuthors() {
 		final List<Author> results = new java.util.LinkedList<Author>();
 		for (int i = 0; i < authors.length; i++) {
-			final Author author = authors[i];
-			if (author == null)
-				throw new Error("null at authors[" + i + "]");
-			results.add(author);
+			results.add(authors[i]);
 		}
 		return results;
 	}
@@ -300,17 +289,17 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final List<Item> getItems() {
 		final List<Item> results = new java.util.LinkedList<Item>();
 		for (int i = 0; i < items.length; i++) {
-			final Item item = items[i];
-			if (item == null)
-				throw new Error("null at items[" + i + "]");
-			results.add(item);
+			results.add(items[i]);
 		}
 		return results;
 	}
 
 	@Atomic
 	public static final void insertOrder(int key, Order val) {
-		orders.insert(key, val);
+		final boolean b = orders.insert(key, val);
+//		final boolean b = orders.put(key, val);
+		if (!b)
+			throw new Error("Order("+key+") already exists.");
 		lastOrders.prepend(val);
 		lastCustomerOrder.put(val.O_C_ID, val);
 	}
@@ -323,6 +312,7 @@ public class Executor implements DatabaseExecutorInterface {
 	@Atomic
 	public static final void insertOrderLine(int key, OrderLine val) {
 		final Order order = (Order) orders.find(val.OL_O_ID);
+//		final Order order = orders.get(val.OL_O_ID);
 		// order.orderLines.insert(key, val);
 		order.orderLines.add(val);
 	}
@@ -336,25 +326,29 @@ public class Executor implements DatabaseExecutorInterface {
 	@Atomic
 	public static final CCXact getCCXact(int key) {
 		return (CCXact) ccXacts.find(key);
+//		return ccXacts.get(key);
 	}
 
 	@Atomic
 	public static final void insertCcXact(int key, CCXact val) {
 		final boolean b = ccXacts.insert(key, val);
+//		final boolean b = ccXacts.put(key, val);
 		if (!b)
 			throw new Error("CCXact(" + key + ") already exists.");
 	}
 
 	@Atomic
 	public static final void insertShoppingCart(int key, ShoppingCart val) {
-		final boolean b = shopCarts.insert(key, val);
+//		final boolean b = shopCarts.insert(key, val);
+		final boolean b = shopCarts.put(key, val);
 		if (!b)
 			throw new Error("ShoppingCart(" + key + ") already exists.");
 	}
 
 	@Atomic
 	public static final ShoppingCart getShoppingCart(int key) {
-		return (ShoppingCart) shopCarts.find(key);
+//		return (ShoppingCart) shopCarts.find(key);
+		return shopCarts.get(key);
 	}
 
 	@Atomic
@@ -1315,6 +1309,7 @@ public class Executor implements DatabaseExecutorInterface {
 				o_TOTAL, o_SHIP_TYPE, o_SHIP_DATE, o_BILL_ADDR_ID,
 				o_SHIP_ADDR_ID, o_STATUS);
 		orders.insert(cart_id, order);
+//		orders.put(cart_id, order);
 		// ? For each item in the CART, a record is added in the ORDER_LINE
 		// table with:
 		// ? OL_ID is unique within the ORDER_LINE record for the order
@@ -1382,6 +1377,7 @@ public class Executor implements DatabaseExecutorInterface {
 		final CCXact xact = new CCXact(cX_O_ID, cX_TYPE, cX_CC_NUM, cX_CC_NAME,
 				cX_EXPIRY, cX_AUTH_ID, cX_XACT_AMT, cX_XACT_DATE, cX_CO_ID);
 		ccXacts.insert(cX_O_ID, xact);
+//		ccXacts.put(cX_O_ID, xact);
 		// <end transaction>
 		// ? Clears all SCL_* items from the CART and updates SC_DATE to current
 		// date and time

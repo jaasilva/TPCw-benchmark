@@ -2,8 +2,6 @@ package pt.unl.citi.tpcw.util;
 
 import java.util.List;
 
-import org.deuce.Atomic;
-
 import pt.unl.citi.tpcw.entities.Order;
 
 public class LastOrders {

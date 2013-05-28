@@ -25,7 +25,7 @@ import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import pt.unl.citi.tpcw.util.RBTree;
 
-public final class ShoppingCart implements Entity, Copyable<ShoppingCart> {
+public final class ShoppingCart implements Entity {
 	public final int SC_SHOPPING_ID;
 	public final int SC_C_ID;
 	// public final Customer SC_C;
@@ -66,13 +66,5 @@ public final class ShoppingCart implements Entity, Copyable<ShoppingCart> {
 
 	public String getKeyName() {
 		return "SC_SHOPPING_ID";
-	}
-
-	public final ShoppingCart copy() {
-		final ShoppingCart sc = new ShoppingCart(SC_SHOPPING_ID, SC_C_ID, SC_DATE, SC_SUB_TOTAL,
-				SC_TAX, SC_SHIP_COST, SC_TOTAL, SC_C_FNAME, SC_C_LNAME,
-				SC_C_DISCOUNT);
-		sc.cartLines = cartLines;
-		return sc;
 	}
 }

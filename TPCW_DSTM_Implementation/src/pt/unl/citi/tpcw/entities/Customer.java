@@ -23,9 +23,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-import pt.unl.citi.tpcw.util.RBTree;
-
-public final class Customer implements Entity, Copyable<Customer> {
+public final class Customer implements Entity {
 	public final int C_ID;
 	public final String C_UNAME;
 	public final String C_PASSWD;
@@ -79,13 +77,6 @@ public final class Customer implements Entity, Copyable<Customer> {
 
 	public String getKeyName() {
 		return "C_ID";
-	}
-
-	public final Customer copy() {
-		return new Customer(C_ID, C_UNAME, C_PASSWD, C_FNAME, C_LNAME,
-				C_ADDR_ID, C_PHONE, C_EMAIL, C_SINCE, C_LAST_VISIT, C_LOGIN,
-				C_EXPIRATION, C_DISCOUNT, C_BALANCE, C_YTD_PMT, C_BIRTHDATE,
-				C_DATA);
 	}
 
 }

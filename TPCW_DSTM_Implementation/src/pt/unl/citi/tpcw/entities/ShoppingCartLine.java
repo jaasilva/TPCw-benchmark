@@ -22,8 +22,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class ShoppingCartLine implements Entity,
-		Copyable<ShoppingCartLine> {
+public final class ShoppingCartLine implements Entity {
 	public final int SCL_I_ID;
 	// public final Item SCL_I;
 	public int SCL_QTY;
@@ -51,10 +50,5 @@ public final class ShoppingCartLine implements Entity,
 	@Override
 	public String getKeyName() {
 		return "SCL_I_ID";
-	}
-
-	public final ShoppingCartLine copy() {
-		return new ShoppingCartLine(SCL_I_ID, SCL_QTY, SCL_COST, SCL_SRP,
-				SCL_TITLE, SCL_BACKING);
 	}
 }

@@ -23,7 +23,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class CCXact implements Entity, Copyable<CCXact> {
+public final class CCXact implements Entity {
 	public final int CX_O_ID;
 	public final String CX_TYPE;
 	public final int CX_CC_NUM;
@@ -58,10 +58,5 @@ public final class CCXact implements Entity, Copyable<CCXact> {
 
 	public String getKeyName() {
 		return "CX_O_ID";
-	}
-
-	public final CCXact copy() {
-		return new CCXact(CX_O_ID, CX_TYPE, CX_CC_NUM, CX_CC_NAME, CX_EXPIRY,
-				CX_AUTH_ID, CX_XACT_AMT, CX_XACT_DATE, CX_CO_ID);
 	}
 }

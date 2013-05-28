@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class Address implements Entity, Copyable<Address> {
+public final class Address implements Entity {
 	public final int ADDR_ID;
 	public final String ADDR_STREET1;
 	public final String ADDR_STREET2;
@@ -52,10 +52,5 @@ public final class Address implements Entity, Copyable<Address> {
 
 	public String getKeyName() {
 		return "ADDR_ID";
-	}
-	
-	public final Address copy() {
-		return new Address(ADDR_ID, ADDR_STREET1, ADDR_STREET2, ADDR_CITY,
-				ADDR_STATE, ADDR_ZIP, ADDR_CO_ID);
 	}
 }

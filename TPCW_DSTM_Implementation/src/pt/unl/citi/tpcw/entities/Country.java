@@ -22,7 +22,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class Country implements Entity, Copyable<Country> {
+public final class Country implements Entity {
 	public final int CO_ID;
 	public final String CO_NAME;
 	public final String CO_CURRENCY;
@@ -42,9 +42,4 @@ public final class Country implements Entity, Copyable<Country> {
 	public String getKeyName() {
 		return "CO_ID";
 	}
-
-	public final Country copy() {
-		return new Country(CO_ID, CO_NAME, CO_CURRENCY, CO_EXCHANGE);
-	}
-
 }

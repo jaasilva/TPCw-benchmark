@@ -23,9 +23,7 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-import pt.unl.citi.tpcw.util.RBTree;
-
-public final class Item implements Entity, Copyable<Item> {
+public final class Item implements Entity {
 	public final int I_ID;
 	public final String I_TITLE;
 	public final int I_A_ID;
@@ -90,12 +88,5 @@ public final class Item implements Entity, Copyable<Item> {
 
 	public String getKeyName() {
 		return "I_ID";
-	}
-
-	public final Item copy() {
-		return new Item(I_ID, I_TITLE, I_A_ID, I_PUB_DATE, I_PUBLISHER,
-				I_SUBJECT, I_DESC, I_RELATED1, I_RELATED2, I_RELATED3,
-				I_RELATED4, I_RELATED5, I_THUMBNAIL, I_IMAGE, I_SRP, I_COST,
-				I_AVAIL, I_STOCK, I_ISBN, I_PAGE, I_BACKING, I_DIMENSION);
 	}
 }
