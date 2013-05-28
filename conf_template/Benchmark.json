@@ -11,7 +11,7 @@
          "databaseExecutorConfiguration" : "MYSQL.json",
          "workloadConfiguration" : "TPCWBrowsingMix.json",
          "thread_number" : "100",
-         "operation_number" : "200"
+         "operation_number" : "500"
       },
    "BenchmarkSlaves" :
       {
@@ -53,6 +53,12 @@
                "DataEngineInterface" : "pt.fct.di.benchmarks.TPCW_Riak.database.TPCWRiakExecutorFactory",
                "BenchmarkPopulator" : "pt.fct.di.benchmarks.TPCW_Riak.populator.RiakPopulator",
                "databaseExecutorConfiguration" : "RiakTPCW.json"
+            }
+         "dstm" :
+            {
+                "DataEngineInterface" : "pt.unl.citi.tpcw.ExecutorFactory",
+                "BenchmarkPopulator" : "pt.fct.citi.tpcw.Populator",
+                "databaseExecutorConfiguration" : "dstm.json"
             }
       },
    "Workload_alias" :

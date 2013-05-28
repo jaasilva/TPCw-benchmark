@@ -79,6 +79,7 @@
     <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
     <pathelement location="${basedir}/libs/jackson-mapper-asl-1.0.1.jar"/>
     <pathelement location="${basedir}/libs/jackson-core-asl-1.0.1.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
   </path>
   
   <path id="benchmarkingsuite.runtime.production.module.classpath">
@@ -87,6 +88,7 @@
     <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
     <pathelement location="${basedir}/libs/jackson-mapper-asl-1.0.1.jar"/>
     <pathelement location="${basedir}/libs/jackson-core-asl-1.0.1.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
   </path>
   
   <path id="benchmarkingsuite.module.classpath">
@@ -95,6 +97,7 @@
     <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
     <pathelement location="${basedir}/libs/jackson-mapper-asl-1.0.1.jar"/>
     <pathelement location="${basedir}/libs/jackson-core-asl-1.0.1.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
   </path>
   
   <path id="benchmarkingsuite.runtime.module.classpath">
@@ -104,6 +107,7 @@
     <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
     <pathelement location="${basedir}/libs/jackson-mapper-asl-1.0.1.jar"/>
     <pathelement location="${basedir}/libs/jackson-core-asl-1.0.1.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
   </path>
   
   
@@ -617,13 +621,130 @@
     <delete dir="${tpcw_mysql_implementation.testoutput.dir}"/>
   </target>
   
+  
+
+  <!-- Module TPCW_DSTM_Implementation -->
+  
+  <dirname property="module.tpcw_dstm_implementation.basedir" file="${ant.file}"/>
+  
+  
+  
+  <property name="compiler.args.tpcw_dstm_implementation" value="${compiler.args}"/>
+  
+  <property name="tpcw_dstm_implementation.output.dir" value="${module.tpcw_dstm_implementation.basedir}/out/production/TPCW_DSTM_Implementation"/>
+  <property name="tpcw_dstm_implementation.testoutput.dir" value="${module.tpcw_dstm_implementation.basedir}/out/test/TPCW_DSTM_Implementation"/>
+  
+  <path id="tpcw_dstm_implementation.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tpcw_dstm_implementation.module.production.classpath">
+    <pathelement location="${benchmarkingsuite.output.dir}"/>
+    <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
+    <pathelement location="${basedir}/libs/appia-core-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/flanagan.jar"/>
+    <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+  </path>
+  
+  <path id="tpcw_dstm_implementation.runtime.production.module.classpath">
+    <pathelement location="${tpcw_dstm_implementation.output.dir}"/>
+    <path refid="benchmarkingsuite.runtime.production.module.classpath"/>
+    <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent-bin.jar"/>
+    <pathelement location="${basedir}/libs/appia-core-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/flanagan.jar"/>
+    <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+  </path>
+  
+  <path id="tpcw_dstm_implementation.module.classpath">
+    <pathelement location="${tpcw_dstm_implementation.output.dir}"/>
+    <pathelement location="${benchmarkingsuite.testoutput.dir}"/>
+    <pathelement location="${benchmarkingsuite.output.dir}"/>
+    <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
+    <pathelement location="${basedir}/libs/appia-core-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/flanagan.jar"/>
+    <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+  </path>
+  
+  <path id="tpcw_dstm_implementation.runtime.module.classpath">
+    <pathelement location="${tpcw_dstm_implementation.testoutput.dir}"/>
+    <pathelement location="${tpcw_dstm_implementation.output.dir}"/>
+    <path refid="benchmarkingsuite.runtime.module.classpath"/>
+    <pathelement location="${basedir}/libs/log4j-1.2.13.jar"/>
+    <pathelement location="${basedir}/libs/deuceAgent.jar"/>
+    <pathelement location="${basedir}/libs/appia-core-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
+    <pathelement location="${basedir}/libs/flanagan.jar"/>
+    <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tpcw_dstm_implementation">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tpcw_dstm_implementation">
+    <patternset refid="excluded.from.module.tpcw_dstm_implementation"/>
+  </patternset>
+  
+  <path id="tpcw_dstm_implementation.module.sourcepath">
+    <dirset dir="${module.tpcw_dstm_implementation.basedir}/TPCW_DSTM_Implementation">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tpcw_dstm_implementation" depends="compile.module.tpcw_dstm_implementation.production,compile.module.tpcw_dstm_implementation.tests" description="Compile module TPCW_DSTM_Implementation"/>
+  
+  <target name="compile.module.tpcw_dstm_implementation.production" depends="compile.module.benchmarkingsuite" description="Compile module TPCW_DSTM_Implementation; production classes">
+    <mkdir dir="${tpcw_dstm_implementation.output.dir}"/>
+    <javac destdir="${tpcw_dstm_implementation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+      <compilerarg line="${compiler.args.tpcw_dstm_implementation}"/>
+      <bootclasspath refid="tpcw_dstm_implementation.module.bootclasspath"/>
+      <classpath refid="tpcw_dstm_implementation.module.production.classpath"/>
+      <src refid="tpcw_dstm_implementation.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tpcw_dstm_implementation"/>
+    </javac>
+    
+    <copy todir="${tpcw_dstm_implementation.output.dir}">
+      <fileset dir="${module.tpcw_dstm_implementation.basedir}/TPCW_DSTM_Implementation/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tpcw_dstm_implementation.tests" depends="compile.module.tpcw_dstm_implementation.production" description="compile module TPCW_DSTM_Implementation; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tpcw_dstm_implementation" description="cleanup module">
+    <delete dir="${tpcw_dstm_implementation.output.dir}"/>
+    <delete dir="${tpcw_dstm_implementation.testoutput.dir}"/>
+  </target>
+
+
+
+
+
   <target name="init" description="Build initialization">
     <!-- Perform any build initialization in this target -->
   </target>
   
-  <target name="clean" depends="clean.module.benchmarkingsuite, clean.module.tpcw_cassandra_implementation, clean.module.tpcw_riak_implementation, clean.module.tpcw_docm_implementation, clean.module.tpcw_mysql_implementation" description="cleanup all"/>
+  <target name="clean" depends="clean.module.benchmarkingsuite, clean.module.tpcw_cassandra_implementation, clean.module.tpcw_riak_implementation, clean.module.tpcw_docm_implementation, clean.module.tpcw_mysql_implementation, clean.module.tpcw_dstm_implementation" description="cleanup all"/>
   
-  <target name="build.modules" depends="init, clean, compile.module.benchmarkingsuite, compile.module.tpcw_cassandra_implementation, compile.module.tpcw_riak_implementation, compile.module.tpcw_docm_implementation, compile.module.tpcw_mysql_implementation" description="build all modules"/>
+  <target name="build.modules" depends="init, clean, compile.module.benchmarkingsuite, compile.module.tpcw_cassandra_implementation, compile.module.tpcw_riak_implementation, compile.module.tpcw_docm_implementation, compile.module.tpcw_mysql_implementation, compile.module.tpcw_dstm_implementation" description="build all modules"/>
   
   <target name="init.artifacts">
     <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
@@ -661,7 +782,7 @@
 
   
   
-  <target name="artifact.tpcw_benchmark" depends="init.artifacts, compile.module.benchmarkingsuite, compile.module.tpcw_cassandra_implementation, compile.module.tpcw_riak_implementation, compile.module.tpcw_docm_implementation, compile.module.tpcw_mysql_implementation" description="Build &apos;tpcw_benchmark&apos; artifact">
+  <target name="artifact.tpcw_benchmark" depends="init.artifacts, compile.module.benchmarkingsuite, compile.module.tpcw_cassandra_implementation, compile.module.tpcw_riak_implementation, compile.module.tpcw_docm_implementation, compile.module.tpcw_mysql_implementation, compile.module.tpcw_dstm_implementation" description="Build &apos;tpcw_benchmark&apos; artifact">
     <property name="artifact.temp.output.tpcw_benchmark" value="${artifacts.temp.dir}/tpcw_benchmark"/>
     <property name="artifact.output.run" value="${basedir}/run"/>
     <property name="artifact.output.run.lib" value="${artifact.output.run}/libs"/>
@@ -683,6 +804,7 @@
       <zipfileset dir="${tpcw_riak_implementation.output.dir}"/>
       <zipfileset dir="${tpcw_docm_implementation.output.dir}"/>
       <zipfileset dir="${tpcw_mysql_implementation.output.dir}"/> 
+      <zipfileset dir="${tpcw_dstm_implementation.output.dir}"/>
       
     </jar>
     <copy file="${temp.jar.path.tpcw_benchmark.jar}" tofile="${artifact.temp.output.tpcw_benchmark}/tpcw_benchmark.jar"/>

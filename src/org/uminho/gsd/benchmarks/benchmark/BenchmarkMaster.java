@@ -112,7 +112,7 @@ public class BenchmarkMaster {
 
         executor.consolidate();
 
-    //    end.killServer();
+//        end.killServer();
     }
 
 
@@ -179,7 +179,7 @@ public class BenchmarkMaster {
             } catch (InterruptedException e) {
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
-            writer.write("ACK");
+            writer.write("ACK\n");
             writer.flush();
         }
 

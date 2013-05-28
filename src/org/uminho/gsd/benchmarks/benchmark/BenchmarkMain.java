@@ -20,17 +20,25 @@
 package org.uminho.gsd.benchmarks.benchmark;
 
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.uminho.gsd.benchmarks.helpers.JsonUtil;
-import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
-import org.uminho.gsd.benchmarks.interfaces.populator.AbstractBenchmarkPopulator;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.deuce.Atomic;
+import org.deuce.benchmark.Barrier;
+import org.deuce.distribution.TribuDSTM;
+import org.deuce.distribution.replication.full.Bootstrap;
+import org.deuce.profiling.Profiler;
+import org.uminho.gsd.benchmarks.helpers.JsonUtil;
+import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
+import org.uminho.gsd.benchmarks.interfaces.populator.AbstractBenchmarkPopulator;
 
 public class BenchmarkMain {
 
@@ -224,6 +232,10 @@ public class BenchmarkMain {
 
 
         new BenchmarkMain(master, slave, cleanDB, cleanFB, populate, ocp, workload_alias, database_alias, num_thread, num_operations, distributionFactor);
+        Profiler.enabled = false;
+        Profiler.print();
+        barrierEnd.join();
+        TribuDSTM.close();
     }
 
     public BenchmarkMain(boolean master, boolean slave, boolean cleanDB, boolean cleanFB, boolean populateDatabase, boolean cap,
@@ -243,14 +255,39 @@ public class BenchmarkMain {
 
     }
 
+    @Bootstrap(id = 0)
+    static Barrier barrierBegin;
+    @Bootstrap(id = -1)
+    static Barrier barrierEnd;
+    @Bootstrap(id = -2)
+    static Barrier barrierPop;
+    
+    @Atomic
+    static final void initBarrier() {
+    	if (barrierBegin == null) {
+    		barrierBegin = new Barrier(Integer.getInteger("tribu.replicas"));
+    	}
+    	if (barrierEnd == null) {
+    		barrierEnd = new Barrier(Integer.getInteger("tribu.replicas"));
+    	}
+    	if (barrierPop == null) {
+    		barrierPop = new Barrier(Integer.getInteger("tribu.replicas"));
+    	}
+    }
     public void run(boolean master, boolean slave, boolean cleanDB, boolean cleanFB, boolean populate, boolean cap) throws Exception {
 
         //to avoid extra instantiations.
      //   if(cap || populate || cleanFB || cleanFB){
             populator = (AbstractBenchmarkPopulator) Class.forName(populatorClass).getConstructor(AbstractDatabaseExecutorFactory.class, String.class).newInstance(executor.getDatabaseInterface(), populator_conf);
        // }
+            
+        initBarrier();
+        executor.getDatabaseInterface().getDatabaseClient();
+        barrierBegin.join();
 
         if (slave) {
+        	barrierPop.join();
+            Profiler.enabled = true;
             BenchmarkSlave slaveHandler = new BenchmarkSlave(SlavePort, executor);
             slaveHandler.run();
 
@@ -289,6 +326,8 @@ public class BenchmarkMain {
 
             if (master) {//master, signal slaves
                 logger.info("[INFO:] EXECUTING IN MASTER MODE");
+                barrierPop.join();
+                Profiler.enabled = true;
                 BenchmarkMaster masterHandler = new BenchmarkMaster(executor, benchmarkExecutorSlaves);
                 masterHandler.run();
 
@@ -301,7 +340,6 @@ public class BenchmarkMain {
 
 
         }
-
     }
 
     public boolean loadDescriptor(String work_alias, String data_alias, int num_threads, int num_operations) {

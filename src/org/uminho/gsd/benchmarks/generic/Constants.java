@@ -22,8 +22,8 @@ package org.uminho.gsd.benchmarks.generic;
 
 public class Constants {
 
-    public static /* final */ int NUM_EBS = 10;
-    public static /* final */ int NUM_ITEMS = 10000;
+    public static /* final */ int NUM_EBS = 1;
+    public static /* final */ int NUM_ITEMS = 1000;
     public static /* final */ int NUM_CUSTOMERS = NUM_EBS * 2880;
     public static /* final */ int NUM_ADDRESSES = 2 * NUM_CUSTOMERS;
     public static /* final */ int NUM_AUTHORS = (int) (.25 * NUM_ITEMS);

@@ -20,6 +20,8 @@
 package org.uminho.gsd.benchmarks.benchmark;
 
 
+import org.deuce.distribution.TribuDSTM;
+import org.deuce.profiling.Profiler;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.interfaces.Workload.AbstractWorkloadGeneratorFactory;
 import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;
@@ -120,12 +122,14 @@ public class BenchmarkExecutor {
             };
             Thread clientThread = new Thread(clientRunnable, "client:" + client_index);
             clientThread.start();
+            System.out.println("Started client "+client_index+".");
         }
 
 		DataStatistics dataStatistics = new DataStatistics();
 		dataStatistics.setTpm_resultHandler(stats_handler);
 
         try {
+        	System.out.println("Waiting for "+num_clients+" clients...");
             synchronizationBarrier.await();
         } catch (InterruptedException e) {
             System.out.println("[ERROR:] Error in client execution. Interruption on synchronization barrier");

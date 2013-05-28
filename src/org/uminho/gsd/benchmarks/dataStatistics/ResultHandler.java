@@ -271,9 +271,9 @@ public class ResultHandler {
 			boolean do_multipleruns = testsamples >= 0;
 
 
-			int total_amount = 0;
-			int currrent_amount = 0;
-			int current_run = 0;
+			double total_amount = 0;
+			double currrent_amount = 0;
+			double current_run = 0;
 			int run = 0;
 			ArrayList<Long> run_result = new ArrayList<Long>();
 			for (Pair<Long, Long> res : result_data) {
