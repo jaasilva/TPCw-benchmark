@@ -259,6 +259,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	static void itemInsert(String Operation, int key, Item value,
 			ResultHandler results) {
+		if (value == null)
+			throw new Error("Inserted null at items["+key+"]");
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertItem(key, value);

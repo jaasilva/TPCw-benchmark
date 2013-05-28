@@ -30,6 +30,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
+import org.deuce.profiling.Profiler;
+
 public class BenchmarkMaster {
 
     private int PersonalClientID;
@@ -66,7 +68,7 @@ public class BenchmarkMaster {
         prepare_thread.start();
 
         //Time to the clients to be ready
-        Thread.sleep(500);
+        Thread.sleep(1000);
 
 
         int clientId = 2;
@@ -101,7 +103,8 @@ public class BenchmarkMaster {
 //        ensureEnd end = new ensureEnd();
 //        Thread ensureEndThread = new Thread(end);
 //        ensureEndThread.start();
-
+        BenchmarkMain.barrierStart.join();
+        Profiler.enabled = true;
         executor.run(new BenchmarkNodeID(PersonalClientID));
         System.out.println("[INFO:]SLAVE ENDED");
         try {
@@ -132,25 +135,34 @@ public class BenchmarkMaster {
             this.port = Integer.parseInt(port.trim());
 
 
+            boolean success = false;
+            do {
             try {
+                System.out.println("Connecting to "+host+":"+port);
                 Socket cs = new Socket(host, this.port);
+                System.out.println("Connected to "+host+":"+port);
+                success = true;
                 writer = new PrintWriter(cs.getOutputStream(), true);
                 in = new BufferedReader(
                         new InputStreamReader(
                                 cs.getInputStream()));
             } catch (IOException e) {
+            	System.out.println("Failed to conenct to "+host+":"+port);
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
+            } while (!success);
         }
 
         public void run() {
 
             writer.write("PREPARE " + ClientID + "\n");
+            System.out.println("Sent PREPARE to " + ClientID);
             writer.flush();
             boolean terminated = false;
             while (!terminated) {
                 try {
                     String message = in.readLine();
+                    System.out.println("RECV: "+message);
                     if (message != null && message.equalsIgnoreCase("ACK")) {
                         terminated = true;
                     }

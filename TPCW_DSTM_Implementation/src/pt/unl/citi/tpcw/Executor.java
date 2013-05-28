@@ -11,7 +11,6 @@ import java.util.Random;
 import java.util.TreeMap;
 
 import org.deuce.Atomic;
-import org.deuce.benchmark.stmbench7.core.RuntimeError;
 import org.deuce.distribution.replication.full.Bootstrap;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
@@ -35,9 +34,9 @@ import pt.unl.citi.tpcw.entities.Order;
 import pt.unl.citi.tpcw.entities.OrderLine;
 import pt.unl.citi.tpcw.entities.ShoppingCart;
 import pt.unl.citi.tpcw.entities.ShoppingCartLine;
+import pt.unl.citi.tpcw.util.HashMap;
 import pt.unl.citi.tpcw.util.LastOrders;
 import pt.unl.citi.tpcw.util.RBTree;
-import pt.unl.citi.tpcw.util.trove.THashMap;
 
 public class Executor implements DatabaseExecutorInterface {
 	/* Database */
@@ -56,18 +55,18 @@ public class Executor implements DatabaseExecutorInterface {
 	@Bootstrap(id = 6)
 	static LastOrders lastOrders;
 	@Bootstrap(id = 7)
-	static THashMap<Integer, Order> lastCustomerOrder;
+	static HashMap<Integer, Order> lastCustomerOrder;
 	@Bootstrap(id = 8)
 	static RBTree orderLines;
 	@Bootstrap(id = 9)
 	// static RBTree items;
 	static Item[] items; // fixed-size!
 	@Bootstrap(id = 10)
-	static THashMap<String, List<Item>> itemsBySubject;
+	static HashMap<String, List<Item>> itemsBySubject;
 	@Bootstrap(id = 11)
-	static THashMap<String, List<Item>> itemsByAuthorLastName;
+	static HashMap<String, List<Item>> itemsByAuthorLastName;
 	@Bootstrap(id = 12)
-	static THashMap<String, List<Item>> itemsByTitle;
+	static HashMap<String, List<Item>> itemsByTitle;
 	@Bootstrap(id = 13)
 	static RBTree ccXacts;
 	@Bootstrap(id = 14)
@@ -96,7 +95,7 @@ public class Executor implements DatabaseExecutorInterface {
 		System.out.println("ORDERS created.");
 		createLastOrders();
 		System.out.println("LAST_ORDERS created.");
-		createLastCustomerOrders();
+		createLastCustomerOrders(num_customers);
 		System.out.println("LAST_CUSTOMER_ORDER created.");
 		createOrderLines();
 		System.out.println("ORDER_LINES created.");
@@ -134,17 +133,17 @@ public class Executor implements DatabaseExecutorInterface {
 
 	@Atomic
 	private final void createItemsByTitle() {
-		itemsByTitle = new THashMap<String, List<Item>>();
+		itemsByTitle = new HashMap<String, List<Item>>();
 	}
 
 	@Atomic
 	private final void createItemsByAuthorLastName() {
-		itemsByAuthorLastName = new THashMap<String, List<Item>>();
+		itemsByAuthorLastName = new HashMap<String, List<Item>>();
 	}
 
 	@Atomic
 	private final void createItemsBySubject() {
-		itemsBySubject = new THashMap<String, List<Item>>(25); // # dif. subj.
+		itemsBySubject = new HashMap<String, List<Item>>(25); // # dif. subj.
 	}
 
 	@Atomic
@@ -158,8 +157,8 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void createLastCustomerOrders() {
-		lastCustomerOrder = new THashMap<Integer, Order>(/* num_customers */);
+	private final void createLastCustomerOrders(final int num_customers) {
+		lastCustomerOrder = new HashMap<Integer, Order>(num_customers);
 	}
 
 	@Atomic
@@ -214,7 +213,7 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final void insertAddress(int key, Address val) {
 		final boolean b = addresses.insert(key, val);
 		if (!b)
-			throw new RuntimeError("Address(" + key + ") already exists.");
+			throw new Error("Address(" + key + ") already exists.");
 	}
 
 	@Atomic
@@ -231,7 +230,7 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final void insertCustomer(int key, Customer val) {
 		final boolean b = customers.insert(key, val);
 		if (!b)
-			throw new RuntimeError("Customer(" + key + ") already exists.");
+			throw new Error("Customer(" + key + ") already exists.");
 	}
 
 	@Atomic
@@ -245,11 +244,14 @@ public class Executor implements DatabaseExecutorInterface {
 		authors[key] = val;
 	}
 
-	@Atomic
+	// @Atomic
 	public static final List<Author> getAuthors() {
 		final List<Author> results = new java.util.LinkedList<Author>();
 		for (int i = 0; i < authors.length; i++) {
-			results.add(authors[i]);
+			final Author author = authors[i];
+			if (author == null)
+				throw new Error("null at authors[" + i + "]");
+			results.add(author);
 		}
 		return results;
 	}
@@ -258,34 +260,34 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final void insertItem(int key, Item val) {
 		// items.insert(key, val);
 		items[key] = val;
-		List<Item> list;
-		// subject index
-		final String subject = val.I_SUBJECT;
-		if (!itemsBySubject.containsKey(subject)) {
-			list = new java.util.LinkedList<Item>();
-			itemsBySubject.put(subject, list);
-		} else {
-			list = itemsBySubject.get(subject);
-		}
-		list.add(val);
-		// author index
-		final String lname = getAuthor(val.I_A_ID).A_LNAME;
-		if (!itemsByAuthorLastName.containsKey(lname)) {
-			list = new java.util.LinkedList<Item>();
-			itemsByAuthorLastName.put(lname, list);
-		} else {
-			list = itemsByAuthorLastName.get(lname);
-		}
-		list.add(val);
-		// title index
-		final String title = val.I_TITLE;
-		if (!itemsByTitle.containsKey(title)) {
-			list = new java.util.LinkedList<Item>();
-			itemsByTitle.put(title, list);
-		} else {
-			list = itemsByTitle.get(title);
-		}
-		list.add(val);
+		// List<Item> list;
+		// // subject index
+		// final String subject = val.I_SUBJECT;
+		// if (!itemsBySubject.containsKey(subject)) {
+		// list = new java.util.LinkedList<Item>();
+		// itemsBySubject.put(subject, list);
+		// } else {
+		// list = itemsBySubject.get(subject);
+		// }
+		// list.add(val);
+		// // author index
+		// final String lname = getAuthor(val.I_A_ID).A_LNAME;
+		// if (!itemsByAuthorLastName.containsKey(lname)) {
+		// list = new java.util.LinkedList<Item>();
+		// itemsByAuthorLastName.put(lname, list);
+		// } else {
+		// list = itemsByAuthorLastName.get(lname);
+		// }
+		// list.add(val);
+		// // title index
+		// final String title = val.I_TITLE;
+		// if (!itemsByTitle.containsKey(title)) {
+		// list = new java.util.LinkedList<Item>();
+		// itemsByTitle.put(title, list);
+		// } else {
+		// list = itemsByTitle.get(title);
+		// }
+		// list.add(val);
 	}
 
 	// @Atomic
@@ -294,11 +296,14 @@ public class Executor implements DatabaseExecutorInterface {
 		return items[key];
 	}
 
-	@Atomic
+	// @Atomic
 	public static final List<Item> getItems() {
 		final List<Item> results = new java.util.LinkedList<Item>();
 		for (int i = 0; i < items.length; i++) {
-			results.add(items[i]);
+			final Item item = items[i];
+			if (item == null)
+				throw new Error("null at items[" + i + "]");
+			results.add(item);
 		}
 		return results;
 	}
@@ -337,14 +342,14 @@ public class Executor implements DatabaseExecutorInterface {
 	public static final void insertCcXact(int key, CCXact val) {
 		final boolean b = ccXacts.insert(key, val);
 		if (!b)
-			throw new RuntimeError("CCXact(" + key + ") already exists.");
+			throw new Error("CCXact(" + key + ") already exists.");
 	}
 
 	@Atomic
 	public static final void insertShoppingCart(int key, ShoppingCart val) {
 		final boolean b = shopCarts.insert(key, val);
 		if (!b)
-			throw new RuntimeError("ShoppingCart(" + key + ") already exists.");
+			throw new Error("ShoppingCart(" + key + ") already exists.");
 	}
 
 	@Atomic
@@ -462,7 +467,7 @@ public class Executor implements DatabaseExecutorInterface {
 		}
 
 		String method_name = op.getOperation();
-//		System.out.println("Executor will execute " + method_name);
+		// System.out.println("Executor will execute " + method_name);
 
 		if (method_name.equalsIgnoreCase(OP_POPULATE)) {
 			createTrees(Constants.NUM_COUNTRIES, Constants.NUM_AUTHORS,
@@ -1560,6 +1565,7 @@ public class Executor implements DatabaseExecutorInterface {
 	@Override
 	public Map<String, Map<String, Object>> rangeQuery(String table,
 			List<String> fields, int limit) throws Exception {
+		createIndexes();
 		Map<String, Map<String, Object>> result = new TreeMap<String, Map<String, Object>>();
 		if (table.equalsIgnoreCase("author")) {
 			List<Author> all = getAuthors();
@@ -1577,6 +1583,52 @@ public class Executor implements DatabaseExecutorInterface {
 			}
 		}
 		return result;
+	}
+
+	private static boolean indexesCreated = false;
+
+	private final void createIndexes() {
+		if (indexesCreated)
+			return;
+		System.out.println("Creating indexes.");
+		List<Item> list;
+		for (final Item val : items) {
+			// subject index
+			System.out.print("\r");
+			System.out.print("Indexing item "+val.I_ID+" (subject)");
+			final String subject = val.I_SUBJECT;
+			if (!itemsBySubject.containsKey(subject)) {
+				list = new java.util.LinkedList<Item>();
+				itemsBySubject.put(subject, list);
+			} else {
+				list = itemsBySubject.get(subject);
+			}
+			list.add(val);
+			// author index
+			System.out.print("\r");
+			System.out.print("Indexing item "+val.I_ID+" (author)");
+			final String lname = getAuthor(val.I_A_ID).A_LNAME;
+			if (!itemsByAuthorLastName.containsKey(lname)) {
+				list = new java.util.LinkedList<Item>();
+				itemsByAuthorLastName.put(lname, list);
+			} else {
+				list = itemsByAuthorLastName.get(lname);
+			}
+			list.add(val);
+			// title index
+			System.out.print("\r");
+			System.out.print("Indexing item "+val.I_ID+" (title)");
+			final String title = val.I_TITLE;
+			if (!itemsByTitle.containsKey(title)) {
+				list = new java.util.LinkedList<Item>();
+				itemsByTitle.put(title, list);
+			} else {
+				list = itemsByTitle.get(title);
+			}
+			list.add(val);
+		}
+		System.out.println("Indexes created.");
+		indexesCreated = true;
 	}
 
 	@Override

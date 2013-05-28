@@ -646,7 +646,7 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
   </path>
   
@@ -659,7 +659,7 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
   </path>
   
@@ -673,7 +673,7 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
   </path>
   
@@ -687,7 +687,7 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.2.7.Final.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
   </path>
   

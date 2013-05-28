@@ -5,11 +5,14 @@ import org.uminho.gsd.benchmarks.helpers.TPM_counter;
 import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
 import org.uminho.gsd.benchmarks.interfaces.executor.DatabaseExecutorInterface;
 
+import pt.unl.citi.tpcw.util.HashMap;
+
 public class ExecutorFactory extends AbstractDatabaseExecutorFactory {
 
 	public ExecutorFactory(BenchmarkExecutor executor, String conf_file) {
 		super(executor, conf_file);
 		init();
+		HashMap.init(); 
 		// TODO Auto-generated constructor stub
 	}
 

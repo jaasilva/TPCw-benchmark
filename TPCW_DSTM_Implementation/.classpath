@@ -4,6 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/TPC-W"/>
 	<classpathentry kind="lib" path="/home/tvale/FCT/Research/TPC-W/Repository/libs/deuceAgent.jar"/>
-	<classpathentry kind="lib" path="/home/tvale/FCT/Research/TPC-W/Repository/libs/trove-3.0.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

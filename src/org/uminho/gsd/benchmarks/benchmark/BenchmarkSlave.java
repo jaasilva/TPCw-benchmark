@@ -27,6 +27,8 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import org.deuce.profiling.Profiler;
+
 public class BenchmarkSlave {
 
     public static boolean terminated = false;
@@ -46,12 +48,14 @@ public class BenchmarkSlave {
             ServerSocket ss = new ServerSocket(port);
             System.out.println("[INFO:] Slave waiting");
             Socket clientSocket = ss.accept();
+            System.out.println("[INFO:] Master connected");
             writer = new PrintWriter(clientSocket.getOutputStream(), true);
             in = new BufferedReader(
                     new InputStreamReader(
                             clientSocket.getInputStream()));
             while (!terminated) {
                 String message = in.readLine();
+                System.out.println("RECV: "+message);
 
                 if (message != null && message.toUpperCase().startsWith("PREPARE")) {
                     executor.prepare();
@@ -73,6 +77,8 @@ public class BenchmarkSlave {
                         }
                     };
                     Thread t = new Thread(run);
+                    BenchmarkMain.barrierStart.join();
+                    Profiler.enabled = true;
                     t.start();
 
 
