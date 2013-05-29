@@ -78,10 +78,7 @@ public class BenchmarkSlave {
                     };
                     Thread t = new Thread(run);
                     BenchmarkMain.barrierStart.join();
-                    Profiler.enabled = true;
                     t.start();
-
-
                 }
                 if (message != null && message.equalsIgnoreCase("ACK")) {
                     executor.consolidate();

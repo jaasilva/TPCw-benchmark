@@ -12,7 +12,7 @@ public class ExecutorFactory extends AbstractDatabaseExecutorFactory {
 	public ExecutorFactory(BenchmarkExecutor executor, String conf_file) {
 		super(executor, conf_file);
 		init();
-		HashMap.init(); 
+		HashMap.init(); // FIXME por causa dos fields estáticos
 		// TODO Auto-generated constructor stub
 	}
 

@@ -31,13 +31,14 @@ EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.HashFunctions"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.PrimeFinder"
 
 SITE=$2
-THREADS=1
-WORKERS=$3
-REPLICAS=$4
-RUN=$5
+THREADS=$3
+WORKERS=$4
+REPLICAS=$5
+RUN=$6
+DURATION=$7
 
 _STM=tl2.Context
-_REP=nonvoting.NonVoting
+_REP=voting.Voting
 _COMM=$1
 
 STM="org.deuce.transaction.${_STM}"
@@ -56,9 +57,9 @@ echo "Comm: ${_COMM}"
 echo `date +%H:%M`
 echo "#####"
 
-shift 5
+shift 7
 
-java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
+java -Xmx16g -Xms16g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
     -Dorg.deuce.include=$INCLUDE \
@@ -70,6 +71,6 @@ java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dtribu.distributed.protocolClass=$REP \
     -Dtribu.serialization.compress=$ZIP \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -p -w browsing -t 1 -o 8192 -tt 0 $@
+        -d dstm -p -w browsing -t $THREADS -o 8192 -tt 0 -duration $DURATION $@
 
 # vim:set ts=4 sw=4 et:

@@ -1,7 +1,22 @@
 package pt.unl.citi.tpcw;
 
+import static pt.unl.citi.tpcw.Operations.ADMIN_CHANGE;
+import static pt.unl.citi.tpcw.Operations.BEST_SELLERS;
+import static pt.unl.citi.tpcw.Operations.BUY_CONFIRM;
+import static pt.unl.citi.tpcw.Operations.BUY_REQUEST;
+import static pt.unl.citi.tpcw.Operations.HOME;
+import static pt.unl.citi.tpcw.Operations.ITEM_INFO;
+import static pt.unl.citi.tpcw.Operations.LOGIN;
+import static pt.unl.citi.tpcw.Operations.NEW_PRODUCTS;
 import static pt.unl.citi.tpcw.Operations.OP_POPULATE;
+import static pt.unl.citi.tpcw.Operations.ORDER_INQUIRY;
+import static pt.unl.citi.tpcw.Operations.POPULATE;
+import static pt.unl.citi.tpcw.Operations.REGISTER;
+import static pt.unl.citi.tpcw.Operations.SEARCH;
+import static pt.unl.citi.tpcw.Operations.SHOPPING_CART;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -11,15 +26,17 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.locks.Lock;
 
 import org.deuce.Atomic;
 import org.deuce.distribution.replication.full.Bootstrap;
+import org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor;
+import org.uminho.gsd.benchmarks.benchmark.BenchmarkMain;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.generic.Constants;
 import org.uminho.gsd.benchmarks.helpers.BenchmarkUtil;
 import org.uminho.gsd.benchmarks.helpers.TPM_counter;
-import org.uminho.gsd.benchmarks.helpers.ThinkTime;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 import org.uminho.gsd.benchmarks.interfaces.Workload.Operation;
 import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;
@@ -36,6 +53,19 @@ import pt.unl.citi.tpcw.entities.Order;
 import pt.unl.citi.tpcw.entities.OrderLine;
 import pt.unl.citi.tpcw.entities.ShoppingCart;
 import pt.unl.citi.tpcw.entities.ShoppingCartLine;
+import pt.unl.citi.tpcw.transactions.AdminChangeTransaction;
+import pt.unl.citi.tpcw.transactions.BestSellersTransaction;
+import pt.unl.citi.tpcw.transactions.BuyConfirmTransaction;
+import pt.unl.citi.tpcw.transactions.BuyRequestTransaction;
+import pt.unl.citi.tpcw.transactions.HomeTransaction;
+import pt.unl.citi.tpcw.transactions.ItemInfoTransaction;
+import pt.unl.citi.tpcw.transactions.LoginTransaction;
+import pt.unl.citi.tpcw.transactions.NewProductsTransaction;
+import pt.unl.citi.tpcw.transactions.OrderInquiryTransaction;
+import pt.unl.citi.tpcw.transactions.PopulateTransaction;
+import pt.unl.citi.tpcw.transactions.RegisterTransaction;
+import pt.unl.citi.tpcw.transactions.SearchTransaction;
+import pt.unl.citi.tpcw.transactions.ShoppingCartTransaction;
 import pt.unl.citi.tpcw.util.HashMap;
 import pt.unl.citi.tpcw.util.LastOrders;
 import pt.unl.citi.tpcw.util.RBTree;
@@ -81,7 +111,7 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	// @Atomic
-	private void createTrees(final int num_countries, final int num_authors,
+	public void createTrees(final int num_countries, final int num_authors,
 			final int num_customers, final int num_items) {
 		// countries = new RBTree();
 		createCountries(num_countries);
@@ -151,7 +181,7 @@ public class Executor implements DatabaseExecutorInterface {
 		lastCustomerOrder = new HashMap<Integer, Order>(num_customers);
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private final Order getCustomerLastOrder(final int customer) {
 		return lastCustomerOrder.get(customer);
 	}
@@ -213,7 +243,7 @@ public class Executor implements DatabaseExecutorInterface {
 			throw new Error("Address(" + key + ") already exists.");
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final Address getAddress(int key) {
 		return (Address) addresses.find(key);
 	}
@@ -231,7 +261,7 @@ public class Executor implements DatabaseExecutorInterface {
 			throw new Error("Customer(" + key + ") already exists.");
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final Customer getCustomer(int key) {
 		return (Customer) customers.find(key);
 		// return customers.get(key);
@@ -330,7 +360,7 @@ public class Executor implements DatabaseExecutorInterface {
 	// return order.orderLines.findAll(f);
 	// }
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final CCXact getCCXact(int key) {
 		return (CCXact) ccXacts.find(key);
 		// return ccXacts.get(key);
@@ -352,19 +382,19 @@ public class Executor implements DatabaseExecutorInterface {
 			throw new Error("ShoppingCart(" + key + ") already exists.");
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final ShoppingCart getShoppingCart(int key) {
 		// return (ShoppingCart) shopCarts.find(key);
 		return shopCarts.get(key);
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final ShoppingCartLine getShoppingCartLine(ShoppingCart cart,
 			int key) {
 		return (ShoppingCartLine) cart.cartLines.find(key);
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	public static final List<ShoppingCartLine> getShoppingCartLines(
 			ShoppingCart cart, Filter<ShoppingCartLine> f) {
 		return cart.cartLines.findAll(f);
@@ -392,9 +422,9 @@ public class Executor implements DatabaseExecutorInterface {
 	int one_node_clients;
 
 	int addr_aux_id = 0;
-	int num_operations = 0;
-	ResultHandler client_result_handler;
-	private TPM_counter counter;
+	public int num_operations = 0;
+	public ResultHandler client_result_handler;
+	public TPM_counter counter;
 	/**
 	 * Think time*
 	 */
@@ -406,58 +436,335 @@ public class Executor implements DatabaseExecutorInterface {
 		// TODO Auto-generated method stub
 		this.node_id = nodeId.getId();
 		client_result_handler = handler;
-		this.num_operations = operation_number;
+		// this.num_operations = operation_number;
+		this.num_operations = 0;
 		int r = random.nextInt(100);
-		long g_init_time = System.nanoTime();
-		for (int operation = 0; operation < operation_number; operation++) {
 
-			// long g_init_time = System.currentTimeMillis();
+		if (BenchmarkMain.generator) {
+			workloadGenerator(operation_number);
+		} else { // master or slave
+			workloadExecutor();
+		}
+	}
 
+	private void workloadExecutor() {
+		final long g_init_time = System.nanoTime();
+		final boolean boost = Boolean.getBoolean("tribu.boost");
+		while (!BenchmarkExecutor.stop) {
 			try {
-				Operation op = workload.getNextOperation();
-				// long init_time = System.currentTimeMillis();
-				long init_time = System.nanoTime();
-				execute(op);
-				// long end_time = System.currentTimeMillis();
-				long end_time = System.nanoTime();
-				client_result_handler.logResult(op.getOperation(),
-						((end_time / 1000 / 1000) - (init_time / 1000 / 1000)));
-
-				simulatedDelay = ThinkTime.getThinkTime();
-
-				if (simulatedDelay > 0) {
-					Thread.sleep(simulatedDelay);
+				final int op = BenchmarkExecutor.stream.readInt();
+				switch (op) {
+				case POPULATE:
+					final int num_countries = BenchmarkExecutor.stream
+							.readInt();
+					final int num_authors = BenchmarkExecutor.stream.readInt();
+					final int num_customers = BenchmarkExecutor.stream
+							.readInt();
+					final int num_items = BenchmarkExecutor.stream.readInt();
+					new PopulateTransaction(Executor.this, num_countries,
+							num_authors, num_customers, num_items)
+							.enqueue(false);
+					break;
+				case HOME:
+					final int costumer = BenchmarkExecutor.stream.readInt();
+					final int item_id = BenchmarkExecutor.stream.readInt();
+					new HomeTransaction(Executor.this, costumer, item_id)
+							.enqueue(boost);
+					break;
+				case NEW_PRODUCTS:
+					final String field = BenchmarkExecutor.stream.readUTF();
+					new NewProductsTransaction(Executor.this, field)
+							.enqueue(boost);
+					break;
+				case BEST_SELLERS:
+					final String field2 = BenchmarkExecutor.stream.readUTF();
+					new BestSellersTransaction(Executor.this, field2)
+							.enqueue(boost);
+					break;
+				case ITEM_INFO:
+					final int id = BenchmarkExecutor.stream.readInt();
+					new ItemInfoTransaction(Executor.this, id).enqueue(boost);
+					break;
+				case SEARCH:
+					final String term = BenchmarkExecutor.stream.readUTF();
+					final String field3 = BenchmarkExecutor.stream.readUTF();
+					new SearchTransaction(Executor.this, term, field3)
+							.enqueue(boost);
+					break;
+				case REGISTER:
+					final int process_id = BenchmarkExecutor.stream.readInt();
+					final int id2 = BenchmarkExecutor.stream.readInt();
+					new RegisterTransaction(Executor.this, process_id, id2)
+							.enqueue(false);
+					break;
+				case LOGIN:
+					final int id3 = BenchmarkExecutor.stream.readInt();
+					new LoginTransaction(Executor.this, id3).enqueue(false);
+					break;
+				case ORDER_INQUIRY:
+					final int customer_id = BenchmarkExecutor.stream.readInt();
+					new OrderInquiryTransaction(Executor.this, customer_id)
+							.enqueue(boost);
+					break;
+				case ADMIN_CHANGE:
+					final int id4 = BenchmarkExecutor.stream.readInt();
+					new AdminChangeTransaction(Executor.this, id4)
+							.enqueue(false);
+					break;
+				case SHOPPING_CART:
+					final int item_id2 = BenchmarkExecutor.stream.readInt();
+					final boolean create = BenchmarkExecutor.stream
+							.readBoolean();
+					final int id5 = BenchmarkExecutor.stream.readInt();
+					new ShoppingCartTransaction(Executor.this, item_id2,
+							create, id5).enqueue(false);
+					break;
+				case BUY_REQUEST:
+					final int cart_id = BenchmarkExecutor.stream.readInt();
+					new BuyRequestTransaction(Executor.this, cart_id)
+							.enqueue(false);
+					break;
+				case BUY_CONFIRM:
+					final int cust_id = BenchmarkExecutor.stream.readInt();
+					final int process_id2 = BenchmarkExecutor.stream.readInt();
+					final int cart_id2 = BenchmarkExecutor.stream.readInt();
+					new BuyConfirmTransaction(Executor.this, cust_id,
+							process_id2, cart_id2).enqueue(false);
+					break;
 				}
-
-			} catch (NoSuchFieldException e) {
-				System.out.println("[ERROR:] THIS OPERATION DOES NOT EXIST: "
-						+ e.getMessage());
-			} catch (InterruptedException e) {
-				System.out
-						.println("[ERROR:] THINK TIME AFTER METHOD EXECUTION INTERRUPTED: "
-								+ e.getMessage());
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (final IOException e) {
+				//
 			}
-			// long end_time = System.currentTimeMillis();
-			counter.increment();
-			// client_result_handler.logResult("OPERATIONS", (end_time -
-			// g_init_time));
-
 		}
 		final long g_end_time = System.nanoTime();
+
 		double g_time = g_end_time - g_init_time; // in ns
 		g_time = g_time / 1000 / 1000 / 1000; // in s
 		final double tps = num_operations / g_time;
 		client_result_handler.logResult("TPS", (long) tps);
+	}
 
-		// client_result_handler.getResulSet().put("bought", partialBought);
-		// client_result_handler.getResulSet().put("total_bought", bought_qty);
-		// client_result_handler.getResulSet().put("buying_actions",
-		// bought_actions);
-		// client_result_handler.getResulSet().put("bought_carts",
-		// bought_carts);
-		// client_result_handler.getResulSet().put("zeros", zeros);
+	private void workloadGenerator(int index) {
+		// int nextServerIndex = 0;
+		final ObjectOutputStream stream = BenchmarkExecutor.masterDataStreams[index];
+		final WorkloadGeneratorInterface workload = BenchmarkExecutor.masterWorkloads[index];
+		final Lock lock = BenchmarkExecutor.masterLocks[index];
+		while (!BenchmarkExecutor.stop) {
+			final Operation op;
+			while (!lock.tryLock())
+				;
+			op = workload.getNextOperation();
+			final String method_name = op.getOperation();
+
+			if (method_name.equalsIgnoreCase(OP_POPULATE)) {
+				try {
+					stream.writeInt(POPULATE);
+					stream.writeInt(Constants.NUM_COUNTRIES);
+					stream.writeInt(Constants.NUM_AUTHORS);
+					stream.writeInt(Constants.NUM_CUSTOMERS);
+					stream.writeInt(Constants.NUM_ITEMS);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_HOME")) {
+				int costumer = 0, item_id = 0;
+				try {
+					costumer = (Integer) op.getParameter("COSTUMER");
+					item_id = (Integer) op.getParameter("ITEM");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(HOME);
+					stream.writeInt(costumer);
+					stream.writeInt(item_id);
+
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_NEW_PRODUCTS")) {
+				String field = null;
+				try {
+					field = (String) op.getParameter("FIELD");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(NEW_PRODUCTS);
+					stream.writeUTF(field);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_BEST_SELLERS")) {
+				String field = null;
+				try {
+					field = (String) op.getParameter("FIELD");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(BEST_SELLERS);
+					stream.writeUTF(field);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_ITEM_INFO")) {
+				int id = 0;
+				try {
+					id = (Integer) op.getParameter("ITEM");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(ITEM_INFO);
+					stream.writeInt(id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_SEARCH")) {
+				String term = null, field = null;
+				try {
+					term = (String) op.getParameter("TERM");
+					field = (String) op.getParameter("FIELD");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(SEARCH);
+					stream.writeUTF(term);
+					stream.writeUTF(field);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_REGISTER")) {
+				String customer = null;
+				try {
+					customer = (String) op.getParameter("CUSTOMER");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int id = getIDfromString(customer,
+						Constants.NUM_CUSTOMERS);
+				final int process_id = getProcessId(customer);
+				try {
+					stream.writeInt(REGISTER);
+					stream.writeInt(process_id);
+					stream.writeInt(id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_LOGIN")) {
+				String customer = null;
+				try {
+					customer = (String) op.getParameter("CUSTOMER");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int id = Integer.parseInt(customer);
+				try {
+					stream.writeInt(LOGIN);
+					stream.writeInt(id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_ORDER_INQUIRY")) {
+				String customer = null;
+				try {
+					customer = (String) op.getParameter("CUSTOMER");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int customer_id = Integer.parseInt(customer);
+				try {
+					stream.writeInt(ORDER_INQUIRY);
+					stream.writeInt(customer_id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_ADMIN_CHANGE")) {
+				int id = 0;
+				try {
+					id = (Integer) op.getParameter("ITEM");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				try {
+					stream.writeInt(ADMIN_CHANGE);
+					stream.writeInt(id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_SHOPPING_CART")) {
+				boolean create = false;
+				int item_id = 0;
+				String cart_id = null;
+				try {
+					create = (Boolean) op.getParameter("CREATE");
+					item_id = (Integer) op.getParameter("ITEM");
+					cart_id = (String) op.getParameter("CART");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int id = getIDfromString(cart_id);
+				try {
+					stream.writeInt(SHOPPING_CART);
+					stream.writeInt(item_id);
+					stream.writeBoolean(create);
+					stream.writeInt(id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_BUY_REQUEST")) {
+				String id = null;
+				try {
+					id = (String) op.getParameter("CART");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int cart_id = getIDfromString(id);
+				try {
+					stream.writeInt(BUY_REQUEST);
+					stream.writeInt(cart_id);
+				} catch (final IOException e) {
+					//
+				}
+			} else if (method_name.equalsIgnoreCase("OP_BUY_CONFIRM")) {
+				String cart = null, custumer = null;
+				try {
+					cart = (String) op.getParameter("CART");
+					custumer = (String) op.getParameter("CUSTOMER");
+				} catch (final NoSuchFieldException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				final int cust_id = Integer.parseInt(custumer.trim());
+				final int process_id = getProcessId(cart);
+				final int cart_id = getIDfromString(cart);
+				try {
+					stream.writeInt(BUY_CONFIRM);
+					stream.writeInt(cust_id);
+					stream.writeInt(process_id);
+					stream.writeInt(cart_id);
+				} catch (final IOException e) {
+					//
+				}
+			}
+			lock.unlock();
+			// nextServerIndex++;
+			// nextServerIndex = nextServerIndex
+			// % BenchmarkExecutor.masterNServers;
+		}
 	}
 
 	@Override
@@ -545,7 +852,7 @@ public class Executor implements DatabaseExecutorInterface {
 		promotionalProcessing(it);
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private final void promotionalProcessing(final Item it) {
 		final String thumb1 = getItem(it.I_RELATED1).I_THUMBNAIL;
 		final String thumb2 = getItem(it.I_RELATED2).I_THUMBNAIL;
@@ -554,7 +861,7 @@ public class Executor implements DatabaseExecutorInterface {
 		final String thumb5 = getItem(it.I_RELATED5).I_THUMBNAIL;
 	}
 
-	private final void newProducts(final String subject) {
+	public final void newProducts(final String subject) {
 		// 2.12.3.1 Of the entire set of (I_ID, I_TITLE) pairs for items on the
 		// selected subject, sorted by descending I_PUB_DATE and ascending
 		// I_TITLE, the first 50 pairs (or less if the entire set contains less
@@ -590,23 +897,19 @@ public class Executor implements DatabaseExecutorInterface {
 				}
 			}
 		});
-		final List<Item> fiftyItems = new java.util.LinkedList<Item>();
 		int n = 0;
 		for (Item i : items) {
-			fiftyItems.add(i);
+			final String i_TITLE = i.I_TITLE;
+			final Author a = authors[i.I_A_ID];
+			final String a_FNAME = a.A_FNAME;
+			final String a_LNAME = a.A_LNAME;
 			n++;
 			if (n == 50)
 				break;
 		}
-		// StringBuilder sb = new StringBuilder();
-		// for (Item i : fiftyItems) {
-		// sb.append(i.I_PUB_DATE + ", " + i.I_TITLE + ", " + i.I_SUBJECT);
-		// sb.append("\n");
-		// }
-		// System.err.println(sb.toString());
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private final Date getPubDate(final Item item) {
 		return item.I_PUB_DATE;
 	}
@@ -704,7 +1007,7 @@ public class Executor implements DatabaseExecutorInterface {
 		productDetailAtomic(i);
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private final void productDetailAtomic(final Item i) {
 		final Date i_PUB_DATE = i.I_PUB_DATE;
 		final String i_IMAGE = i.I_IMAGE;
@@ -1057,7 +1360,7 @@ public class Executor implements DatabaseExecutorInterface {
 		final int cx_auth = xact.CX_AUTH_ID;
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private double getItemCost(final Item i) {
 		return i.I_COST;
 	}
@@ -1208,7 +1511,7 @@ public class Executor implements DatabaseExecutorInterface {
 		i.I_RELATED5 = i_related5;
 	}
 
-	@Atomic
+	@Atomic(metainf = "read-only")
 	private final void AdminChangeReadItem(final Item i) {
 		final double i_cost = i.I_COST;
 		final String i_image = i.I_IMAGE;
@@ -1548,20 +1851,6 @@ public class Executor implements DatabaseExecutorInterface {
 		// the table if needed
 		Address existing_addr = getAddress(new Filter<Address>() {
 			public boolean filter(Address obj) {
-				if (obj == null) {
-					System.err.println("obj null");
-				} else {
-					if (obj.ADDR_CITY == null)
-						System.err.println("obj.ADDR_CITY null");
-					if (obj.ADDR_STATE == null)
-						System.err.println("obj.ADDR_STATE null");
-					if (obj.ADDR_STREET1 == null)
-						System.err.println("obj.ADDR_STREET1 null");
-					if (obj.ADDR_STREET2 == null)
-						System.err.println("obj.ADDR_STREET2 null");
-					if (obj.ADDR_ZIP == null)
-						System.err.println("obj.ADDR_ZIP null");
-				}
 				return obj.ADDR_CITY.equals(address.ADDR_CITY)
 						&& obj.ADDR_CO_ID == address.ADDR_CO_ID
 						&& obj.ADDR_STATE.equals(address.ADDR_STATE)

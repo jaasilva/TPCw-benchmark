@@ -59,12 +59,12 @@ public class LastOrders {
 		return list;
 	}
 
-	@Atomic
+	@Atomic(metainf="read-only")
 	private final Node getNext(final Node n) {
 		return n.next;
 	}
 
-	@Atomic
+	@Atomic(metainf="read-only")
 	private final Node getHead() {
 		return head;
 	}

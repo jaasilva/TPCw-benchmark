@@ -104,7 +104,6 @@ public class BenchmarkMaster {
 //        Thread ensureEndThread = new Thread(end);
 //        ensureEndThread.start();
         BenchmarkMain.barrierStart.join();
-        Profiler.enabled = true;
         executor.run(new BenchmarkNodeID(PersonalClientID));
         System.out.println("[INFO:]SLAVE ENDED");
         try {
@@ -147,8 +146,8 @@ public class BenchmarkMaster {
                         new InputStreamReader(
                                 cs.getInputStream()));
             } catch (IOException e) {
-            	System.out.println("Failed to conenct to "+host+":"+port);
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            	System.out.println("Failed to conenct to "+host+":"+port);
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             } while (!success);
         }

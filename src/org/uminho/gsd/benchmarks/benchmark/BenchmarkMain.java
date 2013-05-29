@@ -47,11 +47,12 @@ public class BenchmarkMain {
 
 	public static double distribution_factor = -1;
 	public static long thinkTime = -1;
+	public static int duration = 0;
 
 	private BenchmarkExecutor executor;
 
 	private String populatorClass;
-	private Class worload;
+	public static Class worload;
 	private Class databaseExecutor;
 
 	private AbstractBenchmarkPopulator populator;
@@ -61,12 +62,16 @@ public class BenchmarkMain {
 	// Files
 	private String populator_conf;
 	private String executor_conf;
-	private String workload_conf;
+	public static String workload_conf;
 
 	private static int SlavePort;
 
 	private int number_threads;
 	private int operation_number;
+
+	public static boolean slave = false;
+	public static boolean master = false;
+	public static boolean generator = false;
 
 	private Map<String, Object> benchmarkExecutorSlaves;
 
@@ -75,8 +80,6 @@ public class BenchmarkMain {
 		boolean populate = false;// Populate
 		boolean cleanDB = false; // Full clean
 		boolean cleanFB = false; // Clean for benchmark execution
-		boolean slave = false;
-		boolean master = false;
 		boolean ocp = false; // only clean and populate
 
 		String workload_alias = "";
@@ -182,6 +185,23 @@ public class BenchmarkMain {
 				}
 			}
 
+			else if (arg.equalsIgnoreCase("-duration")) {
+				if ((i + 1) != args.length) {
+					try {
+						duration = Integer.parseInt(args[i + 1].trim());
+					} catch (Exception e) {
+						System.out
+								.println("[ERROR:] An error occurred when parsing the think time");
+						return;
+					}
+					i++;
+				} else {
+					System.out
+							.println("[ERROR:] The think time option doesn't contain the associated parameter");
+					return;
+				}
+			}
+
 			else if (arg.equalsIgnoreCase("-cb")) {
 				cleanFB = true;
 			} else if (arg.equalsIgnoreCase("-p")) {
@@ -248,13 +268,17 @@ public class BenchmarkMain {
 			}
 		}
 
+		generator = !master && !slave;
+
 		new BenchmarkMain(master, slave, cleanDB, cleanFB, populate, ocp,
 				workload_alias, database_alias, num_thread, num_operations,
 				distributionFactor);
-		Profiler.enabled = false;
-		Profiler.print();
-		barrierEnd.join();
-		TribuDSTM.close();
+		if (!generator) {
+			Profiler.enabled = false;
+			Profiler.print();
+			barrierEnd.join();
+			TribuDSTM.close();
+		}
 	}
 
 	public BenchmarkMain(boolean master, boolean slave, boolean cleanDB,
@@ -285,6 +309,8 @@ public class BenchmarkMain {
 	static Barrier barrierPop;
 	@Bootstrap(id = 1003)
 	static Barrier barrierStart;
+	@Bootstrap(id = 1004)
+	public static Barrier barrierGenerator;
 
 	@Atomic
 	static final void initBarrier() {
@@ -300,6 +326,9 @@ public class BenchmarkMain {
 		if (barrierStart == null) {
 			barrierStart = new Barrier(Integer.getInteger("tribu.replicas"));
 		}
+		if (barrierGenerator == null) {
+			barrierGenerator = new Barrier(Integer.getInteger("tribu.replicas"));
+		}
 	}
 
 	public void run(boolean master, boolean slave, boolean cleanDB,
@@ -314,10 +343,14 @@ public class BenchmarkMain {
 				.newInstance(executor.getDatabaseInterface(), populator_conf);
 		// }
 
-		initBarrier();
-		DatabaseExecutorInterface databaseClient = executor
-				.getDatabaseInterface().getDatabaseClient();
-		barrierBegin.join();
+		DatabaseExecutorInterface databaseClient = null;
+		if (!generator) {
+			initBarrier();
+			databaseClient = executor.getDatabaseInterface()
+					.getDatabaseClient(); // FIXME por causa dos fields
+											// estáticos
+			barrierBegin.join();
+		}
 
 		if (slave) {
 			barrierPop.join();
@@ -368,7 +401,9 @@ public class BenchmarkMain {
 				executor.run(new BenchmarkNodeID(1));
 				executor.consolidate();
 			}
-			databaseClient.hashCode();
+			if (!generator) {
+				databaseClient.hashCode();
+			}
 		}
 	}
 
