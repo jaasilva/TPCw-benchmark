@@ -42,7 +42,7 @@ public class HashMap<K, V> {
 		int initialHash = -1;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].getKey().equals(key))) {
+						&& !table[hash].key.equals(key))) {
 			if (initialHash == -1)
 				initialHash = hash;
 			hash = (hash + 1) % table.length;
@@ -50,7 +50,7 @@ public class HashMap<K, V> {
 		if (table[hash] == null || hash == initialHash)
 			return null;
 		else
-			return table[hash].getValue();
+			return table[hash].value;
 	}
 	
 	public boolean containsKey(K key) {
@@ -64,7 +64,7 @@ public class HashMap<K, V> {
 		boolean result = true;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].getKey().equals(key))) {
+						&& !table[hash].key.equals(key))) {
 			if (initialHash == -1)
 				initialHash = hash;
 			if (table[hash] == DELETED_ENTRY)
@@ -77,8 +77,8 @@ public class HashMap<K, V> {
 			size++;
 		} else if (initialHash != hash)
 			if (table[hash] != DELETED_ENTRY && table[hash] != null
-					&& table[hash].getKey().equals(key)) {
-				table[hash].setValue(value);
+					&& table[hash].key.equals(key)) {
+				table[hash].value = value;
 				result = false;
 			} else {
 				table[hash] = new HashEntry(key, value);
@@ -97,7 +97,7 @@ public class HashMap<K, V> {
 		size = 0;
 		for (int i = 0; i < oldTable.length; i++)
 			if (oldTable[i] != null && oldTable[i] != DELETED_ENTRY)
-				put(oldTable[i].getKey(), oldTable[i].getValue());
+				put(oldTable[i].key, oldTable[i].value);
 	}
 
 	public void remove(K key) {
@@ -105,7 +105,7 @@ public class HashMap<K, V> {
 		int initialHash = -1;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].getKey().equals(key))) {
+						&& !table[hash].key.equals(key))) {
 			if (initialHash == -1)
 				initialHash = hash;
 			hash = (hash + 1) % table.length;
@@ -114,6 +114,18 @@ public class HashMap<K, V> {
 			table[hash] = DELETED_ENTRY;
 			size--;
 		}
+	}
+	
+	public java.util.List<V> getValues() {
+		final int length = table.length;
+		final java.util.List<V> values = new java.util.LinkedList<V>();
+		for (int i = 0; i < length; i++) {
+			final HashEntry<K, V> hashEntry = table[i];
+			if (hashEntry != DELETED_ENTRY && hashEntry != null) {
+				values.add(hashEntry.value);
+			}
+		}
+		return values;
 	}
 
 	static class HashEntry<K, V> {
@@ -125,16 +137,16 @@ public class HashMap<K, V> {
 			this.value = value;
 		}
 
-		public V getValue() {
-			return value;
-		}
-
-		public void setValue(V value) {
-			this.value = value;
-		}
-
-		public K getKey() {
-			return key;
-		}
+//		public V getValue() {
+//			return value;
+//		}
+//
+//		public void setValue(V value) {
+//			this.value = value;
+//		}
+//
+//		public K getKey() {
+//			return key;
+//		}
 	}
 }

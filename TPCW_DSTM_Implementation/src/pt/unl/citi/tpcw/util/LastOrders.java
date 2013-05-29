@@ -2,6 +2,8 @@ package pt.unl.citi.tpcw.util;
 
 import java.util.List;
 
+import org.deuce.Atomic;
+
 import pt.unl.citi.tpcw.entities.Order;
 
 public class LastOrders {
@@ -23,7 +25,7 @@ public class LastOrders {
 
 	private Node head;
 	private Node tail;
-	private static final int MAX_ORDERS = 3333;
+	private static final int MAX_ORDERS = 10000;
 	private int orders;
 
 	public LastOrders() {
@@ -47,11 +49,23 @@ public class LastOrders {
 		}
 	}
 	
-	public final List<Order> getList() {
+	public final List<Order> getList(final int until) {
 		final List<Order> list = new java.util.LinkedList<Order>();
-		for (Node n = head; n != null; n = n.next) {
-			((java.util.LinkedList<Order>) list).addFirst(n.order);
+		Node n = getHead();
+		for (int i = 0; n != null && i < until; i++) {
+			list.add(n.order);
+			n = getNext(n);
 		}
 		return list;
+	}
+
+	@Atomic
+	private final Node getNext(final Node n) {
+		return n.next;
+	}
+
+	@Atomic
+	private final Node getHead() {
+		return head;
 	}
 }
