@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 
 import org.deuce.Atomic;
@@ -106,7 +107,8 @@ public class Executor implements DatabaseExecutorInterface {
 	// static RBTree shopCarts;
 	static HashMap<Integer, ShoppingCart> shopCarts;
 
-	public Executor(TPM_counter tpm_counter) {
+	public Executor(int client_number, TPM_counter tpm_counter) {
+		this.one_node_clients = client_number;
 		this.counter = tpm_counter;
 	}
 
@@ -338,7 +340,7 @@ public class Executor implements DatabaseExecutorInterface {
 		if (!b)
 			throw new Error("Order(" + key + ") already exists.");
 		lastOrders.prepend(val);
-		lastCustomerOrder.put(val.O_C_ID, val);
+		lastCustomerOrder.put(val.getO_C_ID(), val);
 	}
 
 	// @Atomic
@@ -348,10 +350,10 @@ public class Executor implements DatabaseExecutorInterface {
 
 	@Atomic
 	public static final void insertOrderLine(int key, OrderLine val) {
-		final Order order = (Order) orders.find(val.OL_O_ID);
+		final Order order = (Order) orders.find(val.getOL_O_ID());
 		// final Order order = orders.get(val.OL_O_ID);
 		// order.orderLines.insert(key, val);
-		order.orderLines.add(val);
+		order.getOrderLines().add(val);
 	}
 
 	// @Atomic
@@ -422,7 +424,7 @@ public class Executor implements DatabaseExecutorInterface {
 	int one_node_clients;
 
 	int addr_aux_id = 0;
-	public int num_operations = 0;
+	public int num_operations;
 	public ResultHandler client_result_handler;
 	public TPM_counter counter;
 	/**
@@ -430,18 +432,19 @@ public class Executor implements DatabaseExecutorInterface {
 	 */
 	private long simulatedDelay;
 
+	public static AtomicInteger operations = new AtomicInteger(0);
+
 	@Override
 	public void start(WorkloadGeneratorInterface workload,
 			BenchmarkNodeID nodeId, int operation_number, ResultHandler handler) {
 		// TODO Auto-generated method stub
 		this.node_id = nodeId.getId();
 		client_result_handler = handler;
-		// this.num_operations = operation_number;
-		this.num_operations = 0;
+		this.num_operations = operation_number;
 		int r = random.nextInt(100);
 
 		if (BenchmarkMain.generator) {
-			workloadGenerator(operation_number);
+			workloadGenerator();
 		} else { // master or slave
 			workloadExecutor();
 		}
@@ -538,19 +541,29 @@ public class Executor implements DatabaseExecutorInterface {
 		}
 		final long g_end_time = System.nanoTime();
 
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		double g_time = g_end_time - g_init_time; // in ns
+		System.out.printf("  Test duration (ms) = %.0f\n", g_time);
+		System.out.printf("  Nb iterations      = %d\n", operations.get());
 		g_time = g_time / 1000 / 1000 / 1000; // in s
-		final double tps = num_operations / g_time;
-		client_result_handler.logResult("TPS", (long) tps);
+		final double ops = operations.get() / g_time;
+		client_result_handler.logResult("OPS", (long) ops);
+		client_result_handler.logResult("Duration", (long) g_time);
 	}
 
-	private void workloadGenerator(int index) {
-		// int nextServerIndex = 0;
-		final ObjectOutputStream stream = BenchmarkExecutor.masterDataStreams[index];
-		final WorkloadGeneratorInterface workload = BenchmarkExecutor.masterWorkloads[index];
-		final Lock lock = BenchmarkExecutor.masterLocks[index];
+	private void workloadGenerator() {
+		int index = 0;
 		while (!BenchmarkExecutor.stop) {
 			final Operation op;
+			final ObjectOutputStream stream = BenchmarkExecutor.masterDataStreams[index];
+			final WorkloadGeneratorInterface workload = BenchmarkExecutor.masterWorkloads[index];
+			final Lock lock = BenchmarkExecutor.masterLocks[index];
 			while (!lock.tryLock())
 				;
 			op = workload.getNextOperation();
@@ -761,9 +774,8 @@ public class Executor implements DatabaseExecutorInterface {
 				}
 			}
 			lock.unlock();
-			// nextServerIndex++;
-			// nextServerIndex = nextServerIndex
-			// % BenchmarkExecutor.masterNServers;
+			index++;
+			index = index % BenchmarkExecutor.masterNServers;
 		}
 	}
 
@@ -901,8 +913,8 @@ public class Executor implements DatabaseExecutorInterface {
 		for (Item i : items) {
 			final String i_TITLE = i.I_TITLE;
 			final Author a = authors[i.I_A_ID];
-			final String a_FNAME = a.A_FNAME;
-			final String a_LNAME = a.A_LNAME;
+			final String a_FNAME = a.getA_FNAME();
+			final String a_LNAME = a.getA_LNAME();
 			n++;
 			if (n == 50)
 				break;
@@ -955,9 +967,9 @@ public class Executor implements DatabaseExecutorInterface {
 		// }
 		final Map<Integer, Integer> id2qty = new java.util.TreeMap<Integer, Integer>();
 		for (Order o : orders) {
-			for (OrderLine ol : o.orderLines) {
-				final int id = ol.OL_I_ID;
-				final int qty = ol.OL_QTY;
+			for (OrderLine ol : o.getOrderLines()) {
+				final int id = ol.getOL_I_ID();
+				final int qty = ol.getOL_QTY();
 				final Integer v = id2qty.get(id);
 				id2qty.put(id, v == null ? qty : v + qty);
 			}
@@ -990,8 +1002,8 @@ public class Executor implements DatabaseExecutorInterface {
 		final Item i = getItem(i_id);
 		final String i_TITLE = i.I_TITLE;
 		final Author a = getAuthor(i.I_A_ID);
-		final String a_FNAME = a.A_FNAME;
-		final String a_LNAME = a.A_LNAME;
+		final String a_FNAME = a.getA_FNAME();
+		final String a_LNAME = a.getA_LNAME();
 		// I_PUB_DATE
 		final String i_PUBLISHER = i.I_PUBLISHER;
 		final String i_SUBJECT = i.I_SUBJECT;
@@ -1110,8 +1122,8 @@ public class Executor implements DatabaseExecutorInterface {
 		for (final Item i : items) {
 			final String i_TITLE = i.I_TITLE;
 			final Author a = authors[i.I_A_ID];
-			final String a_FNAME = a.A_FNAME;
-			final String a_LNAME = a.A_LNAME;
+			final String a_FNAME = a.getA_FNAME();
+			final String a_LNAME = a.getA_LNAME();
 			n++;
 			if (n == 50)
 				break;
@@ -1161,12 +1173,12 @@ public class Executor implements DatabaseExecutorInterface {
 		final String c_fname = customer.C_FNAME;
 		final String c_lname = customer.C_LNAME;
 		final Address address = getAddress(customer.C_ADDR_ID);
-		final String a_street1 = address.ADDR_STREET1;
-		final String a_street2 = address.ADDR_STREET2;
-		final String a_city = address.ADDR_CITY;
-		final String a_state = address.ADDR_STATE;
-		final String a_zip = address.ADDR_ZIP;
-		final String co_name = getCountry(address.ADDR_CO_ID).CO_NAME;
+		final String a_street1 = address.getADDR_STREET1();
+		final String a_street2 = address.getADDR_STREET2();
+		final String a_city = address.getADDR_CITY();
+		final String a_state = address.getADDR_STATE();
+		final String a_zip = address.getADDR_ZIP();
+		final String co_name = getCountry(address.getADDR_CO_ID()).getCO_NAME();
 		final String c_phone = customer.C_PHONE;
 		final String c_email = customer.C_EMAIL;
 		final Date c_bd = customer.C_BIRTHDATE;
@@ -1307,57 +1319,57 @@ public class Executor implements DatabaseExecutorInterface {
 		if (last_order == null)
 			// client never ordered
 			return;
-		CCXact cc_xact = getCCXact(last_order.O_ID);
+		CCXact cc_xact = getCCXact(last_order.getO_ID());
 		OrderInquiryInfo(customer, last_order, cc_xact);
 	}
 
-	@Atomic
+//	@Atomic
 	private final Date getDate(Order order) {
-		return order.O_DATE;
+		return order.getO_DATE();
 	}
 
 	// @Atomic
 	private final void OrderInquiryInfo(final int c_ID, final Order last_order,
 			final CCXact xact) {
 		final Customer c = getCustomer(c_ID);
-		final int o_id = last_order.O_ID;
+		final int o_id = last_order.getO_ID();
 		final String c_fname = c.C_FNAME;
 		final String c_lname = c.C_LNAME;
 		final String c_phone = c.C_PHONE;
 		final String c_email = c.C_EMAIL;
-		final Date o_date = last_order.O_DATE;
-		final double o_sub_total = last_order.O_SUB_TOTAL;
-		final double o_tax = last_order.O_TAX;
-		final double o_total = last_order.O_TOTAL;
-		final String o_ship_type = last_order.O_SHIP_TYPE;
-		final Date o_ship_date = last_order.O_SHIP_DATE;
-		final String o_status = last_order.O_STATUS;
-		final Address bill_a = getAddress(last_order.O_BILL_ADDR_ID);
-		final String bill_a_street1 = bill_a.ADDR_STREET1;
-		final String bill_a_street2 = bill_a.ADDR_STREET2;
-		final String bill_a_city = bill_a.ADDR_CITY;
-		final String bill_a_state = bill_a.ADDR_STATE;
-		final String bill_a_zip = bill_a.ADDR_ZIP;
-		final String bill_co_name = getCountry(bill_a.ADDR_CO_ID).CO_NAME;
-		final Address ship_a = getAddress(last_order.O_SHIP_ADDR_ID);
-		final String ship_a_street1 = ship_a.ADDR_STREET1;
-		final String ship_a_street2 = ship_a.ADDR_STREET2;
-		final String ship_a_city = ship_a.ADDR_CITY;
-		final String ship_a_state = ship_a.ADDR_STATE;
-		final String ship_a_zip = ship_a.ADDR_ZIP;
-		final String ship_co_name = getCountry(ship_a.ADDR_CO_ID).CO_NAME;
-		for (OrderLine ol : last_order.orderLines) {
-			final Item i = getItem(ol.OL_I_ID);
+		final Date o_date = last_order.getO_DATE();
+		final double o_sub_total = last_order.getO_SUB_TOTAL();
+		final double o_tax = last_order.getO_TAX();
+		final double o_total = last_order.getO_TOTAL();
+		final String o_ship_type = last_order.getO_SHIP_TYPE();
+		final Date o_ship_date = last_order.getO_SHIP_DATE();
+		final String o_status = last_order.getO_STATUS();
+		final Address bill_a = getAddress(last_order.getO_BILL_ADDR_ID());
+		final String bill_a_street1 = bill_a.getADDR_STREET1();
+		final String bill_a_street2 = bill_a.getADDR_STREET2();
+		final String bill_a_city = bill_a.getADDR_CITY();
+		final String bill_a_state = bill_a.getADDR_STATE();
+		final String bill_a_zip = bill_a.getADDR_ZIP();
+		final String bill_co_name = getCountry(bill_a.getADDR_CO_ID()).getCO_NAME();
+		final Address ship_a = getAddress(last_order.getO_SHIP_ADDR_ID());
+		final String ship_a_street1 = ship_a.getADDR_STREET1();
+		final String ship_a_street2 = ship_a.getADDR_STREET2();
+		final String ship_a_city = ship_a.getADDR_CITY();
+		final String ship_a_state = ship_a.getADDR_STATE();
+		final String ship_a_zip = ship_a.getADDR_ZIP();
+		final String ship_co_name = getCountry(ship_a.getADDR_CO_ID()).getCO_NAME();
+		for (OrderLine ol : last_order.getOrderLines()) {
+			final Item i = getItem(ol.getOL_I_ID());
 			final int i_id = i.I_ID;
 			final String i_title = i.I_TITLE;
 			final String i_pub = i.I_PUBLISHER;
 			final double i_cost = getItemCost(i);
-			final int ol_qty = ol.OL_QTY;
-			final double ol_disc = ol.OL_DISCOUNT;
-			final String ol_com = ol.OL_COMMENT;
+			final int ol_qty = ol.getOL_QTY();
+			final double ol_disc = ol.getOL_DISCOUNT();
+			final String ol_com = ol.getOL_COMMENT();
 		}
-		final String cx_type = xact.CX_TYPE;
-		final int cx_auth = xact.CX_AUTH_ID;
+		final String cx_type = xact.getCX_TYPE();
+		final int cx_auth = xact.getCX_AUTH_ID();
 	}
 
 	@Atomic(metainf = "read-only")
@@ -1378,8 +1390,8 @@ public class Executor implements DatabaseExecutorInterface {
 		final double i_srp = i.I_SRP;
 		final String i_title = i.I_TITLE;
 		final Author a = getAuthor(i.I_A_ID);
-		final String a_fname = a.A_FNAME;
-		final String a_lname = a.A_LNAME;
+		final String a_fname = a.getA_FNAME();
+		final String a_lname = a.getA_LNAME();
 		AdminChangeReadItem(i);
 		// 2.16.3.2 The SUT updates the targeted item with:
 		// (I_COST = I_NEW_COST),
@@ -1430,24 +1442,24 @@ public class Executor implements DatabaseExecutorInterface {
 		final Set<Integer> customers = new java.util.HashSet<Integer>();
 		for (Order o : last_orders) {
 			boolean ordered = false;
-			for (OrderLine ol : o.orderLines) {
-				if (ol.OL_I_ID == item_id) {
+			for (OrderLine ol : o.getOrderLines()) {
+				if (ol.getOL_I_ID() == item_id) {
 					ordered = true;
 					break;
 				}
 			}
 			if (ordered) {
-				customers.add(o.O_C_ID);
+				customers.add(o.getO_C_ID());
 			}
 		}
 		final Map<Integer, Integer> id2qty = new java.util.TreeMap<Integer, Integer>();
 		for (Order o : last_orders) {
-			if (customers.contains(o.O_C_ID)) {
-				for (OrderLine ol : o.orderLines) {
-					if (ol.OL_I_ID == item_id)
+			if (customers.contains(o.getO_C_ID())) {
+				for (OrderLine ol : o.getOrderLines()) {
+					if (ol.getOL_I_ID() == item_id)
 						continue;
-					final int id = ol.OL_I_ID;
-					final int qty = ol.OL_QTY;
+					final int id = ol.getOL_I_ID();
+					final int qty = ol.getOL_QTY();
 					final Integer v = id2qty.get(id);
 					id2qty.put(id, v == null ? qty : v + qty);
 				}
@@ -1601,7 +1613,7 @@ public class Executor implements DatabaseExecutorInterface {
 			addr_aux_id++;
 			Address address = generateAddress(id);
 			address = enterAddress(address);
-			ship_addr_id = address.ADDR_ID;
+			ship_addr_id = address.getADDR_ID();
 		} else {
 			ship_addr_id = c.C_ADDR_ID;
 		}
@@ -1689,7 +1701,7 @@ public class Executor implements DatabaseExecutorInterface {
 			final String oL_COMMENT = BenchmarkUtil.getRandomAString(20, 100);
 			final OrderLine ol = new OrderLine(oL_ID, oL_O_ID, oL_I_ID, oL_QTY,
 					oL_DISCOUNT, oL_COMMENT);
-			order.orderLines.add(ol);
+			order.getOrderLines().add(ol);
 			final Item i = getItem(oL_I_ID);
 			if (i.I_STOCK > oL_QTY + 10) {
 				i.I_STOCK -= oL_QTY;
@@ -1815,7 +1827,7 @@ public class Executor implements DatabaseExecutorInterface {
 				.getTime();
 		final String c_DATA = BenchmarkUtil.getRandomAString(100, 500);
 		return new Customer(c_id, c_UNAME, c_PASSWD, c_FNAME, c_LNAME,
-				c_ADDR.ADDR_ID, Integer.toString(c_PHONE), c_EMAIL, c_SINCE,
+				c_ADDR.getADDR_ID(), Integer.toString(c_PHONE), c_EMAIL, c_SINCE,
 				c_LAST_VISIT, c_LOGIN, c_EXPIRATION, c_DISCOUNT, c_BALANCE,
 				c_YTD_PMT, c_BIRTHDATE, c_DATA);
 	}
@@ -1851,16 +1863,16 @@ public class Executor implements DatabaseExecutorInterface {
 		// the table if needed
 		Address existing_addr = getAddress(new Filter<Address>() {
 			public boolean filter(Address obj) {
-				return obj.ADDR_CITY.equals(address.ADDR_CITY)
-						&& obj.ADDR_CO_ID == address.ADDR_CO_ID
-						&& obj.ADDR_STATE.equals(address.ADDR_STATE)
-						&& obj.ADDR_STREET1.equals(address.ADDR_STREET1)
-						&& obj.ADDR_STREET2.equals(address.ADDR_STREET2)
-						&& obj.ADDR_ZIP.equals(address.ADDR_ZIP);
+				return obj.getADDR_CITY().equals(address.getADDR_CITY())
+						&& obj.getADDR_CO_ID() == address.getADDR_CO_ID()
+						&& obj.getADDR_STATE().equals(address.getADDR_STATE())
+						&& obj.getADDR_STREET1().equals(address.getADDR_STREET1())
+						&& obj.getADDR_STREET2().equals(address.getADDR_STREET2())
+						&& obj.getADDR_ZIP().equals(address.getADDR_ZIP());
 			}
 		});
 		if (existing_addr == null) {
-			insertAddress(address.ADDR_ID, address);
+			insertAddress(address.getADDR_ID(), address);
 			return address;
 		} else {
 			return existing_addr;
@@ -1903,8 +1915,8 @@ public class Executor implements DatabaseExecutorInterface {
 			List<Author> all = getAuthors();
 			for (Author a : all) {
 				TreeMap<String, Object> values = new TreeMap<String, Object>();
-				values.put("A_LNAME", a.A_LNAME);
-				result.put(Integer.toString(a.A_ID), values);
+				values.put("A_LNAME", a.getA_LNAME());
+				result.put(Integer.toString(a.getA_ID()), values);
 			}
 		} else if (table.equalsIgnoreCase("item")) {
 			List<Item> all = getItems();
@@ -1939,7 +1951,7 @@ public class Executor implements DatabaseExecutorInterface {
 			// author index
 			System.out.print("\r");
 			System.out.print("Indexing item " + val.I_ID + " (author)");
-			final String lname = getAuthor(val.I_A_ID).A_LNAME;
+			final String lname = getAuthor(val.I_A_ID).getA_LNAME();
 			if (!itemsByAuthorLastName.containsKey(lname)) {
 				list = new java.util.LinkedList<Item>();
 				itemsByAuthorLastName.put(lname, list);

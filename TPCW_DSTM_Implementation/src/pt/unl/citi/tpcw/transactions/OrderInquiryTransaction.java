@@ -23,7 +23,7 @@ public class OrderInquiryTransaction extends Transaction<Void> {
 		e.client_result_handler.logResult("OP_ORDER_INQUIRY",
 				((end_time / 1000 / 1000) - (init_time / 1000 / 1000)));
 		e.counter.increment();
-		e.num_operations++;
+		Executor.operations.incrementAndGet();
 		return null;
 	}
 

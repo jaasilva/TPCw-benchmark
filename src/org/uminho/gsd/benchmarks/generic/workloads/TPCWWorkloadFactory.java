@@ -19,6 +19,7 @@
 
 package org.uminho.gsd.benchmarks.generic.workloads;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
@@ -225,9 +226,12 @@ public class TPCWWorkloadFactory extends AbstractWorkloadGeneratorFactory {
 		if (BenchmarkMain.master) {
 			boolean success = false;
 			do {
-				s = new Socket("node9", 12345);
-				ostream = new ObjectOutputStream(s.getOutputStream());
-				success = true;
+				try {
+					s = new Socket("node9", 12345);
+					ostream = new ObjectOutputStream(s.getOutputStream());
+					success = true;
+				} catch (IOException e) {
+				}
 			} while (!success);
 			ostream.writeObject(authorNames);
 		}
@@ -294,15 +298,15 @@ public class TPCWWorkloadFactory extends AbstractWorkloadGeneratorFactory {
 
 	@Override
 	public WorkloadGeneratorInterface getClient() {
-//		if (client_number == 0) {
-//			progressBar.printProcess(1500);
-//		}
+		// if (client_number == 0) {
+		// progressBar.printProcess(1500);
+		// }
 
 		TPCWWorkloadGeneration client = new TPCWWorkloadGeneration(
 				globalResultHandler, item_titles, author_names,
 				workload_values, distribution, this.nodeID, client_number,
 				progressBar);
-//		client_number++;
+		// client_number++;
 		return client;
 
 	}

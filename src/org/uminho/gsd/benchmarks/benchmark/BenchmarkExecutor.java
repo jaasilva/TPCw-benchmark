@@ -163,8 +163,7 @@ public class BenchmarkExecutor {
 				System.err.print("Waiting for generator... ");
 				ServerSocket ss = new ServerSocket(54321);
 				socket = ss.accept();
-				stream = new ObjectInputStream(
-						socket.getInputStream());
+				stream = new ObjectInputStream(socket.getInputStream());
 				System.err.println("done.");
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -191,7 +190,7 @@ public class BenchmarkExecutor {
 			// sequential
 			Runnable clientRunnable = new Runnable() {
 				public void run() {
-					executor.start(workloadGenerator, nodeId, BenchmarkMain.generator ? index % masterNServers : num_operations,
+					executor.start(workloadGenerator, nodeId, num_operations,
 							resultHandler);
 					synchronizationBarrier.countDown();
 				}

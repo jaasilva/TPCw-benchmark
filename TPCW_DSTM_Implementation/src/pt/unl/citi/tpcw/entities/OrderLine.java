@@ -20,17 +20,19 @@ package pt.unl.citi.tpcw.entities;
 
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
+@ExcludeTM
 public final class OrderLine implements Entity {
-	public final int OL_ID;
-	public final int OL_O_ID;
+	private final int OL_ID;
+	private final int OL_O_ID;
 	// public final Order OL_O;
-	public final int OL_I_ID;
+	private final int OL_I_ID;
 	// public final Item OL_I;
-	public final int OL_QTY;
-	public final double OL_DISCOUNT;
-	public final String OL_COMMENT;
+	private final int OL_QTY;
+	private final double OL_DISCOUNT;
+	private final String OL_COMMENT;
 
 	public OrderLine(int oL_ID, int oL_O_ID, int oL_I_ID, int oL_QTY,
 			double oL_DISCOUNT, String oL_COMMENT) {
@@ -51,6 +53,30 @@ public final class OrderLine implements Entity {
 
 	public String getKeyName() {
 		return "OL_ID";
+	}
+
+	public final int getOL_ID() {
+		return OL_ID;
+	}
+
+	public final int getOL_O_ID() {
+		return OL_O_ID;
+	}
+
+	public final int getOL_I_ID() {
+		return OL_I_ID;
+	}
+
+	public final int getOL_QTY() {
+		return OL_QTY;
+	}
+
+	public final double getOL_DISCOUNT() {
+		return OL_DISCOUNT;
+	}
+
+	public final String getOL_COMMENT() {
+		return OL_COMMENT;
 	}
 
 }

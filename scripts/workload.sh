@@ -21,6 +21,6 @@ echo "#####"
 java -Xmx8g -Xms8g -cp $CLASSPATH \
     -Dtribu.replicas=$REPLICAS \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -w browsing -t $THREADS -o 8192 -tt 0 -duration $DURATION
+        -d dstm -w browsing -t $THREADS -o 262144 -tt 0 -duration $DURATION
 
 # vim:set ts=4 sw=4 et:

@@ -23,7 +23,7 @@ public class BuyRequestTransaction extends Transaction<Void> {
 		e.client_result_handler.logResult("OP_BUY_REQUEST",
 				((end_time / 1000 / 1000) - (init_time / 1000 / 1000)));
 		e.counter.increment();
-		e.num_operations++;
+		Executor.operations.incrementAndGet();
 		return null;
 	}
 

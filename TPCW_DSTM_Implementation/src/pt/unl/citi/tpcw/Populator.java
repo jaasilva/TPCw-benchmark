@@ -1194,7 +1194,7 @@ public class Populator extends AbstractBenchmarkPopulator {
 					oL_ID = i;
 
 					oL_I_ID = items.get(rand.nextInt(items.size()));
-					oL_O_ID = order.O_ID;
+					oL_O_ID = order.getO_ID();
 
 					oL_QTY = rand.nextInt(4) + 1;
 
@@ -1218,7 +1218,7 @@ public class Populator extends AbstractBenchmarkPopulator {
 				String cX_CC_NAME;
 				Date cX_EXPIRY;
 
-				cX_O_ID = order.O_ID;
+				cX_O_ID = order.getO_ID();
 
 				cX_CC_NUM = BenchmarkUtil.getRandomNString(16);
 				int key = base + z;
@@ -1252,8 +1252,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 						countries.size() - 1));
 				// insert(country.getCo_id(), key, column_family, "CX_CO_ID",
 				// write_con);
-				double cX_XACT_AMT = order.O_TOTAL;
-				Date cX_XACT_DATE = order.O_SHIP_DATE;
+				double cX_XACT_AMT = order.getO_TOTAL();
+				Date cX_XACT_DATE = order.getO_SHIP_DATE();
 
 				CCXact ccXact = new CCXact(cX_O_ID, cX_TYPE, cX_CC_NUM,
 						cX_CC_NAME, cX_EXPIRY, cX_AUTH_ID, cX_XACT_AMT,

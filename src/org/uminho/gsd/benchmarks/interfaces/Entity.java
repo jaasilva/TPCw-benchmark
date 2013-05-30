@@ -26,7 +26,7 @@ package org.uminho.gsd.benchmarks.interfaces;
 
 import java.util.TreeMap;
 
-public interface Entity {
+public interface Entity extends java.io.Serializable {
 
     public String getKeyName();
 

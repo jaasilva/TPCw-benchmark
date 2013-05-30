@@ -20,16 +20,18 @@ package pt.unl.citi.tpcw.entities;
 
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
+@ExcludeTM
 public final class Address implements Entity {
-	public final int ADDR_ID;
-	public final String ADDR_STREET1;
-	public final String ADDR_STREET2;
-	public final String ADDR_CITY;
-	public final String ADDR_STATE;
-	public final String ADDR_ZIP;
-	public final int ADDR_CO_ID;
+	private final int ADDR_ID;
+	private final String ADDR_STREET1;
+	private final String ADDR_STREET2;
+	private final String ADDR_CITY;
+	private final String ADDR_STATE;
+	private final String ADDR_ZIP;
+	private final int ADDR_CO_ID;
 	// public final Country ADDR_CO;
 
 	public Address(int aDDR_ID, String aDDR_STREET1, String aDDR_STREET2,
@@ -52,5 +54,33 @@ public final class Address implements Entity {
 
 	public String getKeyName() {
 		return "ADDR_ID";
+	}
+
+	public final int getADDR_ID() {
+		return ADDR_ID;
+	}
+
+	public final String getADDR_STREET1() {
+		return ADDR_STREET1;
+	}
+
+	public final String getADDR_STREET2() {
+		return ADDR_STREET2;
+	}
+
+	public final String getADDR_CITY() {
+		return ADDR_CITY;
+	}
+
+	public final String getADDR_STATE() {
+		return ADDR_STATE;
+	}
+
+	public final String getADDR_ZIP() {
+		return ADDR_ZIP;
+	}
+
+	public final int getADDR_CO_ID() {
+		return ADDR_CO_ID;
 	}
 }

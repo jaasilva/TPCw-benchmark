@@ -21,15 +21,17 @@ package pt.unl.citi.tpcw.entities;
 import java.util.Date;
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
+@ExcludeTM
 public final class Author implements Entity {
-	public final int A_ID;
-	public final String A_FNAME;
-	public final String A_LNAME;
-	public final String A_MNAME;
-	public final Date A_DOB;
-	public final String A_BIO;
+	private final int A_ID;
+	private final String A_FNAME;
+	private final String A_LNAME;
+	private final String A_MNAME;
+	private final Date A_DOB;
+	private final String A_BIO;
 
 	public Author(int a_ID, String a_FNAME, String a_LNAME, String a_MNAME,
 			Date a_DOB, String a_BIO) {
@@ -48,6 +50,30 @@ public final class Author implements Entity {
 
 	public String getKeyName() {
 		return "A_ID";
+	}
+
+	public final int getA_ID() {
+		return A_ID;
+	}
+
+	public final String getA_FNAME() {
+		return A_FNAME;
+	}
+
+	public final String getA_LNAME() {
+		return A_LNAME;
+	}
+
+	public final String getA_MNAME() {
+		return A_MNAME;
+	}
+
+	public final Date getA_DOB() {
+		return A_DOB;
+	}
+
+	public final String getA_BIO() {
+		return A_BIO;
 	}
 
 }

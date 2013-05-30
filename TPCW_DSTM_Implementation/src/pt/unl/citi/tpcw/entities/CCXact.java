@@ -21,18 +21,20 @@ package pt.unl.citi.tpcw.entities;
 import java.util.Date;
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
+@ExcludeTM
 public final class CCXact implements Entity {
-	public final int CX_O_ID;
-	public final String CX_TYPE;
-	public final int CX_CC_NUM;
-	public final String CX_CC_NAME;
-	public final Date CX_EXPIRY;
-	public final int CX_AUTH_ID;
-	public final double CX_XACT_AMT;
-	public final Date CX_XACT_DATE;
-	public final int CX_CO_ID;
+	private final int CX_O_ID;
+	private final String CX_TYPE;
+	private final int CX_CC_NUM;
+	private final String CX_CC_NAME;
+	private final Date CX_EXPIRY;
+	private final int CX_AUTH_ID;
+	private final double CX_XACT_AMT;
+	private final Date CX_XACT_DATE;
+	private final int CX_CO_ID;
 
 	// public final Country CX_CO;
 
@@ -58,5 +60,41 @@ public final class CCXact implements Entity {
 
 	public String getKeyName() {
 		return "CX_O_ID";
+	}
+
+	public final int getCX_O_ID() {
+		return CX_O_ID;
+	}
+
+	public final String getCX_TYPE() {
+		return CX_TYPE;
+	}
+
+	public final int getCX_CC_NUM() {
+		return CX_CC_NUM;
+	}
+
+	public final String getCX_CC_NAME() {
+		return CX_CC_NAME;
+	}
+
+	public final Date getCX_EXPIRY() {
+		return CX_EXPIRY;
+	}
+
+	public final int getCX_AUTH_ID() {
+		return CX_AUTH_ID;
+	}
+
+	public final double getCX_XACT_AMT() {
+		return CX_XACT_AMT;
+	}
+
+	public final Date getCX_XACT_DATE() {
+		return CX_XACT_DATE;
+	}
+
+	public final int getCX_CO_ID() {
+		return CX_CO_ID;
 	}
 }

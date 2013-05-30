@@ -20,7 +20,7 @@ public class ExecutorFactory extends AbstractDatabaseExecutorFactory {
 	public DatabaseExecutorInterface getDatabaseClient() {
 		TPM_counter tpm_counter = new TPM_counter();
 		registerCounter(tpm_counter);
-		return new Executor(tpm_counter);
+		return new Executor(client_number, tpm_counter);
 	}
 	
 	private void init() {

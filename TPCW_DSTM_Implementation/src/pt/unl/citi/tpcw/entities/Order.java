@@ -27,25 +27,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
+@ExcludeTM
 public final class Order implements Entity {
-	public final int O_ID;
-	public final int O_C_ID;
+	private final int O_ID;
+	private final int O_C_ID;
 	// public final Customer O_C;
-	public final Date O_DATE; // date and time
-	public final double O_SUB_TOTAL;
-	public final double O_TAX;
-	public final double O_TOTAL;
-	public final String O_SHIP_TYPE;
-	public final Date O_SHIP_DATE; // date and time
-	public final int O_BILL_ADDR_ID;
+	private final Date O_DATE; // date and time
+	private final double O_SUB_TOTAL;
+	private final double O_TAX;
+	private final double O_TOTAL;
+	private final String O_SHIP_TYPE;
+	private final Date O_SHIP_DATE; // date and time
+	private final int O_BILL_ADDR_ID;
 	// public final Address O_BILL_ADDR;
-	public final int O_SHIP_ADDR_ID;
+	private final int O_SHIP_ADDR_ID;
 	// public final Address O_SHIP_ADDR;
-	public final String O_STATUS;
-//	public RBTree orderLines;
-	public final List<OrderLine> orderLines;
+	private final String O_STATUS;
+	// public RBTree orderLines;
+	private final List<OrderLine> orderLines;
 
 	public Order(int o_ID, int o_C_ID, Date o_DATE, double o_SUB_TOTAL,
 			double o_TAX, double o_TOTAL, String o_SHIP_TYPE, Date o_SHIP_DATE,
@@ -65,7 +67,7 @@ public final class Order implements Entity {
 		// O_SHIP_ADDR = o_SHIP_ADDR;
 		O_SHIP_ADDR_ID = o_SHIP_ADDR_ID;
 		O_STATUS = o_STATUS;
-//		orderLines = new RBTree();
+		// orderLines = new RBTree();
 		orderLines = new java.util.LinkedList<OrderLine>();
 	}
 
@@ -75,5 +77,53 @@ public final class Order implements Entity {
 
 	public String getKeyName() {
 		return "O_ID";
+	}
+
+	public final int getO_ID() {
+		return O_ID;
+	}
+
+	public final int getO_C_ID() {
+		return O_C_ID;
+	}
+
+	public final Date getO_DATE() {
+		return O_DATE;
+	}
+
+	public final double getO_SUB_TOTAL() {
+		return O_SUB_TOTAL;
+	}
+
+	public final double getO_TAX() {
+		return O_TAX;
+	}
+
+	public final double getO_TOTAL() {
+		return O_TOTAL;
+	}
+
+	public final String getO_SHIP_TYPE() {
+		return O_SHIP_TYPE;
+	}
+
+	public final Date getO_SHIP_DATE() {
+		return O_SHIP_DATE;
+	}
+
+	public final int getO_BILL_ADDR_ID() {
+		return O_BILL_ADDR_ID;
+	}
+
+	public final int getO_SHIP_ADDR_ID() {
+		return O_SHIP_ADDR_ID;
+	}
+
+	public final String getO_STATUS() {
+		return O_STATUS;
+	}
+
+	public final List<OrderLine> getOrderLines() {
+		return orderLines;
 	}
 }
