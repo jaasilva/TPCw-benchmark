@@ -1,7 +1,6 @@
 package pt.unl.citi.tpcw.util;
 
 import org.deuce.Atomic;
-import org.deuce.distribution.replication.full.Bootstrap;
 
 public class HashMap<K, V> {
 	private static final int DEFAULT_TABLE_SIZE = 128;
@@ -11,7 +10,6 @@ public class HashMap<K, V> {
 
 	HashEntry<K, V>[] table;
 
-	@Bootstrap(id = 4000)
 	static HashEntry DELETED_ENTRY;
 
 	@Atomic

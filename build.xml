@@ -711,7 +711,7 @@
   
   <target name="compile.module.tpcw_dstm_implementation.production" depends="compile.module.benchmarkingsuite" description="Compile module TPCW_DSTM_Implementation; production classes">
     <mkdir dir="${tpcw_dstm_implementation.output.dir}"/>
-    <javac destdir="${tpcw_dstm_implementation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
+    <javac encoding="UTF-8" destdir="${tpcw_dstm_implementation.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true">
       <compilerarg line="${compiler.args.tpcw_dstm_implementation}"/>
       <bootclasspath refid="tpcw_dstm_implementation.module.bootclasspath"/>
       <classpath refid="tpcw_dstm_implementation.module.production.classpath"/>

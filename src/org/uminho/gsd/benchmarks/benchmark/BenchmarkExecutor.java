@@ -20,8 +20,6 @@
 package org.uminho.gsd.benchmarks.benchmark;
 
 
-import org.deuce.distribution.TribuDSTM;
-import org.deuce.profiling.Profiler;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.interfaces.Workload.AbstractWorkloadGeneratorFactory;
 import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;

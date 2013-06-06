@@ -7,15 +7,8 @@ CLASSPATH="${CLASSPATH}:libs/colt.jar"
 CLASSPATH="${CLASSPATH}:libs/jackson-core-asl-1.0.1.jar"
 CLASSPATH="${CLASSPATH}:libs/jackson-mapper-asl-1.0.1.jar"
 CLASSPATH="${CLASSPATH}:libs/deuceAgent.jar"
-CLASSPATH="${CLASSPATH}:libs/appia-core-4.1.2.jar"
-CLASSPATH="${CLASSPATH}:libs/appia-groupcomm-4.1.2.jar"
-CLASSPATH="${CLASSPATH}:libs/flanagan.jar"
-CLASSPATH="${CLASSPATH}:libs/jgcs-0.6.1.jar"
-CLASSPATH="${CLASSPATH}:libs/jgroups-3.1.0.Beta1.jar"
-CLASSPATH="${CLASSPATH}:libs/spread-4.2.0.jar"
 
 INCLUDE="pt.unl.citi.tpcw.*"
-INCLUDE="${INCLUDE},org.uminho.gsd.benchmarks.benchmark.BenchmarkMain"
 EXCLUDE="java.*,sun.*,org.eclipse.*,org.junit.*,junit.*"
 EXCLUDE="${EXCLUDE},net.sf.appia.*"
 EXCLUDE="${EXCLUDE},net.sf.jgcs.*"
@@ -29,6 +22,9 @@ EXCLUDE="${EXCLUDE},cern.jet.*"
 EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.helpers.*"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.HashFunctions"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.PrimeFinder"
+EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor"
+EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.benchmark.BenchmarkMain"
+EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.generic.workloads.TPCWWorkloadFactory"
 
 SITE=$2
 THREADS=1
@@ -36,7 +32,7 @@ WORKERS=$3
 REPLICAS=$4
 RUN=$5
 
-_STM=tl2.Context
+_STM=mvstmsi.Context
 _REP=nonvoting.NonVoting
 _COMM=$1
 
@@ -58,18 +54,11 @@ echo "#####"
 
 shift 5
 
-java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
+java -Xmx16g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
     -Dorg.deuce.include=$INCLUDE \
-    -Dtribu.groupcommunication.class=$COMM \
-    -Dtribu.groupcommunication.group=$GROUP \
-    -Dtribu.site=$SITE \
-    -Dtribu.replicas=$REPLICAS \
-    -Dtribu.workers=$WORKERS \
-    -Dtribu.distributed.protocolClass=$REP \
-    -Dtribu.serialization.compress=$ZIP \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -p -w browsing -t 1 -o 8192 -tt 0 $@
+        -d dstm -p -w browsing -t 8 -o 16384 -tt 0 $@
 
 # vim:set ts=4 sw=4 et:

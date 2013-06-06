@@ -13,7 +13,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.deuce.Atomic;
-import org.deuce.distribution.replication.full.Bootstrap;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.generic.Constants;
@@ -42,37 +41,24 @@ import pt.unl.citi.tpcw.util.RBTree;
 
 public class Executor implements DatabaseExecutorInterface {
 	/* Database */
-	@Bootstrap(id = 1)
 	// static RBTree countries;
 	static Country[] countries; // read-only!
-	@Bootstrap(id = 2)
 	// static RBTree authors;
 	static Author[] authors; // read-only!
-	@Bootstrap(id = 3)
 	static RBTree addresses;
-	@Bootstrap(id = 4)
 	static RBTree customers;
 	// static HashMap<Integer, Customer> customers;
-	@Bootstrap(id = 5)
 	static RBTree orders;
 	// static HashMap<Integer, Order> orders;
-	@Bootstrap(id = 6)
 	static LastOrders lastOrders;
-	@Bootstrap(id = 7)
 	static HashMap<Integer, Order> lastCustomerOrder;
-	@Bootstrap(id = 8)
 	// static RBTree items;
 	static Item[] items; // fixed-size!
-	@Bootstrap(id = 9)
 	static HashMap<String, List<Item>> itemsBySubject;
-	@Bootstrap(id = 10)
 	static HashMap<String, List<Item>> itemsByAuthorLastName;
-	@Bootstrap(id = 11)
 	static HashMap<String, List<Item>> itemsByTitle;
-	@Bootstrap(id = 12)
 	static RBTree ccXacts;
 	// static HashMap<Integer, CCXact> ccXacts;
-	@Bootstrap(id = 13)
 	// static RBTree shopCarts;
 	static HashMap<Integer, ShoppingCart> shopCarts;
 

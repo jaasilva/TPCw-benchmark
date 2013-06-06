@@ -31,10 +31,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.deuce.Atomic;
-import org.deuce.benchmark.Barrier;
-import org.deuce.distribution.TribuDSTM;
-import org.deuce.distribution.replication.full.Bootstrap;
-import org.deuce.profiling.Profiler;
 import org.deuce.trove.THashMap;
 import org.uminho.gsd.benchmarks.helpers.JsonUtil;
 import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
@@ -251,10 +247,6 @@ public class BenchmarkMain {
 		new BenchmarkMain(master, slave, cleanDB, cleanFB, populate, ocp,
 				workload_alias, database_alias, num_thread, num_operations,
 				distributionFactor);
-		Profiler.enabled = false;
-		Profiler.print();
-		barrierEnd.join();
-		TribuDSTM.close();
 	}
 
 	public BenchmarkMain(boolean master, boolean slave, boolean cleanDB,
@@ -277,30 +269,7 @@ public class BenchmarkMain {
 
 	}
 
-	@Bootstrap(id = 1000)
-	static Barrier barrierBegin;
-	@Bootstrap(id = 1001)
-	static Barrier barrierEnd;
-	@Bootstrap(id = 1002)
-	static Barrier barrierPop;
-	@Bootstrap(id = 1003)
-	static Barrier barrierStart;
 
-	@Atomic
-	static final void initBarrier() {
-		if (barrierBegin == null) {
-			barrierBegin = new Barrier(Integer.getInteger("tribu.replicas"));
-		}
-		if (barrierEnd == null) {
-			barrierEnd = new Barrier(Integer.getInteger("tribu.replicas"));
-		}
-		if (barrierPop == null) {
-			barrierPop = new Barrier(Integer.getInteger("tribu.replicas"));
-		}
-		if (barrierStart == null) {
-			barrierStart = new Barrier(Integer.getInteger("tribu.replicas"));
-		}
-	}
 
 	public void run(boolean master, boolean slave, boolean cleanDB,
 			boolean cleanFB, boolean populate, boolean cap) throws Exception {
@@ -314,13 +283,10 @@ public class BenchmarkMain {
 				.newInstance(executor.getDatabaseInterface(), populator_conf);
 		// }
 
-		initBarrier();
 		DatabaseExecutorInterface databaseClient = executor
 				.getDatabaseInterface().getDatabaseClient();
-		barrierBegin.join();
 
 		if (slave) {
-			barrierPop.join();
 			BenchmarkSlave slaveHandler = new BenchmarkSlave(SlavePort,
 					executor);
 			slaveHandler.run();
@@ -357,7 +323,6 @@ public class BenchmarkMain {
 
 			if (master) {// master, signal slaves
 				logger.info("[INFO:] EXECUTING IN MASTER MODE");
-				barrierPop.join();
 				BenchmarkMaster masterHandler = new BenchmarkMaster(executor,
 						benchmarkExecutorSlaves);
 				masterHandler.run();

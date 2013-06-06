@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
-import org.deuce.profiling.Profiler;
 
 public class BenchmarkMaster {
 
@@ -103,8 +102,6 @@ public class BenchmarkMaster {
 //        ensureEnd end = new ensureEnd();
 //        Thread ensureEndThread = new Thread(end);
 //        ensureEndThread.start();
-        BenchmarkMain.barrierStart.join();
-        Profiler.enabled = true;
         executor.run(new BenchmarkNodeID(PersonalClientID));
         System.out.println("[INFO:]SLAVE ENDED");
         try {

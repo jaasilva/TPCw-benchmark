@@ -27,7 +27,6 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.deuce.profiling.Profiler;
 
 public class BenchmarkSlave {
 
@@ -77,8 +76,6 @@ public class BenchmarkSlave {
                         }
                     };
                     Thread t = new Thread(run);
-                    BenchmarkMain.barrierStart.join();
-                    Profiler.enabled = true;
                     t.start();
 
 
