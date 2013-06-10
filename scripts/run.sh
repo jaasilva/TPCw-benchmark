@@ -26,13 +26,14 @@ EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor"
 EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.benchmark.BenchmarkMain"
 EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.generic.workloads.TPCWWorkloadFactory"
 
-SITE=$2
-THREADS=1
-WORKERS=$3
-REPLICAS=$4
-RUN=$5
+SITE=1
+STM=$1
+THREADS=$2
+WORKERS=1
+REPLICAS=1
+RUN=1
 
-_STM=mvstmsi.Context
+_STM=$STM.Context
 _REP=nonvoting.NonVoting
 _COMM=$1
 
@@ -52,13 +53,13 @@ echo "Comm: ${_COMM}"
 echo `date +%H:%M`
 echo "#####"
 
-shift 5
+shift 1
 
 java -Xmx16g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
     -Dorg.deuce.include=$INCLUDE \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -p -w browsing -t 8 -o 16384 -tt 0 $@
+        -d dstm -p -w browsing -t $THREADS -o 16384 -tt 0 $@
 
 # vim:set ts=4 sw=4 et:
