@@ -3,7 +3,8 @@ package pt.unl.citi.tpcw.util;
 import org.deuce.Atomic;
 import org.deuce.distribution.replication.Bootstrap;
 
-public class HashMap<K, V> {
+public class HashMap<K, V>
+{
 	private static final int DEFAULT_TABLE_SIZE = 128;
 	private float threshold = 0.75f;
 	private int maxSize = 96;
@@ -15,16 +16,19 @@ public class HashMap<K, V> {
 	static HashEntry DELETED_ENTRY;
 
 	@Atomic
-	public static final void init() {
+	public static final void init()
+	{
 		if (DELETED_ENTRY != null)
 			DELETED_ENTRY = new HashEntry(null, null);
 	}
 
-	public HashMap() {
+	public HashMap()
+	{
 		this(DEFAULT_TABLE_SIZE);
 	}
-	
-	public HashMap(int initialCapacity) {
+
+	public HashMap(int initialCapacity)
+	{
 		init();
 		table = new HashEntry[initialCapacity];
 		for (int i = 0; i < initialCapacity; i++)
@@ -32,17 +36,20 @@ public class HashMap<K, V> {
 		maxSize = (int) (initialCapacity * threshold);
 	}
 
-	void setThreshold(float threshold) {
+	void setThreshold(float threshold)
+	{
 		this.threshold = threshold;
 		maxSize = (int) (table.length * threshold);
 	}
 
-	public V get(K key) {
+	public V get(K key)
+	{
 		int hash = (key.hashCode() & 0x7fffffff) % table.length;
 		int initialHash = -1;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].key.equals(key))) {
+						&& !table[hash].key.equals(key)))
+		{
 			if (initialHash == -1)
 				initialHash = hash;
 			hash = (hash + 1) % table.length;
@@ -52,19 +59,22 @@ public class HashMap<K, V> {
 		else
 			return table[hash].value;
 	}
-	
-	public boolean containsKey(K key) {
+
+	public boolean containsKey(K key)
+	{
 		return get(key) != null;
 	}
 
-	public boolean put(K key, V value) {
+	public boolean put(K key, V value)
+	{
 		int hash = (key.hashCode() & 0x7fffffff) % table.length;
 		int initialHash = -1;
 		int indexOfDeletedEntry = -1;
 		boolean result = true;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].key.equals(key))) {
+						&& !table[hash].key.equals(key)))
+		{
 			if (initialHash == -1)
 				initialHash = hash;
 			if (table[hash] == DELETED_ENTRY)
@@ -72,15 +82,20 @@ public class HashMap<K, V> {
 			hash = (hash + 1) % table.length;
 		}
 		if ((table[hash] == null || hash == initialHash)
-				&& indexOfDeletedEntry != -1) {
+				&& indexOfDeletedEntry != -1)
+		{
 			table[indexOfDeletedEntry] = new HashEntry(key, value);
 			size++;
-		} else if (initialHash != hash)
+		}
+		else if (initialHash != hash)
 			if (table[hash] != DELETED_ENTRY && table[hash] != null
-					&& table[hash].key.equals(key)) {
+					&& table[hash].key.equals(key))
+			{
 				table[hash].value = value;
 				result = false;
-			} else {
+			}
+			else
+			{
 				table[hash] = new HashEntry(key, value);
 				size++;
 			}
@@ -89,7 +104,8 @@ public class HashMap<K, V> {
 		return result;
 	}
 
-	private void resize() {
+	private void resize()
+	{
 		int tableSize = 2 * table.length;
 		maxSize = (int) (tableSize * threshold);
 		HashEntry<K, V>[] oldTable = table;
@@ -100,53 +116,61 @@ public class HashMap<K, V> {
 				put(oldTable[i].key, oldTable[i].value);
 	}
 
-	public void remove(K key) {
+	public void remove(K key)
+	{
 		int hash = (key.hashCode() & 0x7fffffff) % table.length;
 		int initialHash = -1;
 		while (hash != initialHash
 				&& (table[hash] == DELETED_ENTRY || table[hash] != null
-						&& !table[hash].key.equals(key))) {
+						&& !table[hash].key.equals(key)))
+		{
 			if (initialHash == -1)
 				initialHash = hash;
 			hash = (hash + 1) % table.length;
 		}
-		if (hash != initialHash && table[hash] != null) {
+		if (hash != initialHash && table[hash] != null)
+		{
 			table[hash] = DELETED_ENTRY;
 			size--;
 		}
 	}
-	
-	public java.util.List<V> getValues() {
+
+	public java.util.List<V> getValues()
+	{
 		final int length = table.length;
 		final java.util.List<V> values = new java.util.LinkedList<V>();
-		for (int i = 0; i < length; i++) {
+		for (int i = 0; i < length; i++)
+		{
 			final HashEntry<K, V> hashEntry = table[i];
-			if (hashEntry != DELETED_ENTRY && hashEntry != null) {
+			if (hashEntry != DELETED_ENTRY && hashEntry != null)
+			{
 				values.add(hashEntry.value);
 			}
 		}
 		return values;
 	}
 
-	static class HashEntry<K, V> {
+	static class HashEntry<K, V>
+	{
 		private K key;
 		private V value;
 
-		HashEntry(K key, V value) {
+		HashEntry(K key, V value)
+		{
 			this.key = key;
 			this.value = value;
 		}
 
-//		public V getValue() {
-//			return value;
-//		}
-//
-//		public void setValue(V value) {
-//			this.value = value;
-//		}
-//
-//		public K getKey() {
-//			return key;
-//		}
+		// public V getValue() {
+		// return value;
+		// }
+		//
+		// public void setValue(V value) {
+		// this.value = value;
+		// }
+		//
+		// public K getKey() {
+		// return key;
+		// }
 	}
 }

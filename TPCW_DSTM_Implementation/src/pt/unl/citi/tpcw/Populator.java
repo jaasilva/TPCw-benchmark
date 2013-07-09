@@ -31,7 +31,8 @@ import pt.unl.citi.tpcw.entities.Order;
 import pt.unl.citi.tpcw.entities.OrderLine;
 
 /* Adapted from MySQL populator */
-public class Populator extends AbstractBenchmarkPopulator {
+public class Populator extends AbstractBenchmarkPopulator
+{
 
 	/**
 	 * Time measurements
@@ -71,7 +72,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	public Populator(
 			AbstractDatabaseExecutorFactory database_interface_factory,
-			String conf_filename) {
+			String conf_filename)
+	{
 		super(database_interface_factory, conf_filename);
 		databaseClientFactory = database_interface_factory;
 
@@ -79,41 +81,52 @@ public class Populator extends AbstractBenchmarkPopulator {
 				.get("BenchmarkPopulator");
 
 		String name = execution_info.get("name");
-		if (name == null || name.isEmpty()) {
+		if (name == null || name.isEmpty())
+		{
 			name = "TPCW_POPULATOR";
 			System.out
 					.println("[WARN:] NO DEFINED NAME: DEFAULT -> TPCW_POPULATOR ");
 		}
 
 		String num_threads_info = execution_info.get("thread_number");
-		if (num_threads_info == null || num_threads_info.isEmpty()) {
+		if (num_threads_info == null || num_threads_info.isEmpty())
+		{
 			num_threads = 1;
 			System.out
 					.println("[WARN:] NO THREAD NUMBER DEFINED: DEFAULT -> 1");
-		} else {
+		}
+		else
+		{
 			num_threads = Integer.parseInt(num_threads_info.trim());
 		}
 
 		this.results = new ResultHandler(name, -1);
 
 		result_path = execution_info.get("result_path");
-		if (result_path == null || result_path.trim().isEmpty()) {
+		if (result_path == null || result_path.trim().isEmpty())
+		{
 			result_path = "./results";
 		}
 
 		String ebs = execution_info.get("tpcw_numEBS");
-		if (ebs != null) {
+		if (ebs != null)
+		{
 			Constants.NUM_EBS = Integer.valueOf(ebs.trim());
-		} else {
+		}
+		else
+		{
 			System.out.println("SCALE FACTOR (EBS) NOT DEFINED. SET TO: "
 					+ NUM_EBS);
 		}
 
 		String items = execution_info.get("tpcw_numItems");
 
-		if (items != null) {
+		if (items != null)
+		{
 			Constants.NUM_ITEMS = Integer.valueOf(items.trim());
-		} else {
+		}
+		else
+		{
 			System.out.println("NUMBER OF ITEMS NOT DEFINED. SET TO: "
 					+ NUM_ITEMS);
 		}
@@ -131,60 +144,80 @@ public class Populator extends AbstractBenchmarkPopulator {
 		NUM_ORDERS = Constants.NUM_ORDERS;
 	}
 
-	public boolean populate() {
+	public boolean populate()
+	{
 		DatabaseExecutorInterface client = databaseClientFactory
 				.getDatabaseClient();
 
 		Map<String, Object> param = new TreeMap<String, Object>();
-		try {
+		try
+		{
 			client.execute(new Operation(OP_POPULATE, param));
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			e.printStackTrace();
 			return false;
 		}
 
-		if (error) {
+		if (error)
+		{
 			return false;
-		} else {
-			try {
+		}
+		else
+		{
+			try
+			{
 				insertCountries(NUM_COUNTRIES);
-				if (delay_inserts) {
+				if (delay_inserts)
+				{
 					Thread.sleep(delay_time);
 				}
 				insertAddresses(NUM_ADDRESSES, true);
-				if (delay_inserts) {
+				if (delay_inserts)
+				{
 					Thread.sleep(delay_time);
 				}
 				insertCustomers(NUM_CUSTOMERS);
-				if (delay_inserts) {
+				if (delay_inserts)
+				{
 					Thread.sleep(delay_time);
 				}
 				insertAuthors(NUM_AUTHORS, true);
-				if (delay_inserts) {
+				if (delay_inserts)
+				{
 					Thread.sleep(delay_time);
 				}
 				insertItems(NUM_ITEMS);
-				if (delay_inserts) {
+				if (delay_inserts)
+				{
 					Thread.sleep(delay_time);
 				}
 				insertOrder_and_CC_XACTS(NUM_ORDERS);
 
 				System.out.println("***Finished***");
 
-			} catch (InterruptedException ex) {
+			}
+			catch (InterruptedException ex)
+			{
 				Logger.getLogger(Populator.class.getName()).log(Level.SEVERE,
 						null, ex);
 				return false;
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				Logger.getLogger(Populator.class.getName()).log(Level.SEVERE,
 						null, ex);
 				return false;
 			}
 
-			try {
+			try
+			{
 				System.out.println("CREATING INDEXES");
 				client.execute(new Operation("CREATE_INDEXES", param));
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				return false;
 			}
 
@@ -195,17 +228,21 @@ public class Populator extends AbstractBenchmarkPopulator {
 		}
 	}
 
-	public void cleanDB() throws Exception {
+	public void cleanDB() throws Exception
+	{
 	}
 
-	public void BenchmarkClean() throws Exception {
+	public void BenchmarkClean() throws Exception
+	{
 	}
 
-	public void removeALL() throws Exception {
+	public void removeALL() throws Exception
+	{
 	}
 
 	static void countryInsert(String Operation, int key, Country value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
@@ -215,11 +252,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted country "+key);
+		System.out.print("Inserted country " + key);
 	}
 
 	static void addressInsert(String Operation, int key, Address value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertAddress(key, value);
@@ -228,11 +266,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted address "+key);
+		System.out.print("Inserted address " + key);
 	}
 
 	static void customerInsert(String Operation, int key, Customer value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertCustomer(key, value);
@@ -241,11 +280,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted customer "+key);
+		System.out.print("Inserted customer " + key);
 	}
 
 	static void authorInsert(String Operation, int key, Author value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertAuthor(key, value);
@@ -254,13 +294,14 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted author "+key);
+		System.out.print("Inserted author " + key);
 	}
 
 	static void itemInsert(String Operation, int key, Item value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		if (value == null)
-			throw new Error("Inserted null at items["+key+"]");
+			throw new Error("Inserted null at items[" + key + "]");
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertItem(key, value);
@@ -269,11 +310,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted item "+key);
+		System.out.print("Inserted item " + key);
 	}
 
 	static void orderInsert(String Operation, int key, Order value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertOrder(key, value);
@@ -282,11 +324,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
 		System.out.print("\r");
-		System.out.print("Inserted order "+key);
+		System.out.print("Inserted order " + key);
 	}
 
 	static void orderLineInsert(String Operation, int key, OrderLine value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertOrderLine(key, value);
@@ -294,12 +337,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 		long time2 = System.nanoTime();
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
-//		System.out.print("\r");
-//		System.out.print("Inserted order line "+key);
+		// System.out.print("\r");
+		// System.out.print("Inserted order line "+key);
 	}
 
 	static void ccXactInsert(String Operation, int key, CCXact value,
-			ResultHandler results) {
+			ResultHandler results)
+	{
 		// long time1 = System.currentTimeMillis();
 		long time1 = System.nanoTime();
 		Executor.insertCcXact(key, value);
@@ -307,8 +351,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 		long time2 = System.nanoTime();
 		results.logResult(Operation, (time2 / 1000 / 1000)
 				- (time1 / 1000 / 1000));
-//		System.out.print("\r");
-//		System.out.print("Inserted ccxact "+key);
+		// System.out.print("\r");
+		// System.out.print("Inserted ccxact "+key);
 	}
 
 	/************************************************************************/
@@ -320,15 +364,19 @@ public class Populator extends AbstractBenchmarkPopulator {
 	 */
 
 	public void insertAuthors(int n, boolean insert)
-			throws InterruptedException {
+			throws InterruptedException
+	{
 		int threads = num_threads;
 		int sections = n;
 		int firstSection = 0;
 
-		if (n < num_threads) {
+		if (n < num_threads)
+		{
 			threads = 1;
 			firstSection = n;
-		} else {
+		}
+		else
+		{
 			sections = (int) Math.floor(n / num_threads);
 			int rest = n - (num_threads * sections);
 			firstSection = sections + rest;
@@ -339,15 +387,19 @@ public class Populator extends AbstractBenchmarkPopulator {
 		barrier = new CountDownLatch(threads);
 
 		AuthorPopulator[] partial_authors = new AuthorPopulator[threads];
-		for (int i = threads; i > 0; i--) {
+		for (int i = threads; i > 0; i--)
+		{
 
 			int base = (threads - i) * sections;
 
 			AuthorPopulator populator = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				populator = new AuthorPopulator(firstSection, base, insert);
 
-			} else {
+			}
+			else
+			{
 				populator = new AuthorPopulator(sections, base, insert);
 			}
 			partial_authors[threads - i] = populator;
@@ -356,9 +408,11 @@ public class Populator extends AbstractBenchmarkPopulator {
 		}
 
 		barrier.await();
-		for (AuthorPopulator populator : partial_authors) {
+		for (AuthorPopulator populator : partial_authors)
+		{
 			ArrayList<Integer> ids = populator.getData();
-			for (int id : ids) {
+			for (int id : ids)
+			{
 				authors.add(id);
 			}
 			if (insert)
@@ -371,14 +425,16 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	}
 
-	class AuthorPopulator implements Runnable {
+	class AuthorPopulator implements Runnable
+	{
 		int num_authors;
 		ArrayList<Integer> partial_authors;
 		ResultHandler partial_results;
 		boolean insertDB;
 		int base;
 
-		public AuthorPopulator(int num_authors, int base, boolean insertDB) {
+		public AuthorPopulator(int num_authors, int base, boolean insertDB)
+		{
 			this.num_authors = num_authors;
 			partial_authors = new ArrayList<Integer>();
 			partial_results = new ResultHandler("", rounds);
@@ -386,14 +442,17 @@ public class Populator extends AbstractBenchmarkPopulator {
 			this.base = base;
 		}
 
-		public void run() {
+		public void run()
+		{
 			this.insertAuthors(num_authors);
 		}
 
-		public void insertAuthors(int n) {
+		public void insertAuthors(int n)
+		{
 
 			System.out.println("Inserting Authors: " + n);
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+			{
 				GregorianCalendar cal = BenchmarkUtil.getRandomDate(1800, 1990);
 
 				String[] names = (BenchmarkUtil.getRandomAString(3, 20) + " " + BenchmarkUtil
@@ -415,7 +474,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 				partial_authors.add(i);
 			}
-			if (debug) {
+			if (debug)
+			{
 				System.out.println("Thread finished: " + num_authors
 						+ " authors inserted");
 			}
@@ -424,11 +484,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 			barrier.countDown();
 		}
 
-		public ArrayList<Integer> getData() {
+		public ArrayList<Integer> getData()
+		{
 			return partial_authors;
 		}
 
-		public ResultHandler returnResults() {
+		public ResultHandler returnResults()
+		{
 			return partial_results;
 		}
 	}
@@ -436,16 +498,20 @@ public class Populator extends AbstractBenchmarkPopulator {
 	/**
 	 * ************ Customers* **************
 	 */
-	public void insertCustomers(int n) throws InterruptedException {
+	public void insertCustomers(int n) throws InterruptedException
+	{
 
 		int threads = num_threads;
 		int sections = n;
 		int firstSection = 0;
 
-		if (n < num_threads) {
+		if (n < num_threads)
+		{
 			threads = 1;
 			firstSection = n;
-		} else {
+		}
+		else
+		{
 			sections = (int) Math.floor(n / num_threads);
 			int rest = n - (num_threads * sections);
 			firstSection = sections + rest;
@@ -455,14 +521,18 @@ public class Populator extends AbstractBenchmarkPopulator {
 		barrier = new CountDownLatch(threads);
 
 		CustomerPopulator[] partial_Customers = new CustomerPopulator[threads];
-		for (int i = threads; i > 0; i--) {
+		for (int i = threads; i > 0; i--)
+		{
 
 			int base = (threads - i) * sections;
 			CustomerPopulator populator = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				populator = new CustomerPopulator(firstSection, base);
 
-			} else {
+			}
+			else
+			{
 				populator = new CustomerPopulator(sections, base);
 			}
 			partial_Customers[threads - i] = populator;
@@ -471,9 +541,11 @@ public class Populator extends AbstractBenchmarkPopulator {
 			t.start();
 		}
 		barrier.await();
-		for (CustomerPopulator populator : partial_Customers) {
+		for (CustomerPopulator populator : partial_Customers)
+		{
 			ArrayList<Integer> ids = populator.getData();
-			for (int id : ids) {
+			for (int id : ids)
+			{
 				customers.add(id);
 			}
 			results.addResults(populator.returnResults());
@@ -485,13 +557,15 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	}
 
-	class CustomerPopulator implements Runnable {
+	class CustomerPopulator implements Runnable
+	{
 		int num_Customers;
 		ArrayList<Integer> partial_Customers;
 		ResultHandler partial_results;
 		int base;
 
-		public CustomerPopulator(int num_Customers, int base) {
+		public CustomerPopulator(int num_Customers, int base)
+		{
 			this.num_Customers = num_Customers;
 			partial_Customers = new ArrayList<Integer>();
 			partial_results = new ResultHandler("", rounds);
@@ -499,14 +573,17 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 		}
 
-		public void run() {
+		public void run()
+		{
 			this.insertCustomers(num_Customers);
 		}
 
-		public void insertCustomers(int n) {
+		public void insertCustomers(int n)
+		{
 
 			System.out.println("Inserting Customers: " + n);
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+			{
 				final int c_ID = base + i;
 
 				String name = (BenchmarkUtil.getRandomAString(8, 13) + " " + BenchmarkUtil
@@ -516,7 +593,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				int random_int = r.nextInt(1000);
 
 				String c_UNAME = names[0] + "_" + (base + i);
-				if (base + i >= 1000) {
+				if (base + i >= 1000)
+				{
 					c_UNAME = names[0] + "_" + random_int;
 				}
 				// if(key.length()>=20){
@@ -558,7 +636,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				// insert(C_SINCE, key, "Customer", "C_SINCE ", writeCon);
 
 				cal.add(Calendar.DAY_OF_YEAR, BenchmarkUtil.getRandomInt(0, 60));
-				if (cal.after(new GregorianCalendar())) {
+				if (cal.after(new GregorianCalendar()))
+				{
 					cal = new GregorianCalendar();
 				}
 
@@ -593,10 +672,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 						c_LAST_VISIT, c_LOGIN, c_EXPIRATION, c_DISCOUNT,
 						c_BALANCE, c_YTD_PMT, c_BIRTHDATE, c_DATA);
 
-				try {
+				try
+				{
 					customerInsert("INSERT_Customers", (base + i), c,
 							partial_results);
-				} catch (Exception e) {
+				}
+				catch (Exception e)
+				{
 					e.printStackTrace();
 					break;
 				}
@@ -604,7 +686,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				partial_Customers.add(c.C_ID);
 
 			}
-			if (debug) {
+			if (debug)
+			{
 				System.out.println("Thread finished: " + num_Customers
 						+ " Customers inserted");
 			}
@@ -612,11 +695,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 			barrier.countDown();
 		}
 
-		public ArrayList<Integer> getData() {
+		public ArrayList<Integer> getData()
+		{
 			return partial_Customers;
 		}
 
-		public ResultHandler returnResults() {
+		public ResultHandler returnResults()
+		{
 			return partial_results;
 		}
 	}
@@ -624,15 +709,19 @@ public class Populator extends AbstractBenchmarkPopulator {
 	/**
 	 * ************ Items* **************
 	 */
-	public void insertItems(int n) throws InterruptedException {
+	public void insertItems(int n) throws InterruptedException
+	{
 		int threads = num_threads;
 		int sections = n;
 		int firstSection = 0;
 
-		if (n < num_threads) {
+		if (n < num_threads)
+		{
 			threads = 1;
 			firstSection = n;
-		} else {
+		}
+		else
+		{
 			sections = (int) Math.floor(n / num_threads);
 			int rest = n - (num_threads * sections);
 			firstSection = sections + rest;
@@ -643,15 +732,19 @@ public class Populator extends AbstractBenchmarkPopulator {
 		barrier = new CountDownLatch(threads);
 
 		ItemPopulator[] partial_items = new ItemPopulator[threads];
-		for (int i = threads; i > 0; i--) {
+		for (int i = threads; i > 0; i--)
+		{
 
 			int base = (threads - i) * sections;
 
 			ItemPopulator populator = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				populator = new ItemPopulator(firstSection, base);
 
-			} else {
+			}
+			else
+			{
 				populator = new ItemPopulator(sections, base);
 			}
 			partial_items[threads - i] = populator;
@@ -660,9 +753,11 @@ public class Populator extends AbstractBenchmarkPopulator {
 		}
 		barrier.await();
 
-		for (ItemPopulator populator : partial_items) {
+		for (ItemPopulator populator : partial_items)
+		{
 			ArrayList<Integer> ids = populator.getData();
-			for (int id : ids) {
+			for (int id : ids)
+			{
 				items.add(id);
 			}
 			results.addResults(populator.returnResults());
@@ -673,24 +768,28 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	}
 
-	class ItemPopulator implements Runnable {
+	class ItemPopulator implements Runnable
+	{
 		int num_items;
 		ArrayList<Integer> partial_items;
 		ResultHandler partial_results;
 		int base = 0;
 
-		public ItemPopulator(int num_items, int base) {
+		public ItemPopulator(int num_items, int base)
+		{
 			this.num_items = num_items;
 			partial_items = new ArrayList<Integer>();
 			partial_results = new ResultHandler("", rounds);
 			this.base = base;
 		}
 
-		public void run() {
+		public void run()
+		{
 			this.insertItems(num_items);
 		}
 
-		public void insertItems(int n) {
+		public void insertItems(int n)
+		{
 
 			String[] subjects = { "ARTS", "BIOGRAPHIES", "BUSINESS",
 					"CHILDREN", "COMPUTERS", "COOKING", "HEALTH", "HISTORY",
@@ -704,14 +803,16 @@ public class Populator extends AbstractBenchmarkPopulator {
 			System.out.println("Inserting Items: " + n);
 
 			ArrayList<String> titles = new ArrayList<String>();
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+			{
 
 				String title = BenchmarkUtil.getRandomAString(14, 60);
 				// int num = rand.nextInt(1000);
 				titles.add(title);
 			}
 
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+			{
 				final int i_ID = base + i;
 				String i_TITLE;
 				String i_PUBLISHER;
@@ -733,7 +834,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 				boolean rad1 = rand.nextBoolean();
 				i_DESC = null;
-				if (rad1) {
+				if (rad1)
+				{
 					i_DESC = BenchmarkUtil.getRandomAString(100, 500);
 					// insert(I_DESC, I_TITLE, column_family, "I_DESC",
 					// writeCon);
@@ -746,7 +848,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				i_STOCK = BenchmarkUtil.getRandomInt(10, 30);
 				// insert(I_STOCK, I_TITLE, column_family, "I_STOCK", writeCon);
 
-				for (int z = 0; z < 5; z++) {
+				for (int z = 0; z < 5; z++)
+				{
 					i_RELATED[z] = rand.nextInt(NUM_ITEMS);
 				}
 
@@ -797,7 +900,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				partial_items.add(item.I_ID);
 
 			}
-			if (debug) {
+			if (debug)
+			{
 				System.out.println("Thread finished: " + num_items
 						+ " items inserted");
 			}
@@ -805,11 +909,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 			barrier.countDown();
 		}
 
-		public ArrayList<Integer> getData() {
+		public ArrayList<Integer> getData()
+		{
 			return partial_items;
 		}
 
-		public ResultHandler returnResults() {
+		public ResultHandler returnResults()
+		{
 			return partial_results;
 		}
 	}
@@ -818,16 +924,20 @@ public class Populator extends AbstractBenchmarkPopulator {
 	 * *********** Addresses* ***********
 	 */
 	public void insertAddresses(int n, boolean insert)
-			throws InterruptedException {
+			throws InterruptedException
+	{
 
 		int threads = num_threads;
 		int sections = n;
 		int firstSection = 0;
 
-		if (n < num_threads) {
+		if (n < num_threads)
+		{
 			threads = 1;
 			firstSection = n;
-		} else {
+		}
+		else
+		{
 			sections = (int) Math.floor(n / num_threads);
 			int rest = n - (num_threads * sections);
 			firstSection = sections + rest;
@@ -838,15 +948,19 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 		barrier = new CountDownLatch(threads);
 		AddressPopulator[] partial_addresses = new AddressPopulator[threads];
-		for (int i = threads; i > 0; i--) {
+		for (int i = threads; i > 0; i--)
+		{
 
 			int base = (threads - i) * sections;
 
 			AddressPopulator populator = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				populator = new AddressPopulator(firstSection, insert, base);
 
-			} else {
+			}
+			else
+			{
 				populator = new AddressPopulator(sections, insert, base);
 			}
 			Thread t = new Thread(populator, "Address populator"
@@ -856,10 +970,12 @@ public class Populator extends AbstractBenchmarkPopulator {
 		}
 		barrier.await();
 
-		for (AddressPopulator populator : partial_addresses) {
+		for (AddressPopulator populator : partial_addresses)
+		{
 
 			ArrayList<Integer> ids = populator.getData();
-			for (int id : ids) {
+			for (int id : ids)
+			{
 				addresses.add(id);
 			}
 			if (insert)
@@ -872,7 +988,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	}
 
-	class AddressPopulator implements Runnable {
+	class AddressPopulator implements Runnable
+	{
 
 		int num_addresses;
 		ArrayList<Integer> partial_adresses;
@@ -880,7 +997,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 		boolean insertDB;
 		int base = 0;
 
-		public AddressPopulator(int num_addresses, boolean insertDB, int base) {
+		public AddressPopulator(int num_addresses, boolean insertDB, int base)
+		{
 			this.num_addresses = num_addresses;
 			partial_adresses = new ArrayList<Integer>();
 			partial_results = new ResultHandler("", rounds);
@@ -888,11 +1006,13 @@ public class Populator extends AbstractBenchmarkPopulator {
 			this.base = base;
 		}
 
-		public void run() {
+		public void run()
+		{
 			this.insertAddress(num_addresses);
 		}
 
-		private void insertAddress(int n) {
+		private void insertAddress(int n)
+		{
 
 			System.out.println("Inserting Address: " + n);
 
@@ -900,7 +1020,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 			String ADDR_ZIP;
 			int country_id;
 
-			for (int i = 0; i < n; i++) {
+			for (int i = 0; i < n; i++)
+			{
 				ADDR_STREET1 = "street"
 						+ BenchmarkUtil.getRandomAString(10, 30);
 
@@ -930,27 +1051,31 @@ public class Populator extends AbstractBenchmarkPopulator {
 				// insert(country.getCo_id(), key, "Addresses", "ADDR_CO_ID",
 				// writeConsistency);
 
-				if (insertDB) {
+				if (insertDB)
+				{
 					addressInsert("INSERT_Addresses", key, address,
 							partial_results);
 				}
 				partial_adresses.add(key);
 
 			}
-			if (debug) {
+			if (debug)
+			{
 				System.out.println("Thread finished: " + num_addresses
 						+ " addresses.");
 			}
-			
+
 			System.out.println();
 			barrier.countDown();
 		}
 
-		public ArrayList<Integer> getData() {
+		public ArrayList<Integer> getData()
+		{
 			return partial_adresses;
 		}
 
-		public ResultHandler returnResults() {
+		public ResultHandler returnResults()
+		{
 			return partial_results;
 		}
 	}
@@ -958,7 +1083,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 	/**
 	 * ******** Countries * *********
 	 */
-	private void insertCountries(int numCountries) {
+	private void insertCountries(int numCountries)
+	{
 		String[] countriesNames = { "United States", "United Kingdom",
 				"Canada", "Germany", "France", "Japan", "Netherlands", "Italy",
 				"Switzerland", "Australia", "Algeria", "Argentina", "Armenia",
@@ -1011,20 +1137,23 @@ public class Populator extends AbstractBenchmarkPopulator {
 				"Krona", "Dollars", "Baht", "Dollars", "Lira", "Bolivar",
 				"Kwacha" };
 
-		if (numCountries > countriesNames.length) {
+		if (numCountries > countriesNames.length)
+		{
 			numCountries = countriesNames.length - 1;
 		}
 
 		System.out.println(">>Inserting " + numCountries
 				+ " countries || populatores " + num_threads);
 
-		for (int i = 0; i < numCountries; i++) {
+		for (int i = 0; i < numCountries; i++)
+		{
 			Country country = new Country(i, countriesNames[i], currencies[i],
 					exchanges[i]);
 			countryInsert("INSERT_Countries", i, country, results);
 			this.countries.add(i);
 		}
-		if (debug) {
+		if (debug)
+		{
 			System.out.println("Countries:" + countriesNames.length
 					+ " inserted");
 		}
@@ -1034,16 +1163,20 @@ public class Populator extends AbstractBenchmarkPopulator {
 	/**
 	 * **************** Order and XACTS * ******************
 	 */
-	public void insertOrder_and_CC_XACTS(int n) throws InterruptedException {
+	public void insertOrder_and_CC_XACTS(int n) throws InterruptedException
+	{
 
 		int threads = num_threads;
 		int sections = n;
 		int firstSection = 0;
 
-		if (n < num_threads) {
+		if (n < num_threads)
+		{
 			threads = 1;
 			firstSection = n;
-		} else {
+		}
+		else
+		{
 			sections = (int) Math.floor(n / num_threads);
 			int rest = n - (num_threads * sections);
 			firstSection = sections + rest;
@@ -1055,17 +1188,21 @@ public class Populator extends AbstractBenchmarkPopulator {
 		barrier = new CountDownLatch(threads);
 
 		Order_and_XACTSPopulator[] partial_orders = new Order_and_XACTSPopulator[threads];
-		for (int i = threads; i > 0; i--) {
+		for (int i = threads; i > 0; i--)
+		{
 
 			int base = (threads - i) * sections; // /code copy form above
 													// constructors, if
 													// reactivated please revise
 
 			Order_and_XACTSPopulator populator = null;
-			if (i == 0) {
+			if (i == 0)
+			{
 				populator = new Order_and_XACTSPopulator(firstSection, base);
 
-			} else {
+			}
+			else
+			{
 				populator = new Order_and_XACTSPopulator(sections, base);
 			}
 			partial_orders[threads - i] = populator;
@@ -1076,7 +1213,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 		System.out.println("END");
 
-		for (Order_and_XACTSPopulator populator : partial_orders) {
+		for (Order_and_XACTSPopulator populator : partial_orders)
+		{
 			results.addResults(populator.returnResults());
 			populator.partial_results.cleanResults();
 			populator = null;
@@ -1085,22 +1223,26 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 	}
 
-	class Order_and_XACTSPopulator implements Runnable {
+	class Order_and_XACTSPopulator implements Runnable
+	{
 		int num_orders;
 		int base = 0;
 		ResultHandler partial_results;
 
-		public Order_and_XACTSPopulator(int num_orders, int base) {
+		public Order_and_XACTSPopulator(int num_orders, int base)
+		{
 			this.num_orders = num_orders;
 			partial_results = new ResultHandler("", rounds);
 			this.base = base;
 		}
 
-		public void run() {
+		public void run()
+		{
 			this.insertOrder_and_CC_XACTS(num_orders);
 		}
 
-		public void insertOrder_and_CC_XACTS(int number_keys) {
+		public void insertOrder_and_CC_XACTS(int number_keys)
+		{
 			//
 			//
 			System.out.println("Inserting Order: " + number_keys);
@@ -1115,7 +1257,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 			// // ColumnPath path = new ColumnPath(column_family);
 			// // path.setSuper_column("ids".getBytes());
 			//
-			for (int z = 0; z < number_keys; z++) {
+			for (int z = 0; z < number_keys; z++)
+			{
 				final int o_ID = base + z;
 				int o_C_ID;
 				Date o_DATE;
@@ -1179,7 +1322,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 				//
 				int number_of_items = rand.nextInt(4) + 1;
 				//
-				for (int i = 0; i < number_of_items; i++) {
+				for (int i = 0; i < number_of_items; i++)
+				{
 					/**
 					 * OL_ID OL_O_ID OL_I_ID OL_QTY OL_DISCOUNT OL_COMMENT
 					 */
@@ -1263,7 +1407,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 				// O_ID++;
 			}
-			if (debug) {
+			if (debug)
+			{
 				System.out.println("Thread finished: " + number_keys
 						+ " orders and xact inserted.");
 			}
@@ -1272,7 +1417,8 @@ public class Populator extends AbstractBenchmarkPopulator {
 
 		}
 
-		public ResultHandler returnResults() {
+		public ResultHandler returnResults()
+		{
 			return partial_results;
 		}
 	}

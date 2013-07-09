@@ -1,19 +1,13 @@
 /*
  * *********************************************************************
- * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa.
- * All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa. All rights
+ * reserved. Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
+ * required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  * ********************************************************************
  */
 package pt.unl.citi.tpcw.entities;
@@ -23,7 +17,8 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class CCXact implements Entity {
+public final class CCXact implements Entity
+{
 	public final int CX_O_ID;
 	public final String CX_TYPE;
 	public final int CX_CC_NUM;
@@ -38,7 +33,8 @@ public final class CCXact implements Entity {
 
 	public CCXact(int cX_O_ID, String cX_TYPE, int cX_CC_NUM,
 			String cX_CC_NAME, Date cX_EXPIRY, int cX_AUTH_ID,
-			double cX_XACT_AMT, Date cX_XACT_DATE, int cX_CO_ID) {
+			double cX_XACT_AMT, Date cX_XACT_DATE, int cX_CO_ID)
+	{
 		super();
 		CX_O_ID = cX_O_ID;
 		CX_TYPE = cX_TYPE;
@@ -52,11 +48,13 @@ public final class CCXact implements Entity {
 		CX_CO_ID = cX_CO_ID;
 	}
 
-	public TreeMap<String, Object> getValuesToInsert() {
+	public TreeMap<String, Object> getValuesToInsert()
+	{
 		throw new RuntimeException("Not implemented.");
 	}
 
-	public String getKeyName() {
+	public String getKeyName()
+	{
 		return "CX_O_ID";
 	}
 }

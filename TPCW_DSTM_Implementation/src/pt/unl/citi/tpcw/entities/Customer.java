@@ -1,19 +1,13 @@
 /*
  * *********************************************************************
- * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa.
- * All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa. All rights
+ * reserved. Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
+ * required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  * ********************************************************************
  */
 package pt.unl.citi.tpcw.entities;
@@ -23,7 +17,8 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class Customer implements Entity {
+public final class Customer implements Entity
+{
 	public final int C_ID;
 	public final String C_UNAME;
 	public final String C_PASSWD;
@@ -42,20 +37,22 @@ public final class Customer implements Entity {
 	public final double C_YTD_PMT;
 	public final Date C_BIRTHDATE;
 	public final String C_DATA;
-//	public final RBTree orders;
+
+	// public final RBTree orders;
 
 	public Customer(int c_ID, String c_UNAME, String c_PASSWD, String c_FNAME,
 			String c_LNAME, int c_ADDR_ID, String c_PHONE, String c_EMAIL,
 			Date c_SINCE, Date c_LAST_VISIT, Date c_LOGIN, Date c_EXPIRATION,
 			double c_DISCOUNT, double c_BALANCE, double c_YTD_PMT,
-			Date c_BIRTHDATE, String c_DATA) {
+			Date c_BIRTHDATE, String c_DATA)
+	{
 		super();
 		C_ID = c_ID;
 		C_UNAME = c_UNAME;
 		C_PASSWD = c_PASSWD;
 		C_FNAME = c_FNAME;
 		C_LNAME = c_LNAME;
-//		C_ADDR = c_ADDR;
+		// C_ADDR = c_ADDR;
 		C_ADDR_ID = c_ADDR_ID;
 		C_PHONE = c_PHONE;
 		C_EMAIL = c_EMAIL;
@@ -68,14 +65,16 @@ public final class Customer implements Entity {
 		C_YTD_PMT = c_YTD_PMT;
 		C_BIRTHDATE = c_BIRTHDATE;
 		C_DATA = c_DATA;
-//		orders = new RBTree();
+		// orders = new RBTree();
 	}
 
-	public TreeMap<String, Object> getValuesToInsert() {
+	public TreeMap<String, Object> getValuesToInsert()
+	{
 		throw new RuntimeException("Not implemented.");
 	}
 
-	public String getKeyName() {
+	public String getKeyName()
+	{
 		return "C_ID";
 	}
 

@@ -7,23 +7,27 @@ import org.uminho.gsd.benchmarks.interfaces.executor.DatabaseExecutorInterface;
 
 import pt.unl.citi.tpcw.util.HashMap;
 
-public class ExecutorFactory extends AbstractDatabaseExecutorFactory {
+public class ExecutorFactory extends AbstractDatabaseExecutorFactory
+{
 
-	public ExecutorFactory(BenchmarkExecutor executor, String conf_file) {
+	public ExecutorFactory(BenchmarkExecutor executor, String conf_file)
+	{
 		super(executor, conf_file);
 		init();
-		HashMap.init(); 
+		HashMap.init();
 		// TODO Auto-generated constructor stub
 	}
 
 	@Override
-	public DatabaseExecutorInterface getDatabaseClient() {
+	public DatabaseExecutorInterface getDatabaseClient()
+	{
 		TPM_counter tpm_counter = new TPM_counter();
 		registerCounter(tpm_counter);
 		return new Executor(tpm_counter);
 	}
-	
-	private void init() {
+
+	private void init()
+	{
 		initTPMCounting();
 	}
 

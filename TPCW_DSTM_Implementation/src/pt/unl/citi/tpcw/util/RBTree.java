@@ -53,24 +53,29 @@ import pt.unl.citi.tpcw.entities.Filter;
  * =============================================================================
  */
 
-public class RBTree {
+public class RBTree
+{
 	public static final int BLACK = 0;
 	public static final int RED = 1;
 
 	RBTreeNode root;
 	int compID;
 
-	public RBTree() {
+	public RBTree()
+	{
 	}
 
 	/* private Methods */
 	/* lookup */
-	private RBTreeNode lookup(int k) {
+	private RBTreeNode lookup(int k)
+	{
 		RBTreeNode p = root;
 
-		while (p != null) {
+		while (p != null)
+		{
 			int cmp = compare(k, p.k);
-			if (cmp == 0) {
+			if (cmp == 0)
+			{
 				return p;
 			}
 			p = (cmp < 0) ? p.l : p.r;
@@ -80,21 +85,28 @@ public class RBTree {
 	}
 
 	/* rotateLeft */
-	private void rotateLeft(RBTreeNode x) {
+	private void rotateLeft(RBTreeNode x)
+	{
 		RBTreeNode r = x.r;
 		RBTreeNode rl = r.l;
 		x.r = rl;
-		if (rl != null) {
+		if (rl != null)
+		{
 			rl.p = x;
 		}
 
 		RBTreeNode xp = x.p;
 		r.p = xp;
-		if (xp == null) {
+		if (xp == null)
+		{
 			root = r;
-		} else if (xp.l == x) {
+		}
+		else if (xp.l == x)
+		{
 			xp.l = r;
-		} else {
+		}
+		else
+		{
 			xp.r = r;
 		}
 		r.l = x;
@@ -102,20 +114,27 @@ public class RBTree {
 	}
 
 	/* rotateRight */
-	private void rotateRight(RBTreeNode x) {
+	private void rotateRight(RBTreeNode x)
+	{
 		RBTreeNode l = x.l;
 		RBTreeNode lr = l.r;
 		x.l = lr;
-		if (lr != null) {
+		if (lr != null)
+		{
 			lr.p = x;
 		}
 		RBTreeNode xp = x.p;
 		l.p = xp;
-		if (xp == null) {
+		if (xp == null)
+		{
 			root = l;
-		} else if (xp.r == x) {
+		}
+		else if (xp.r == x)
+		{
 			xp.r = l;
-		} else {
+		}
+		else
+		{
 			xp.l = l;
 		}
 
@@ -124,75 +143,97 @@ public class RBTree {
 	}
 
 	/* parentOf */
-	private RBTreeNode parentOf(RBTreeNode n) {
+	private RBTreeNode parentOf(RBTreeNode n)
+	{
 		return ((n != null) ? n.p : null);
 	}
 
 	/* leftOf */
-	private RBTreeNode leftOf(RBTreeNode n) {
+	private RBTreeNode leftOf(RBTreeNode n)
+	{
 		return ((n != null) ? n.l : null);
 	}
 
 	/* rightOf */
-	private RBTreeNode rightOf(RBTreeNode n) {
+	private RBTreeNode rightOf(RBTreeNode n)
+	{
 		return ((n != null) ? n.r : null);
 	}
 
 	/* colorOf */
-	private int colorOf(RBTreeNode n) {
+	private int colorOf(RBTreeNode n)
+	{
 		return ((n != null) ? n.c : BLACK);
 	}
 
 	/* setColor */
-	private void setColor(RBTreeNode n, int c) {
-		if (n != null) {
+	private void setColor(RBTreeNode n, int c)
+	{
+		if (n != null)
+		{
 			n.c = c;
 		}
 	}
 
 	/* fixAfterInsertion */
-	private void fixAfterInsertion(RBTreeNode x) {
+	private void fixAfterInsertion(RBTreeNode x)
+	{
 		x.c = RED;
 
-		while (x != null && x != root) {
+		while (x != null && x != root)
+		{
 			RBTreeNode xp = x.p;
-			if (xp.c != RED) {
+			if (xp.c != RED)
+			{
 				break;
 			}
 
-			if (parentOf(x) == leftOf(parentOf(parentOf(x)))) {
+			if (parentOf(x) == leftOf(parentOf(parentOf(x))))
+			{
 				RBTreeNode y = rightOf(parentOf(parentOf(x)));
-				if (colorOf(y) == RED) {
+				if (colorOf(y) == RED)
+				{
 					setColor(parentOf(x), BLACK);
 					setColor(y, BLACK);
 					setColor(parentOf(parentOf(x)), RED);
 					x = parentOf(parentOf(x));
-				} else {
-					if (x == rightOf(parentOf(x))) {
+				}
+				else
+				{
+					if (x == rightOf(parentOf(x)))
+					{
 						x = parentOf(x);
 						rotateLeft(x);
 					}
 					setColor(parentOf(x), BLACK);
 					setColor(parentOf(parentOf(x)), RED);
-					if (parentOf(parentOf(x)) != null) {
+					if (parentOf(parentOf(x)) != null)
+					{
 						rotateRight(parentOf(parentOf(x)));
 					}
 				}
-			} else {
+			}
+			else
+			{
 				RBTreeNode y = leftOf(parentOf(parentOf(x)));
-				if (colorOf(y) == RED) {
+				if (colorOf(y) == RED)
+				{
 					setColor(parentOf(x), BLACK);
 					setColor(y, BLACK);
 					setColor(parentOf(parentOf(x)), RED);
 					x = parentOf(parentOf(x));
-				} else {
-					if (x == leftOf(parentOf(x))) {
+				}
+				else
+				{
+					if (x == leftOf(parentOf(x)))
+					{
 						x = parentOf(x);
 						rotateRight(x);
 					}
 					setColor(parentOf(x), BLACK);
 					setColor(parentOf(parentOf(x)), RED);
-					if (parentOf(parentOf(x)) != null) {
+					if (parentOf(parentOf(x)) != null)
+					{
 						rotateLeft(parentOf(parentOf(x)));
 					}
 				}
@@ -200,15 +241,19 @@ public class RBTree {
 		}
 
 		RBTreeNode ro = root;
-		if (ro.c != BLACK) {
+		if (ro.c != BLACK)
+		{
 			ro.c = BLACK;
 		}
 	}
 
-	private RBTreeNode insert(int k, Object v, RBTreeNode n) {
+	private RBTreeNode insert(int k, Object v, RBTreeNode n)
+	{
 		RBTreeNode t = root;
-		if (t == null) {
-			if (n == null) {
+		if (t == null)
+		{
+			if (n == null)
+			{
 				return null;
 			}
 			/* Note: the following STs don't really need to be transactional */
@@ -222,15 +267,22 @@ public class RBTree {
 			return null;
 		}
 
-		while (true) {
+		while (true)
+		{
 			int cmp = compare(k, t.k);
-			if (cmp == 0) {
+			if (cmp == 0)
+			{
 				return t;
-			} else if (cmp < 0) {
+			}
+			else if (cmp < 0)
+			{
 				RBTreeNode tl = t.l;
-				if (tl != null) {
+				if (tl != null)
+				{
 					t = tl;
-				} else {
+				}
+				else
+				{
 					n.l = null;
 					n.r = null;
 					n.k = k;
@@ -240,11 +292,16 @@ public class RBTree {
 					fixAfterInsertion(n);
 					return null;
 				}
-			} else { /* cmp > 0 */
+			}
+			else
+			{ /* cmp > 0 */
 				RBTreeNode tr = t.r;
-				if (tr != null) {
+				if (tr != null)
+				{
 					t = tr;
-				} else {
+				}
+				else
+				{
 					n.l = null;
 					n.r = null;
 					n.k = k;
@@ -259,19 +316,27 @@ public class RBTree {
 	}
 
 	/* successor */
-	private RBTreeNode successor(RBTreeNode t) {
-		if (t == null) {
+	private RBTreeNode successor(RBTreeNode t)
+	{
+		if (t == null)
+		{
 			return null;
-		} else if (t.r != null) {
+		}
+		else if (t.r != null)
+		{
 			RBTreeNode p = t.r;
-			while (p.l != null) {
+			while (p.l != null)
+			{
 				p = p.l;
 			}
 			return p;
-		} else {
+		}
+		else
+		{
 			RBTreeNode p = t.p;
 			RBTreeNode ch = t;
-			while (p != null && ch == p.r) {
+			while (p != null && ch == p.r)
+			{
 				ch = p;
 				p = p.p;
 			}
@@ -281,22 +346,30 @@ public class RBTree {
 	}
 
 	/* fixAfterDeletion */
-	private void fixAfterDeletion(RBTreeNode x) {
-		while (x != root && colorOf(x) == BLACK) {
-			if (x == leftOf(parentOf(x))) {
+	private void fixAfterDeletion(RBTreeNode x)
+	{
+		while (x != root && colorOf(x) == BLACK)
+		{
+			if (x == leftOf(parentOf(x)))
+			{
 				RBTreeNode sib = rightOf(parentOf(x));
-				if (colorOf(sib) == RED) {
+				if (colorOf(sib) == RED)
+				{
 					setColor(sib, BLACK);
 					setColor(parentOf(x), RED);
 					rotateLeft(parentOf(x));
 					sib = rightOf(parentOf(x));
 				}
 				if (colorOf(leftOf(sib)) == BLACK
-						&& colorOf(rightOf(sib)) == BLACK) {
+						&& colorOf(rightOf(sib)) == BLACK)
+				{
 					setColor(sib, RED);
 					x = parentOf(x);
-				} else {
-					if (colorOf(rightOf(sib)) == BLACK) {
+				}
+				else
+				{
+					if (colorOf(rightOf(sib)) == BLACK)
+					{
 						setColor(leftOf(sib), BLACK);
 						setColor(sib, RED);
 						rotateRight(sib);
@@ -308,20 +381,27 @@ public class RBTree {
 					rotateLeft(parentOf(x));
 					x = root;
 				}
-			} else { /* symmetric */
+			}
+			else
+			{ /* symmetric */
 				RBTreeNode sib = leftOf(parentOf(x));
-				if (colorOf(sib) == RED) {
+				if (colorOf(sib) == RED)
+				{
 					setColor(sib, BLACK);
 					setColor(parentOf(x), RED);
 					rotateRight(parentOf(x));
 					sib = leftOf(parentOf(x));
 				}
 				if (colorOf(rightOf(sib)) == BLACK
-						&& colorOf(leftOf(sib)) == BLACK) {
+						&& colorOf(leftOf(sib)) == BLACK)
+				{
 					setColor(sib, RED);
 					x = parentOf(x);
-				} else {
-					if (colorOf(leftOf(sib)) == BLACK) {
+				}
+				else
+				{
+					if (colorOf(leftOf(sib)) == BLACK)
+					{
 						setColor(rightOf(sib), BLACK);
 						setColor(sib, RED);
 						rotateLeft(sib);
@@ -336,17 +416,20 @@ public class RBTree {
 			}
 		}
 
-		if (x != null && x.c != BLACK) {
+		if (x != null && x.c != BLACK)
+		{
 			x.c = BLACK;
 		}
 	}
 
-	private RBTreeNode deleteNode(RBTreeNode p) {
+	private RBTreeNode deleteNode(RBTreeNode p)
+	{
 		/*
 		 * If strictly internal, copy successor's element to p and then make p
 		 * point to successor
 		 */
-		if (p.l != null && p.r != null) {
+		if (p.l != null && p.r != null)
+		{
 			RBTreeNode s = successor(p);
 			p.k = s.k;
 			p.v = s.v;
@@ -356,15 +439,21 @@ public class RBTree {
 		/* Start fixup at replacement node, if it exists */
 		RBTreeNode replacement = (p.l != null) ? p.l : p.r;
 
-		if (replacement != null) {
+		if (replacement != null)
+		{
 			/* Link replacement to parent */
 			replacement.p = p.p;
 			RBTreeNode pp = p.p;
-			if (pp == null) {
+			if (pp == null)
+			{
 				root = replacement;
-			} else if (p == pp.l) {
+			}
+			else if (p == pp.l)
+			{
 				pp.l = replacement;
-			} else {
+			}
+			else
+			{
 				pp.r = replacement;
 			}
 
@@ -374,20 +463,30 @@ public class RBTree {
 			p.p = null;
 
 			/* Fix replacement */
-			if (p.c == BLACK) {
+			if (p.c == BLACK)
+			{
 				fixAfterDeletion(replacement);
 			}
-		} else if (p.p == null) { /* return if we are the only node */
+		}
+		else if (p.p == null)
+		{ /* return if we are the only node */
 			root = null;
-		} else { /* No children. Use self as phantom replacement and unlink */
-			if (p.c == BLACK) {
+		}
+		else
+		{ /* No children. Use self as phantom replacement and unlink */
+			if (p.c == BLACK)
+			{
 				fixAfterDeletion(p);
 			}
 			RBTreeNode pp = p.p;
-			if (pp != null) {
-				if (p == pp.l) {
+			if (pp != null)
+			{
+				if (p == pp.l)
+				{
 					pp.l = null;
-				} else if (p == pp.r) {
+				}
+				else if (p == pp.r)
+				{
 					pp.r = null;
 				}
 				p.p = null;
@@ -402,10 +501,13 @@ public class RBTree {
 
 	/* firstEntry */
 
-	private RBTreeNode firstEntry() {
+	private RBTreeNode firstEntry()
+	{
 		RBTreeNode p = root;
-		if (p != null) {
-			while (p.l != null) {
+		if (p != null)
+		{
+			while (p.l != null)
+			{
 				p = p.l;
 			}
 		}
@@ -414,45 +516,55 @@ public class RBTree {
 
 	/* verifyRedBlack */
 
-	private int verifyRedBlack(RBTreeNode root, int depth) {
+	private int verifyRedBlack(RBTreeNode root, int depth)
+	{
 		int height_left;
 		int height_right;
 
-		if (root == null) {
+		if (root == null)
+		{
 			return 1;
 		}
 
 		height_left = verifyRedBlack(root.l, depth + 1);
 		height_right = verifyRedBlack(root.r, depth + 1);
-		if (height_left == 0 || height_right == 0) {
+		if (height_left == 0 || height_right == 0)
+		{
 			return 0;
 		}
-		if (height_left != height_right) {
+		if (height_left != height_right)
+		{
 			System.out.println(" Imbalace @depth = " + depth + " : "
 					+ height_left + " " + height_right);
 		}
 
-		if (root.l != null && root.l.p != root) {
+		if (root.l != null && root.l.p != root)
+		{
 			System.out.println(" lineage");
 		}
-		if (root.r != null && root.r.p != root) {
+		if (root.r != null && root.r.p != root)
+		{
 			System.out.println(" lineage");
 		}
 
 		/* Red-Black alternation */
-		if (root.c == RED) {
-			if (root.l != null && root.l.c != BLACK) {
+		if (root.c == RED)
+		{
+			if (root.l != null && root.l.c != BLACK)
+			{
 				System.out.println("VERIFY in verifyRedBlack");
 				return 0;
 			}
 
-			if (root.r != null && root.r.c != BLACK) {
+			if (root.r != null && root.r.c != BLACK)
+			{
 				System.out.println("VERIFY in verifyRedBlack");
 				return 0;
 			}
 			return height_left;
 		}
-		if (root.c != BLACK) {
+		if (root.c != BLACK)
+		{
 			System.out.println("VERIFY in verifyRedBlack");
 			return 0;
 		}
@@ -461,7 +573,8 @@ public class RBTree {
 	}
 
 	/* compareKeysDefault */
-	private int compare(int a, int b) {
+	private int compare(int a, int b)
+	{
 		return a - b;
 	}
 
@@ -475,20 +588,25 @@ public class RBTree {
 	 * ========================================================
 	 * ===================== long rbtree_verify (rbtree_t* s, long verbose);
 	 */
-	public int verify(int verbose) {
-		if (root == null) {
+	public int verify(int verbose)
+	{
+		if (root == null)
+		{
 			return 1;
 		}
-		if (verbose != 0) {
+		if (verbose != 0)
+		{
 			System.out.println("Integrity check: ");
 		}
 
-		if (root.p != null) {
+		if (root.p != null)
+		{
 			System.out.println("  (WARNING) root = " + root + " parent = "
 					+ root.p);
 			return -1;
 		}
-		if (root.c != BLACK) {
+		if (root.c != BLACK)
+		{
 			System.out.println("  (WARNING) root = " + root + " color = "
 					+ root.c);
 		}
@@ -496,21 +614,26 @@ public class RBTree {
 		/* Weak check of binary-tree property */
 		int ctr = 0;
 		RBTreeNode its = firstEntry();
-		while (its != null) {
+		while (its != null)
+		{
 			ctr++;
 			RBTreeNode child = its.l;
-			if (child != null && child.p != its) {
+			if (child != null && child.p != its)
+			{
 				System.out.println("bad parent");
 			}
 			child = its.r;
-			if (child != null && child.p != its) {
+			if (child != null && child.p != its)
+			{
 				System.out.println("Bad parent");
 			}
 			RBTreeNode nxt = successor(its);
-			if (nxt == null) {
+			if (nxt == null)
+			{
 				break;
 			}
-			if (compare(its.k, nxt.k) >= 0) {
+			if (compare(its.k, nxt.k) >= 0)
+			{
 				System.out.println("Key order " + its + " (" + its.k + " "
 						+ its.v + ") " + nxt + " (" + nxt.k + " " + nxt.v
 						+ ") ");
@@ -520,7 +643,8 @@ public class RBTree {
 		}
 
 		int vfy = verifyRedBlack(root, 0);
-		if (verbose != 0) {
+		if (verbose != 0)
+		{
 			System.out.println(" Nodes = " + ctr + " Depth = " + vfy);
 		}
 
@@ -535,9 +659,11 @@ public class RBTree {
 	 * =================== rbtree_t* rbtree_alloc (long (*compare)(const void*,
 	 * const void*));
 	 */
-	public static RBTree alloc(int compID) {
+	public static RBTree alloc(int compID)
+	{
 		RBTree n = new RBTree();
-		if (n != null) {
+		if (n != null)
+		{
 			n.compID = compID;
 			n.root = null;
 		}
@@ -559,10 +685,12 @@ public class RBTree {
 	 * =============================================== bool_t rbtree_insert
 	 * (rbtree_t* r, void* key, void* val);
 	 */
-	public boolean insert(int key, Object val) {
+	public boolean insert(int key, Object val)
+	{
 		RBTreeNode node = new RBTreeNode();
 		RBTreeNode ex = insert(key, val, node);
-		if (ex != null) {
+		if (ex != null)
+		{
 			node = null;
 		}
 		return ex == null;
@@ -574,11 +702,13 @@ public class RBTree {
 	 * ========================================================
 	 * ===================== bool_t rbtree_delete (rbtree_t* r, void* key);
 	 */
-	public boolean remove(int key) {
+	public boolean remove(int key)
+	{
 		RBTreeNode node = null;
 		node = lookup(key);
 
-		if (node != null) {
+		if (node != null)
+		{
 			node = deleteNode(node);
 		}
 		// if(node != null) {
@@ -594,10 +724,12 @@ public class RBTree {
 	 * ================================================================= bool_t
 	 * rbtree_update (rbtree_t* r, void* key, void* val);
 	 */
-	public boolean update(int key, Object val) {
+	public boolean update(int key, Object val)
+	{
 		RBTreeNode nn = new RBTreeNode();
 		RBTreeNode ex = insert(key, val, nn);
-		if (ex != null) {
+		if (ex != null)
+		{
 			ex.v = val;
 			nn = null;
 			return true;
@@ -611,26 +743,33 @@ public class RBTree {
 	 * ============================================================
 	 * ================= void* rbtree_get (rbtree_t* r, void* key);
 	 */
-	public Object find(int key) {
+	public Object find(int key)
+	{
 		RBTreeNode n = lookup(key);
-		if (n != null) {
+		if (n != null)
+		{
 			Object val = n.v;
 			return val;
 		}
 		return null;
 	}
 
-	public <T> T find(Filter<T> f) {
+	public <T> T find(Filter<T> f)
+	{
 		Stack<RBTreeNode> stack = new java.util.Stack<RBTreeNode>();
 		if (root != null)
 			stack.push(root);
-		while (!stack.isEmpty()) {
+		while (!stack.isEmpty())
+		{
 			RBTreeNode n = stack.pop();
 			T v = (T) n.v;
-			if (f.filter(v)) {
-//				return ((Copyable<T>) v).copy();
+			if (f.filter(v))
+			{
+				// return ((Copyable<T>) v).copy();
 				return v;
-			} else {
+			}
+			else
+			{
 				RBTreeNode l = n.l;
 				if (l != null)
 					stack.push(l);
@@ -642,16 +781,18 @@ public class RBTree {
 		return null;
 	}
 
-	public <T> List<T> findAll(Filter<T> f) {
+	public <T> List<T> findAll(Filter<T> f)
+	{
 		Stack<RBTreeNode> stack = new java.util.Stack<RBTreeNode>();
 		List<T> results = new java.util.LinkedList<T>();
 		if (root != null)
 			stack.push(root);
-		while (!stack.isEmpty()) {
+		while (!stack.isEmpty())
+		{
 			RBTreeNode n = stack.pop();
 			T v = (T) n.v;
 			if (f.filter(v))
-//				results.add(((Copyable<T>)v).copy());
+				// results.add(((Copyable<T>)v).copy());
 				results.add(v);
 			RBTreeNode l = n.l;
 			if (l != null)
@@ -669,7 +810,8 @@ public class RBTree {
 	 * ======================================================
 	 * ======================= bool_t rbtree_contains (rbtree_t* r, void* key);
 	 */
-	public boolean contains(int key) {
+	public boolean contains(int key)
+	{
 		RBTreeNode n = lookup(key);
 
 		return (n != null);

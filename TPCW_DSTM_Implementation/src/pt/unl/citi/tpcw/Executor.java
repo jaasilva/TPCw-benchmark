@@ -40,7 +40,8 @@ import pt.unl.citi.tpcw.util.HashMap;
 import pt.unl.citi.tpcw.util.LastOrders;
 import pt.unl.citi.tpcw.util.RBTree;
 
-public class Executor implements DatabaseExecutorInterface {
+public class Executor implements DatabaseExecutorInterface
+{
 	/* Database */
 	@Bootstrap(id = 1)
 	// static RBTree countries;
@@ -76,13 +77,15 @@ public class Executor implements DatabaseExecutorInterface {
 	// static RBTree shopCarts;
 	static HashMap<Integer, ShoppingCart> shopCarts;
 
-	public Executor(TPM_counter tpm_counter) {
+	public Executor(TPM_counter tpm_counter)
+	{
 		this.counter = tpm_counter;
 	}
 
 	// @Atomic
 	private void createTrees(final int num_countries, final int num_authors,
-			final int num_customers, final int num_items) {
+			final int num_customers, final int num_items)
+	{
 		// countries = new RBTree();
 		createCountries(num_countries);
 		System.out.println("COUNTRIES created.");
@@ -115,116 +118,137 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void createShoppingCarts(final int num_customers) {
+	private final void createShoppingCarts(final int num_customers)
+	{
 		// shopCarts = new RBTree();
 		shopCarts = new HashMap<Integer, ShoppingCart>();
 	}
 
 	@Atomic
-	private final void createCcxact() {
+	private final void createCcxact()
+	{
 		ccXacts = new RBTree();
 		// ccXacts = new HashMap<Integer, CCXact>();
 	}
 
 	@Atomic
-	private final void createItemsByTitle() {
+	private final void createItemsByTitle()
+	{
 		itemsByTitle = new HashMap<String, List<Item>>();
 	}
 
 	@Atomic
-	private final void createItemsByAuthorLastName() {
+	private final void createItemsByAuthorLastName()
+	{
 		itemsByAuthorLastName = new HashMap<String, List<Item>>();
 	}
 
 	@Atomic
-	private final void createItemsBySubject() {
+	private final void createItemsBySubject()
+	{
 		itemsBySubject = new HashMap<String, List<Item>>(25); // # dif. subj.
 	}
 
 	@Atomic
-	private final void createItems(final int num_items) {
+	private final void createItems(final int num_items)
+	{
 		items = new Item[num_items];
 	}
 
 	@Atomic
-	private final void createLastCustomerOrders(final int num_customers) {
+	private final void createLastCustomerOrders(final int num_customers)
+	{
 		lastCustomerOrder = new HashMap<Integer, Order>(num_customers);
 	}
 
 	@Atomic
-	private final Order getCustomerLastOrder(final int customer) {
+	private final Order getCustomerLastOrder(final int customer)
+	{
 		return lastCustomerOrder.get(customer);
 	}
 
 	@Atomic
-	private final void createLastOrders() {
+	private final void createLastOrders()
+	{
 		lastOrders = new LastOrders();
 	}
 
 	@Atomic
-	private final void createOrders() {
+	private final void createOrders()
+	{
 		orders = new RBTree();
 		// orders = new HashMap<Integer, Order>();
 	}
 
 	@Atomic
-	private final void createCustomers(final int num_customers) {
+	private final void createCustomers(final int num_customers)
+	{
 		customers = new RBTree();
 		// customers = new HashMap<Integer, Customer>(num_customers);
 	}
 
 	@Atomic
-	private final void createAddresses() {
+	private final void createAddresses()
+	{
 		addresses = new RBTree();
 	}
 
 	@Atomic
-	private final void createAuthors(final int num_authors) {
+	private final void createAuthors(final int num_authors)
+	{
 		authors = new Author[num_authors];
 	}
 
 	@Atomic
-	private final void createCountries(final int num_countries) {
+	private final void createCountries(final int num_countries)
+	{
 		countries = new Country[num_countries];
 	}
 
 	@Atomic
-	public static final void insertCountry(int key, Country val) {
+	public static final void insertCountry(int key, Country val)
+	{
 		// countries.insert(key, val);
 		countries[key] = val;
 	}
 
 	// @Atomic
-	public static final Country getCountry(int key) {
+	public static final Country getCountry(int key)
+	{
 		// return (Country) countries.find(key);
 		return countries[key];
 	}
 
 	// @Atomic
-	public static final Author getAuthor(int key) {
+	public static final Author getAuthor(int key)
+	{
 		// return (Author) authors.find(key);
 		return authors[key];
 	}
 
 	@Atomic
-	public static final void insertAddress(int key, Address val) {
+	public static final void insertAddress(int key, Address val)
+	{
 		final boolean b = addresses.insert(key, val);
 		if (!b)
 			throw new Error("Address(" + key + ") already exists.");
 	}
 
 	@Atomic
-	public static final Address getAddress(int key) {
+	public static final Address getAddress(int key)
+	{
 		return (Address) addresses.find(key);
 	}
 
 	@Atomic
-	public static final Address getAddress(Filter<Address> f) {
+	public static final Address getAddress(Filter<Address> f)
+	{
 		return addresses.find(f);
 	}
 
 	@Atomic
-	public static final void insertCustomer(int key, Customer val) {
+	public static final void insertCustomer(int key, Customer val)
+	{
 		final boolean b = customers.insert(key, val);
 		// final boolean b = customers.put(key, val);
 		if (!b)
@@ -232,28 +256,33 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	public static final Customer getCustomer(int key) {
+	public static final Customer getCustomer(int key)
+	{
 		return (Customer) customers.find(key);
 		// return customers.get(key);
 	}
 
 	@Atomic
-	public static final void insertAuthor(int key, Author val) {
+	public static final void insertAuthor(int key, Author val)
+	{
 		// authors.insert(key, val);
 		authors[key] = val;
 	}
 
 	// @Atomic
-	public static final List<Author> getAuthors() {
+	public static final List<Author> getAuthors()
+	{
 		final List<Author> results = new java.util.LinkedList<Author>();
-		for (int i = 0; i < authors.length; i++) {
+		for (int i = 0; i < authors.length; i++)
+		{
 			results.add(authors[i]);
 		}
 		return results;
 	}
 
 	@Atomic
-	public static final void insertItem(int key, Item val) {
+	public static final void insertItem(int key, Item val)
+	{
 		// items.insert(key, val);
 		items[key] = val;
 		// List<Item> list;
@@ -287,22 +316,26 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	// @Atomic
-	public static final Item getItem(int key) {
+	public static final Item getItem(int key)
+	{
 		// return (Item) items.find(key);
 		return items[key];
 	}
 
 	// @Atomic
-	public static final List<Item> getItems() {
+	public static final List<Item> getItems()
+	{
 		final List<Item> results = new java.util.LinkedList<Item>();
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < items.length; i++)
+		{
 			results.add(items[i]);
 		}
 		return results;
 	}
 
 	@Atomic
-	public static final void insertOrder(int key, Order val) {
+	public static final void insertOrder(int key, Order val)
+	{
 		final boolean b = orders.insert(key, val);
 		// final boolean b = orders.put(key, val);
 		if (!b)
@@ -317,7 +350,8 @@ public class Executor implements DatabaseExecutorInterface {
 	// }
 
 	@Atomic
-	public static final void insertOrderLine(int key, OrderLine val) {
+	public static final void insertOrderLine(int key, OrderLine val)
+	{
 		final Order order = (Order) orders.find(val.OL_O_ID);
 		// final Order order = orders.get(val.OL_O_ID);
 		// order.orderLines.insert(key, val);
@@ -331,13 +365,15 @@ public class Executor implements DatabaseExecutorInterface {
 	// }
 
 	@Atomic
-	public static final CCXact getCCXact(int key) {
+	public static final CCXact getCCXact(int key)
+	{
 		return (CCXact) ccXacts.find(key);
 		// return ccXacts.get(key);
 	}
 
 	@Atomic
-	public static final void insertCcXact(int key, CCXact val) {
+	public static final void insertCcXact(int key, CCXact val)
+	{
 		final boolean b = ccXacts.insert(key, val);
 		// final boolean b = ccXacts.put(key, val);
 		if (!b)
@@ -345,7 +381,8 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	public static final void insertShoppingCart(int key, ShoppingCart val) {
+	public static final void insertShoppingCart(int key, ShoppingCart val)
+	{
 		// final boolean b = shopCarts.insert(key, val);
 		final boolean b = shopCarts.put(key, val);
 		if (!b)
@@ -353,20 +390,23 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	public static final ShoppingCart getShoppingCart(int key) {
+	public static final ShoppingCart getShoppingCart(int key)
+	{
 		// return (ShoppingCart) shopCarts.find(key);
 		return shopCarts.get(key);
 	}
 
 	@Atomic
 	public static final ShoppingCartLine getShoppingCartLine(ShoppingCart cart,
-			int key) {
+			int key)
+	{
 		return (ShoppingCartLine) cart.cartLines.find(key);
 	}
 
 	@Atomic
 	public static final List<ShoppingCartLine> getShoppingCartLines(
-			ShoppingCart cart, Filter<ShoppingCartLine> f) {
+			ShoppingCart cart, Filter<ShoppingCartLine> f)
+	{
 		return cart.cartLines.findAll(f);
 	}
 
@@ -402,18 +442,21 @@ public class Executor implements DatabaseExecutorInterface {
 
 	@Override
 	public void start(WorkloadGeneratorInterface workload,
-			BenchmarkNodeID nodeId, int operation_number, ResultHandler handler) {
+			BenchmarkNodeID nodeId, int operation_number, ResultHandler handler)
+	{
 		// TODO Auto-generated method stub
 		this.node_id = nodeId.getId();
 		client_result_handler = handler;
 		this.num_operations = operation_number;
 		int r = random.nextInt(100);
 		long g_init_time = System.nanoTime();
-		for (int operation = 0; operation < operation_number; operation++) {
+		for (int operation = 0; operation < operation_number; operation++)
+		{
 
 			// long g_init_time = System.currentTimeMillis();
 
-			try {
+			try
+			{
 				Operation op = workload.getNextOperation();
 				// long init_time = System.currentTimeMillis();
 				long init_time = System.nanoTime();
@@ -425,18 +468,25 @@ public class Executor implements DatabaseExecutorInterface {
 
 				simulatedDelay = ThinkTime.getThinkTime();
 
-				if (simulatedDelay > 0) {
+				if (simulatedDelay > 0)
+				{
 					Thread.sleep(simulatedDelay);
 				}
 
-			} catch (NoSuchFieldException e) {
+			}
+			catch (NoSuchFieldException e)
+			{
 				System.out.println("[ERROR:] THIS OPERATION DOES NOT EXIST: "
 						+ e.getMessage());
-			} catch (InterruptedException e) {
+			}
+			catch (InterruptedException e)
+			{
 				System.out
 						.println("[ERROR:] THINK TIME AFTER METHOD EXECUTION INTERRUPTED: "
 								+ e.getMessage());
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
 			}
 			// long end_time = System.currentTimeMillis();
@@ -461,8 +511,10 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Override
-	public void execute(Operation op) throws Exception {
-		if (op == null) {
+	public void execute(Operation op) throws Exception
+	{
+		if (op == null)
+		{
 			System.out.println("[ERROR]: NULL OPERATION");
 			return;
 		}
@@ -470,53 +522,78 @@ public class Executor implements DatabaseExecutorInterface {
 		String method_name = op.getOperation();
 		// System.out.println("Executor will execute " + method_name);
 
-		if (method_name.equalsIgnoreCase(OP_POPULATE)) {
+		if (method_name.equalsIgnoreCase(OP_POPULATE))
+		{
 			createTrees(Constants.NUM_COUNTRIES, Constants.NUM_AUTHORS,
 					Constants.NUM_CUSTOMERS, Constants.NUM_ITEMS);
-		} else if (method_name.equalsIgnoreCase("OP_HOME")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_HOME"))
+		{
 			int costumer = (Integer) op.getParameter("COSTUMER");
 			int item_id = (Integer) op.getParameter("ITEM");
 			HomeOperation(costumer, item_id);
-		} else if (method_name.equalsIgnoreCase("OP_NEW_PRODUCTS")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_NEW_PRODUCTS"))
+		{
 			String field = (String) op.getParameter("FIELD");
 			newProducts(field);
-		} else if (method_name.equalsIgnoreCase("OP_BEST_SELLERS")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_BEST_SELLERS"))
+		{
 			String field = (String) op.getParameter("FIELD");
 			BestSellers(field);
-		} else if (method_name.equalsIgnoreCase("OP_ITEM_INFO")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_ITEM_INFO"))
+		{
 			int id = (Integer) op.getParameter("ITEM");
 			productDetail(id);
-		} else if (method_name.equalsIgnoreCase("OP_SEARCH")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_SEARCH"))
+		{
 			String term = (String) op.getParameter("TERM");
 			String field = (String) op.getParameter("FIELD");
 			doSearch(term, field);
-		} else if (method_name.equalsIgnoreCase("OP_REGISTER")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_REGISTER"))
+		{
 			String customer = (String) op.getParameter("CUSTOMER");
 			int id = getIDfromString(customer, Constants.NUM_CUSTOMERS);
 			int process_id = getProcessId(customer);
 			CustomerRegistration(process_id, id);
-		} else if (method_name.equalsIgnoreCase("OP_LOGIN")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_LOGIN"))
+		{
 			String customer = (String) op.getParameter("CUSTOMER");
 			int id = Integer.parseInt(customer);
 			refreshSession(id);
-		} else if (method_name.equalsIgnoreCase("OP_ORDER_INQUIRY")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_ORDER_INQUIRY"))
+		{
 			String customer = (String) op.getParameter("CUSTOMER");
 			int customer_id = Integer.parseInt(customer);
 			OrderInquiry(customer_id);
-		} else if (method_name.equalsIgnoreCase("OP_ADMIN_CHANGE")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_ADMIN_CHANGE"))
+		{
 			int id = (Integer) op.getParameter("ITEM");
 			AdminChange(id);
-		} else if (method_name.equalsIgnoreCase("OP_SHOPPING_CART")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_SHOPPING_CART"))
+		{
 			boolean create = (Boolean) op.getParameter("CREATE");
 			int item_id = (Integer) op.getParameter("ITEM");
 			String cart_id = (String) op.getParameter("CART");
 			int id = getIDfromString(cart_id);
 			shoppingCartInteraction(item_id, create, id);
-		} else if (method_name.equalsIgnoreCase("OP_BUY_REQUEST")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_BUY_REQUEST"))
+		{
 			String id = (String) op.getParameter("CART");
 			int cart_id = getIDfromString(id);
 			BuyRequest(cart_id);
-		} else if (method_name.equalsIgnoreCase("OP_BUY_CONFIRM")) {
+		}
+		else if (method_name.equalsIgnoreCase("OP_BUY_CONFIRM"))
+		{
 			String cart = (String) op.getParameter("CART");
 			String custumer = (String) op.getParameter("CUSTOMER");
 			int cust_id = Integer.parseInt(custumer.trim());
@@ -529,7 +606,8 @@ public class Executor implements DatabaseExecutorInterface {
 
 	}
 
-	public final void HomeOperation(final int c_id, final int i_id) {
+	public final void HomeOperation(final int c_id, final int i_id)
+	{
 		// 2.3.3.1 If this User is a Customer and its C_ID is known, then the
 		// SUT obtains the following information about the Customer:
 		// ? C_FNAME or SC_C_FNAME if the shopping session exists for this
@@ -546,7 +624,8 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void promotionalProcessing(final Item it) {
+	private final void promotionalProcessing(final Item it)
+	{
 		final String thumb1 = getItem(it.I_RELATED1).I_THUMBNAIL;
 		final String thumb2 = getItem(it.I_RELATED2).I_THUMBNAIL;
 		final String thumb3 = getItem(it.I_RELATED3).I_THUMBNAIL;
@@ -554,7 +633,8 @@ public class Executor implements DatabaseExecutorInterface {
 		final String thumb5 = getItem(it.I_RELATED5).I_THUMBNAIL;
 	}
 
-	private final void newProducts(final String subject) {
+	private final void newProducts(final String subject)
+	{
 		// 2.12.3.1 Of the entire set of (I_ID, I_TITLE) pairs for items on the
 		// selected subject, sorted by descending I_PUB_DATE and ascending
 		// I_TITLE, the first 50 pairs (or less if the entire set contains less
@@ -573,26 +653,34 @@ public class Executor implements DatabaseExecutorInterface {
 		 * FIXME if we sort non-transactionally, which makes sense, then we
 		 * should return a list with copies instead of the real objects?
 		 */
-		Collections.sort(items, new java.util.Comparator<Item>() {
-			public int compare(Item o1, Item o2) {
+		Collections.sort(items, new java.util.Comparator<Item>()
+		{
+			public int compare(Item o1, Item o2)
+			{
 				final Date d1 = getPubDate(o1);
 				// final Date d1 = o1.I_PUB_DATE;
 				final Date d2 = getPubDate(o2);
 				// final Date d2 = o2.I_PUB_DATE;
-				if (d1.after(d2)) {
+				if (d1.after(d2))
+				{
 					return -1;
-				} else if (d1.equals(d2)) {
+				}
+				else if (d1.equals(d2))
+				{
 					final String t1 = o1.I_TITLE;
 					final String t2 = o2.I_TITLE;
 					return t1.compareTo(t2);
-				} else {
+				}
+				else
+				{
 					return 1;
 				}
 			}
 		});
 		final List<Item> fiftyItems = new java.util.LinkedList<Item>();
 		int n = 0;
-		for (Item i : items) {
+		for (Item i : items)
+		{
 			fiftyItems.add(i);
 			n++;
 			if (n == 50)
@@ -607,11 +695,13 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final Date getPubDate(final Item item) {
+	private final Date getPubDate(final Item item)
+	{
 		return item.I_PUB_DATE;
 	}
 
-	public final void BestSellers(final String subject) {
+	public final void BestSellers(final String subject)
+	{
 		// 2.13.3.1 Of the entire set of (I_ID, I_TITLE) pairs for items on the
 		// selected subject, the first 50 pairs (or less if the entire set
 		// contains less than 50 pairs) are obtained. The following search
@@ -651,8 +741,10 @@ public class Executor implements DatabaseExecutorInterface {
 		// break;
 		// }
 		final Map<Integer, Integer> id2qty = new java.util.TreeMap<Integer, Integer>();
-		for (Order o : orders) {
-			for (OrderLine ol : o.orderLines) {
+		for (Order o : orders)
+		{
+			for (OrderLine ol : o.orderLines)
+			{
 				final int id = ol.OL_I_ID;
 				final int qty = ol.OL_QTY;
 				final Integer v = id2qty.get(id);
@@ -662,9 +754,11 @@ public class Executor implements DatabaseExecutorInterface {
 		final List<Entry<Integer, Integer>> qties = new java.util.LinkedList<Entry<Integer, Integer>>(
 				id2qty.entrySet());
 		Collections.sort(qties,
-				new java.util.Comparator<Entry<Integer, Integer>>() {
+				new java.util.Comparator<Entry<Integer, Integer>>()
+				{
 					public int compare(Entry<Integer, Integer> o1,
-							Entry<Integer, Integer> o2) {
+							Entry<Integer, Integer> o2)
+					{
 						if (o1.getValue().intValue() > o2.getValue().intValue())
 							return 1;
 						else if (o1.getValue().intValue() == o2.getValue()
@@ -675,15 +769,18 @@ public class Executor implements DatabaseExecutorInterface {
 					}
 				});
 		final List<Item> items = new java.util.LinkedList<Item>();
-		for (Entry<Integer, Integer> e : qties) {
+		for (Entry<Integer, Integer> e : qties)
+		{
 			final Item i = getItem(e.getKey());
-			if (i.I_SUBJECT.equals(subject)) {
+			if (i.I_SUBJECT.equals(subject))
+			{
 				items.add(i);
 			}
 		}
 	}
 
-	public final void productDetail(final int i_id) {
+	public final void productDetail(final int i_id)
+	{
 		final Item i = getItem(i_id);
 		final String i_TITLE = i.I_TITLE;
 		final Author a = getAuthor(i.I_A_ID);
@@ -705,13 +802,15 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void productDetailAtomic(final Item i) {
+	private final void productDetailAtomic(final Item i)
+	{
 		final Date i_PUB_DATE = i.I_PUB_DATE;
 		final String i_IMAGE = i.I_IMAGE;
 		final double i_COST = i.I_COST;
 	}
 
-	public final void doSearch(final String type, final String search) {
+	public final void doSearch(final String type, final String search)
+	{
 		// 2.11.3.1 Of the entire set of (I_ID, I_TITLE) pairs for items that
 		// match the selection criteria, sorted by ascending I_TITLE, the first
 		// 50 pairs (or less if the entire set contains less than 50 pairs) are
@@ -736,16 +835,22 @@ public class Executor implements DatabaseExecutorInterface {
 		// database by any web interaction which completed at least 30 seconds
 		// before the Search Result web interaction was requested.
 
-		if (type.equalsIgnoreCase("AUTHOR")) {
+		if (type.equalsIgnoreCase("AUTHOR"))
+		{
 			doSearchAuthor(search);
-		} else if (type.equalsIgnoreCase("TITLE")) {
+		}
+		else if (type.equalsIgnoreCase("TITLE"))
+		{
 			doSearchTitle(search);
-		} else { // SUBJECT
+		}
+		else
+		{ // SUBJECT
 			doSearchSubject(search);
 		}
 	}
 
-	private final void doSearchAuthor(final String search) {
+	private final void doSearchAuthor(final String search)
+	{
 		final List<Item> items = itemsByAuthorLastName.get(search);
 		if (items == null)
 			// no items for such author
@@ -764,7 +869,8 @@ public class Executor implements DatabaseExecutorInterface {
 		doSearchReadItems(items);
 	}
 
-	private final void doSearchTitle(final String search) {
+	private final void doSearchTitle(final String search)
+	{
 		final List<Item> items = itemsByTitle.get(search);
 		if (items == null)
 			// no items for such title
@@ -783,7 +889,8 @@ public class Executor implements DatabaseExecutorInterface {
 		doSearchReadItems(items);
 	}
 
-	private final void doSearchSubject(final String search) {
+	private final void doSearchSubject(final String search)
+	{
 		final List<Item> items = itemsBySubject.get(search);
 		if (items == null)
 			// no items for such subject
@@ -802,9 +909,11 @@ public class Executor implements DatabaseExecutorInterface {
 		doSearchReadItems(items);
 	}
 
-	private final void doSearchReadItems(final List<Item> items) {
+	private final void doSearchReadItems(final List<Item> items)
+	{
 		int n = 0;
-		for (final Item i : items) {
+		for (final Item i : items)
+		{
 			final String i_TITLE = i.I_TITLE;
 			final Author a = authors[i.I_A_ID];
 			final String a_FNAME = a.A_FNAME;
@@ -815,12 +924,14 @@ public class Executor implements DatabaseExecutorInterface {
 		}
 	}
 
-	public void CustomerRegistration(int process_id, int id) {
+	public void CustomerRegistration(int process_id, int id)
+	{
 		Customer cust = createCostumer(process_id, id);
 		insertCustomer(cust.C_ID, cust);
 	}
 
-	public void refreshSession(int C_ID) {
+	public void refreshSession(int C_ID)
+	{
 		// 2.6.3.1 If RETURNING_FLAG is set to “Y”, then the SUT executes the
 		// following steps:
 		// ? Obtains the following information about the customer with
@@ -852,7 +963,8 @@ public class Executor implements DatabaseExecutorInterface {
 		// ? PASSWD is compared to C_PASSWD.
 	}
 
-	private final void refreshSessionReadCustomerInfo(final Customer customer) {
+	private final void refreshSessionReadCustomerInfo(final Customer customer)
+	{
 		final int c_id = customer.C_ID;
 		final String c_passwd = customer.C_PASSWD;
 		final String c_fname = customer.C_FNAME;
@@ -872,17 +984,21 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void refreshSessionLoginInfo(final Customer customer) {
+	private final void refreshSessionLoginInfo(final Customer customer)
+	{
 		customer.C_LOGIN = new Date(System.currentTimeMillis());
 		// 2 hours in milliseconds
 		customer.C_EXPIRATION = new Date(System.currentTimeMillis() + 7200000);
 	}
 
-	public void BuyRequest(int shopping_id) {
+	public void BuyRequest(int shopping_id)
+	{
 		ShoppingCart cart = getShoppingCart(shopping_id);
 		List<ShoppingCartLine> cartLines = getShoppingCartLines(cart,
-				new Filter<ShoppingCartLine>() {
-					public boolean filter(ShoppingCartLine obj) {
+				new Filter<ShoppingCartLine>()
+				{
+					public boolean filter(ShoppingCartLine obj)
+					{
 						return true;
 					};
 				});
@@ -910,10 +1026,12 @@ public class Executor implements DatabaseExecutorInterface {
 
 	@Atomic
 	private final void BuyRequestAtomicOp(final ShoppingCart cart,
-			final List<ShoppingCartLine> cartLines) {
+			final List<ShoppingCartLine> cartLines)
+	{
 		int sum_scl_cost_qty = 0;
 		int sum_scl_qty = 0;
-		for (ShoppingCartLine cartLine : cartLines) {
+		for (ShoppingCartLine cartLine : cartLines)
+		{
 			cartLine.SCL_COST = getItem(cartLine.SCL_I_ID).I_COST;
 			int scl_qty = cartLine.SCL_QTY;
 			sum_scl_cost_qty += cartLine.SCL_COST + scl_qty;
@@ -932,7 +1050,8 @@ public class Executor implements DatabaseExecutorInterface {
 		cart.SC_TOTAL = sc_sub_total + sc_ship_cost + sc_tax;
 	}
 
-	public void OrderInquiry(final int customer) {
+	public void OrderInquiry(final int customer)
+	{
 		// 2.9.3.2 The SUT obtains the following information about the last
 		// order of the customer based on its C_UNAME and within a single
 		// database transaction:
@@ -1009,13 +1128,15 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final Date getDate(Order order) {
+	private final Date getDate(Order order)
+	{
 		return order.O_DATE;
 	}
 
 	// @Atomic
 	private final void OrderInquiryInfo(final int c_ID, final Order last_order,
-			final CCXact xact) {
+			final CCXact xact)
+	{
 		final Customer c = getCustomer(c_ID);
 		final int o_id = last_order.O_ID;
 		final String c_fname = c.C_FNAME;
@@ -1043,7 +1164,8 @@ public class Executor implements DatabaseExecutorInterface {
 		final String ship_a_state = ship_a.ADDR_STATE;
 		final String ship_a_zip = ship_a.ADDR_ZIP;
 		final String ship_co_name = getCountry(ship_a.ADDR_CO_ID).CO_NAME;
-		for (OrderLine ol : last_order.orderLines) {
+		for (OrderLine ol : last_order.orderLines)
+		{
 			final Item i = getItem(ol.OL_I_ID);
 			final int i_id = i.I_ID;
 			final String i_title = i.I_TITLE;
@@ -1058,11 +1180,13 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private double getItemCost(final Item i) {
+	private double getItemCost(final Item i)
+	{
 		return i.I_COST;
 	}
 
-	public void AdminChange(int item_id) {
+	public void AdminChange(int item_id)
+	{
 		// 2.15.3.1 The SUT obtains the following data for the targeted item:
 		// ? I_SRP
 		// ? I_COST
@@ -1125,22 +1249,29 @@ public class Executor implements DatabaseExecutorInterface {
 		/* TODO */
 		final List<Order> last_orders = lastOrders.getList(10000);
 		final Set<Integer> customers = new java.util.HashSet<Integer>();
-		for (Order o : last_orders) {
+		for (Order o : last_orders)
+		{
 			boolean ordered = false;
-			for (OrderLine ol : o.orderLines) {
-				if (ol.OL_I_ID == item_id) {
+			for (OrderLine ol : o.orderLines)
+			{
+				if (ol.OL_I_ID == item_id)
+				{
 					ordered = true;
 					break;
 				}
 			}
-			if (ordered) {
+			if (ordered)
+			{
 				customers.add(o.O_C_ID);
 			}
 		}
 		final Map<Integer, Integer> id2qty = new java.util.TreeMap<Integer, Integer>();
-		for (Order o : last_orders) {
-			if (customers.contains(o.O_C_ID)) {
-				for (OrderLine ol : o.orderLines) {
+		for (Order o : last_orders)
+		{
+			if (customers.contains(o.O_C_ID))
+			{
+				for (OrderLine ol : o.orderLines)
+				{
 					if (ol.OL_I_ID == item_id)
 						continue;
 					final int id = ol.OL_I_ID;
@@ -1153,9 +1284,11 @@ public class Executor implements DatabaseExecutorInterface {
 		final List<Entry<Integer, Integer>> qties = new java.util.LinkedList<Entry<Integer, Integer>>(
 				id2qty.entrySet());
 		Collections.sort(qties,
-				new java.util.Comparator<Entry<Integer, Integer>>() {
+				new java.util.Comparator<Entry<Integer, Integer>>()
+				{
 					public int compare(Entry<Integer, Integer> o1,
-							Entry<Integer, Integer> o2) {
+							Entry<Integer, Integer> o2)
+					{
 						if (o1.getValue().intValue() > o2.getValue().intValue())
 							return 1;
 						else if (o1.getValue().intValue() == o2.getValue()
@@ -1167,24 +1300,33 @@ public class Executor implements DatabaseExecutorInterface {
 				});
 		final int size = qties.size();
 		int[] related = new int[5];
-		if (size >= 5) {
+		if (size >= 5)
+		{
 			for (int j = 0; j < 5; j++)
 				related[j] = qties.get(j).getKey();
-		} else if (1 <= size && size <= 4) {
+		}
+		else if (1 <= size && size <= 4)
+		{
 			int j;
-			for (j = 0; j < size; j++) {
+			for (j = 0; j < size; j++)
+			{
 				related[j] = qties.get(j).getKey();
 			}
-			for (; j < 5; j++) {
+			for (; j < 5; j++)
+			{
 				Arrays.sort(related, 0, j);
 				int r = (related[j - 1] + 1) % Constants.NUM_ITEMS;
-				while (Arrays.binarySearch(related, 0, j, r) >= 0) {
+				while (Arrays.binarySearch(related, 0, j, r) >= 0)
+				{
 					r = (r + 1) % Constants.NUM_ITEMS;
 				}
 				related[j] = r;
 			}
-		} else { // size == 0
-			for (int j = 0; j < 5; j++) {
+		}
+		else
+		{ // size == 0
+			for (int j = 0; j < 5; j++)
+			{
 				related[j] = (item_id + 7) % Constants.NUM_ITEMS;
 			}
 		}
@@ -1196,7 +1338,8 @@ public class Executor implements DatabaseExecutorInterface {
 	private final void AdminChangeUpdateItem(final Item i, final double i_cost,
 			final String i_image, final String i_thumb, final int i_related1,
 			final int i_related2, final int i_related3, final int i_related4,
-			final int i_related5) {
+			final int i_related5)
+	{
 		i.I_COST = i_cost;
 		i.I_IMAGE = i_image;
 		i.I_THUMBNAIL = i_thumb;
@@ -1209,16 +1352,19 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void AdminChangeReadItem(final Item i) {
+	private final void AdminChangeReadItem(final Item i)
+	{
 		final double i_cost = i.I_COST;
 		final String i_image = i.I_IMAGE;
 		final String i_thumb = i.I_THUMBNAIL;
 
 	}
 
-	public int shoppingCartInteraction(int i_id, boolean create, int SHOPPING_ID) {
+	public int shoppingCartInteraction(int i_id, boolean create, int SHOPPING_ID)
+	{
 		ShoppingCart cart = null;
-		if (create) {
+		if (create)
+		{
 			// 2.4.3.1 If the SHOPPING_ID is not known, then the SUT creates a
 			// new
 			// unique SHOPPING_ID. If there is no CART associated with this
@@ -1232,7 +1378,9 @@ public class Executor implements DatabaseExecutorInterface {
 			cart = new ShoppingCart(sC_SHOPPING_ID, 0, sC_DATE, 0, 0, 0, 0,
 					null, null, 0);
 			insertShoppingCart(cart.SC_SHOPPING_ID, cart);
-		} else {
+		}
+		else
+		{
 			cart = getShoppingCart(SHOPPING_ID);
 		}
 		// 2.4.3.3 If ADD_FLAG = "Y" or the CART is empty or (I_ID, I_QTY) pairs
@@ -1268,11 +1416,15 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	private final void shoppingCartAdd(final int i_id, final ShoppingCart cart) {
+	private final void shoppingCartAdd(final int i_id, final ShoppingCart cart)
+	{
 		ShoppingCartLine cartLine = getShoppingCartLine(cart, i_id);
-		if (cartLine != null) {
+		if (cartLine != null)
+		{
 			cartLine.SCL_QTY++;
-		} else {
+		}
+		else
+		{
 			final Item item = getItem(i_id);
 			final double i_cost = item.I_COST;
 			final double i_srp = item.I_SRP;
@@ -1284,7 +1436,8 @@ public class Executor implements DatabaseExecutorInterface {
 		}
 	}
 
-	public void BuyConfirm(int customer_id, int process_id, int cart_id) {
+	public void BuyConfirm(int customer_id, int process_id, int cart_id)
+	{
 		final Customer c = getCustomer(customer_id);
 		final ShoppingCart sc = getShoppingCart(cart_id);
 		int ship_addr_id = -1;
@@ -1292,14 +1445,17 @@ public class Executor implements DatabaseExecutorInterface {
 		// ? On a randomly selected 5% of the time, the shipping address is
 		// updated with (STREET_1, STREET_2, CITY, STATE, ZIP, COUNTRY)
 		// generated according to Clause 4.7.1
-		if (decision < 0.05) {
+		if (decision < 0.05)
+		{
 			final int id = getIDfromValues(node_id, process_id, addr_aux_id,
 					Constants.NUM_ADDRESSES);
 			addr_aux_id++;
 			Address address = generateAddress(id);
 			address = enterAddress(address);
 			ship_addr_id = address.ADDR_ID;
-		} else {
+		}
+		else
+		{
 			ship_addr_id = c.C_ADDR_ID;
 		}
 		final String o_ship_type = ship_types[random.nextInt(ship_types.length)];
@@ -1316,7 +1472,8 @@ public class Executor implements DatabaseExecutorInterface {
 	private final void BuyConfirmAtomicOp(int process_id, int cart_id,
 			final int ship_addr_id, final Customer c, final ShoppingCart sc,
 			final String o_ship_type, final String cx_type,
-			final int ship_days, final int expiry_days, final String status) {
+			final int ship_days, final int expiry_days, final String status)
+	{
 		// 2.7.3.3 The SUT executes the following steps as an atomic set of
 		// operations:
 		// <start atomic set>
@@ -1371,14 +1528,17 @@ public class Executor implements DatabaseExecutorInterface {
 		// more, then I_STOCK is decreased by SCL_QTY; otherwise I_STOCK is
 		// updated to (I_STOCK - SCL_QTY ) + 21.
 		final List<ShoppingCartLine> cartLines = getShoppingCartLines(sc,
-				new Filter<ShoppingCartLine>() {
-					public boolean filter(ShoppingCartLine obj) {
+				new Filter<ShoppingCartLine>()
+				{
+					public boolean filter(ShoppingCartLine obj)
+					{
 						return true;
 					}
 				});
 		int id = 0;
 		final double oL_DISCOUNT = c.C_DISCOUNT;
-		for (final ShoppingCartLine scl : cartLines) {
+		for (final ShoppingCartLine scl : cartLines)
+		{
 			final int oL_ID = id;
 			final int oL_O_ID = o_ID;
 			final int oL_I_ID = scl.SCL_I_ID;
@@ -1388,9 +1548,12 @@ public class Executor implements DatabaseExecutorInterface {
 					oL_DISCOUNT, oL_COMMENT);
 			order.orderLines.add(ol);
 			final Item i = getItem(oL_I_ID);
-			if (i.I_STOCK > oL_QTY + 10) {
+			if (i.I_STOCK > oL_QTY + 10)
+			{
 				i.I_STOCK -= oL_QTY;
-			} else {
+			}
+			else
+			{
 				i.I_STOCK = (i.I_STOCK - oL_QTY) + 21;
 			}
 			id++;
@@ -1433,13 +1596,15 @@ public class Executor implements DatabaseExecutorInterface {
 		sc.SC_DATE = new Date();
 	}
 
-	private int getProcessId(String id) {
+	private int getProcessId(String id)
+	{
 		String[] parts = id.trim().split("\\.");
 		int process_id = Integer.parseInt(parts[1]);
 		return process_id;
 	}
 
-	private int getIDfromString(String id) {
+	private int getIDfromString(String id)
+	{
 		String[] parts = id.trim().split("\\.");
 
 		int node_id = Integer.parseInt(parts[0]);
@@ -1459,7 +1624,8 @@ public class Executor implements DatabaseExecutorInterface {
 		return final_id;
 	}
 
-	private int getIDfromString(String id, int num) {
+	private int getIDfromString(String id, int num)
+	{
 		String[] parts = id.trim().split("\\.");
 
 		int node_id = Integer.parseInt(parts[0]);
@@ -1480,7 +1646,8 @@ public class Executor implements DatabaseExecutorInterface {
 		return final_id;
 	}
 
-	private Customer createCostumer(int process_id, int c_id) {
+	private Customer createCostumer(int process_id, int c_id)
+	{
 		final String name = (BenchmarkUtil.getRandomAString(8, 13) + " " + BenchmarkUtil
 				.getRandomAString(8, 15));
 		final String[] names = name.split(" ");
@@ -1517,7 +1684,8 @@ public class Executor implements DatabaseExecutorInterface {
 				c_YTD_PMT, c_BIRTHDATE, c_DATA);
 	}
 
-	public Address generateAddress(int id) {
+	public Address generateAddress(int id)
+	{
 		String ADDR_STREET1, ADDR_STREET2, ADDR_CITY, ADDR_STATE;
 		String ADDR_ZIP;
 		int country_id;
@@ -1532,7 +1700,8 @@ public class Executor implements DatabaseExecutorInterface {
 		return address;
 	}
 
-	private int getIDfromValues(int node_id, int process_id, int id_id, int num) {
+	private int getIDfromValues(int node_id, int process_id, int id_id, int num)
+	{
 		int length_proc = (this.one_node_clients + "").length();
 		int length_id = ((num + num_operations) + "").length();
 		int final_id = (int) (node_id * Math.pow(10,
@@ -1543,14 +1712,20 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Atomic
-	public Address enterAddress(final Address address) {
+	public Address enterAddress(final Address address)
+	{
 		// returns the address of the specified address. Adds a new address to
 		// the table if needed
-		Address existing_addr = getAddress(new Filter<Address>() {
-			public boolean filter(Address obj) {
-				if (obj == null) {
+		Address existing_addr = getAddress(new Filter<Address>()
+		{
+			public boolean filter(Address obj)
+			{
+				if (obj == null)
+				{
 					System.err.println("obj null");
-				} else {
+				}
+				else
+				{
 					if (obj.ADDR_CITY == null)
 						System.err.println("obj.ADDR_CITY null");
 					if (obj.ADDR_STATE == null)
@@ -1570,56 +1745,69 @@ public class Executor implements DatabaseExecutorInterface {
 						&& obj.ADDR_ZIP.equals(address.ADDR_ZIP);
 			}
 		});
-		if (existing_addr == null) {
+		if (existing_addr == null)
+		{
 			insertAddress(address.ADDR_ID, address);
 			return address;
-		} else {
+		}
+		else
+		{
 			return existing_addr;
 		}
 	}
 
 	@Override
 	public Object insert(String key, String path, Entity value)
-			throws Exception {
+			throws Exception
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void remove(String key, String path, String column) throws Exception {
+	public void remove(String key, String path, String column) throws Exception
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void update(String key, String path, String column, Object value,
-			String superfield) throws Exception {
+			String superfield) throws Exception
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public Object read(String key, String path, String column, String superfield)
-			throws Exception {
+			throws Exception
+	{
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public Map<String, Map<String, Object>> rangeQuery(String table,
-			List<String> fields, int limit) throws Exception {
+			List<String> fields, int limit) throws Exception
+	{
 		createIndexes();
 		Map<String, Map<String, Object>> result = new TreeMap<String, Map<String, Object>>();
-		if (table.equalsIgnoreCase("author")) {
+		if (table.equalsIgnoreCase("author"))
+		{
 			List<Author> all = getAuthors();
-			for (Author a : all) {
+			for (Author a : all)
+			{
 				TreeMap<String, Object> values = new TreeMap<String, Object>();
 				values.put("A_LNAME", a.A_LNAME);
 				result.put(Integer.toString(a.A_ID), values);
 			}
-		} else if (table.equalsIgnoreCase("item")) {
+		}
+		else if (table.equalsIgnoreCase("item"))
+		{
 			List<Item> all = getItems();
-			for (Item i : all) {
+			for (Item i : all)
+			{
 				TreeMap<String, Object> values = new TreeMap<String, Object>();
 				values.put("I_TITLE", i.I_TITLE);
 				result.put(Integer.toString(i.I_ID), values);
@@ -1630,20 +1818,25 @@ public class Executor implements DatabaseExecutorInterface {
 
 	private static boolean indexesCreated = false;
 
-	private final void createIndexes() {
+	private final void createIndexes()
+	{
 		if (indexesCreated)
 			return;
 		System.out.println("Creating indexes.");
 		List<Item> list;
-		for (final Item val : items) {
+		for (final Item val : items)
+		{
 			// subject index
 			System.out.print("\r");
 			System.out.print("Indexing item " + val.I_ID + " (subject)");
 			final String subject = val.I_SUBJECT;
-			if (!itemsBySubject.containsKey(subject)) {
+			if (!itemsBySubject.containsKey(subject))
+			{
 				list = new java.util.LinkedList<Item>();
 				itemsBySubject.put(subject, list);
-			} else {
+			}
+			else
+			{
 				list = itemsBySubject.get(subject);
 			}
 			list.add(val);
@@ -1651,10 +1844,13 @@ public class Executor implements DatabaseExecutorInterface {
 			System.out.print("\r");
 			System.out.print("Indexing item " + val.I_ID + " (author)");
 			final String lname = getAuthor(val.I_A_ID).A_LNAME;
-			if (!itemsByAuthorLastName.containsKey(lname)) {
+			if (!itemsByAuthorLastName.containsKey(lname))
+			{
 				list = new java.util.LinkedList<Item>();
 				itemsByAuthorLastName.put(lname, list);
-			} else {
+			}
+			else
+			{
 				list = itemsByAuthorLastName.get(lname);
 			}
 			list.add(val);
@@ -1662,19 +1858,25 @@ public class Executor implements DatabaseExecutorInterface {
 			System.out.print("\r");
 			System.out.print("Indexing item " + val.I_ID + " (title)");
 			final String title = val.I_TITLE;
-			if (!itemsByTitle.containsKey(title)) {
+			if (!itemsByTitle.containsKey(title))
+			{
 				list = new java.util.LinkedList<Item>();
 				itemsByTitle.put(title, list);
-			} else {
+			}
+			else
+			{
 				list = itemsByTitle.get(title);
 			}
 			list.add(val);
 		}
 		System.out.println("Indexes created.");
 		// subject index
-		for (List<Item> l : itemsBySubject.getValues()) {
-			Collections.sort(l, new java.util.Comparator<Item>() {
-				public int compare(final Item o1, final Item o2) {
+		for (List<Item> l : itemsBySubject.getValues())
+		{
+			Collections.sort(l, new java.util.Comparator<Item>()
+			{
+				public int compare(final Item o1, final Item o2)
+				{
 					final String t1 = o1.I_TITLE;
 					final String t2 = o2.I_TITLE;
 					return t1.compareTo(t2);
@@ -1682,9 +1884,12 @@ public class Executor implements DatabaseExecutorInterface {
 			});
 		}
 		// author index
-		for (List<Item> l : itemsByAuthorLastName.getValues()) {
-			Collections.sort(l, new java.util.Comparator<Item>() {
-				public int compare(final Item o1, final Item o2) {
+		for (List<Item> l : itemsByAuthorLastName.getValues())
+		{
+			Collections.sort(l, new java.util.Comparator<Item>()
+			{
+				public int compare(final Item o1, final Item o2)
+				{
 					final String t1 = o1.I_TITLE;
 					final String t2 = o2.I_TITLE;
 					return t1.compareTo(t2);
@@ -1692,9 +1897,12 @@ public class Executor implements DatabaseExecutorInterface {
 			});
 		}
 		// title index
-		for (List<Item> l : itemsByTitle.getValues()) {
-			Collections.sort(l, new java.util.Comparator<Item>() {
-				public int compare(final Item o1, final Item o2) {
+		for (List<Item> l : itemsByTitle.getValues())
+		{
+			Collections.sort(l, new java.util.Comparator<Item>()
+			{
+				public int compare(final Item o1, final Item o2)
+				{
 					final String t1 = o1.I_TITLE;
 					final String t2 = o2.I_TITLE;
 					return t1.compareTo(t2);
@@ -1706,32 +1914,37 @@ public class Executor implements DatabaseExecutorInterface {
 	}
 
 	@Override
-	public void truncate(String path) throws Exception {
+	public void truncate(String path) throws Exception
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void index(String key, String path, Object value) throws Exception {
+	public void index(String key, String path, Object value) throws Exception
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public void index(String key, String path, String indexed_key,
-			Map<String, Object> value) throws Exception {
+			Map<String, Object> value) throws Exception
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void closeClient() {
+	public void closeClient()
+	{
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public Map<String, String> getInfo() {
+	public Map<String, String> getInfo()
+	{
 		// TODO Auto-generated method stub
 		return new TreeMap<String, String>();
 	}

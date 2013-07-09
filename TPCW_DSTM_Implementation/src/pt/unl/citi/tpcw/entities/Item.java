@@ -1,19 +1,13 @@
 /*
  * *********************************************************************
- * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa.
- * All rights reserved.
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
+ * Copyright (c) 2011 Valter Balegas and Universidade Nova de Lisboa. All rights
+ * reserved. Licensed under the Apache License, Version 2.0 (the "License"); you
+ * may not use this file except in compliance with the License. You may obtain a
+ * copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
+ * required by applicable law or agreed to in writing, software distributed
+ * under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  * ********************************************************************
  */
 package pt.unl.citi.tpcw.entities;
@@ -23,7 +17,8 @@ import java.util.TreeMap;
 
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
-public final class Item implements Entity {
+public final class Item implements Entity
+{
 	public final int I_ID;
 	public final String I_TITLE;
 	public final int I_A_ID;
@@ -47,14 +42,16 @@ public final class Item implements Entity {
 	public final int I_PAGE;
 	public final String I_BACKING;
 	public final String I_DIMENSION;
-//	public final RBTree orderLines;
+
+	// public final RBTree orderLines;
 
 	public Item(int i_ID, String i_TITLE, int i_A_ID, Date i_PUB_DATE,
 			String i_PUBLISHER, String i_SUBJECT, String i_DESC,
 			int i_RELATED1, int i_RELATED2, int i_RELATED3, int i_RELATED4,
 			int i_RELATED5, String i_THUMBNAIL, String i_IMAGE, double i_SRP,
 			double i_COST, Date i_AVAIL, int i_STOCK, String i_ISBN,
-			int i_PAGE, String i_BACKING, String i_DIMENSION) {
+			int i_PAGE, String i_BACKING, String i_DIMENSION)
+	{
 		super();
 		I_ID = i_ID;
 		I_TITLE = i_TITLE;
@@ -79,14 +76,16 @@ public final class Item implements Entity {
 		I_PAGE = i_PAGE;
 		I_BACKING = i_BACKING;
 		I_DIMENSION = i_DIMENSION;
-//		orderLines = new RBTree();
+		// orderLines = new RBTree();
 	}
 
-	public TreeMap<String, Object> getValuesToInsert() {
+	public TreeMap<String, Object> getValuesToInsert()
+	{
 		throw new RuntimeException("Not implemented.");
 	}
 
-	public String getKeyName() {
+	public String getKeyName()
+	{
 		return "I_ID";
 	}
 }
