@@ -25,4 +25,10 @@ public class Constants
 	public static/* final */int NUM_COUNTRIES = 92; // this is constant. Never
 													// changes!
 
+	public static int CUSTOMER_MIN = 0;
+	public static int CUSTOMER_MAX = 0;
+	public static int ITEM_MIN = 0;
+	public static int ITEM_MAX = 0;
+	public static int ORDER_MIN = 0;
+	public static int ORDER_MAX = 0;
 }

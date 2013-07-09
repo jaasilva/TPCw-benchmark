@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.deuce.distribution.TribuDSTM;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.generic.Constants;
 import org.uminho.gsd.benchmarks.helpers.BenchmarkUtil;
@@ -33,6 +34,16 @@ import pt.unl.citi.tpcw.entities.OrderLine;
 /* Adapted from MySQL populator */
 public class Populator extends AbstractBenchmarkPopulator
 {
+	// XXX
+	public static int PR_GROUP_ID = TribuDSTM.getLocalGroup().getId();
+	public static int NUM_GROUPS = TribuDSTM.getNumGroups();
+	private static org.deuce.distribution.groupcomm.Address LOCAL_ADDR = TribuDSTM
+			.getLocalAddress();
+	private static org.deuce.distribution.groupcomm.Address MASTER_ADDR = TribuDSTM
+			.getLocalGroup().getAll().iterator().next();
+	public static boolean IS_GROUP_MASTER = LOCAL_ADDR.equals(MASTER_ADDR);
+	public static int SITE = Integer.getInteger("tribu.site");
+
 	/**
 	 * Time measurements
 	 */
@@ -159,6 +170,17 @@ public class Populator extends AbstractBenchmarkPopulator
 			return false;
 		}
 
+		// XXX
+		System.out.println("------------------------------------------------");
+		System.out.println("------------------------------------------------");
+		System.out.println("NODE: " + SITE + " GROUP: " + PR_GROUP_ID + " of "
+				+ NUM_GROUPS);
+		System.out.println("ADDR: " + LOCAL_ADDR + " MASTER ADDR: "
+				+ MASTER_ADDR);
+		System.out.println("AM I THE GROUP MASTER: " + IS_GROUP_MASTER);
+		System.out.println("------------------------------------------------");
+		System.out.println("------------------------------------------------");
+
 		if (error)
 		{
 			return false;
@@ -167,35 +189,120 @@ public class Populator extends AbstractBenchmarkPopulator
 		{
 			try
 			{
-				insertCountries(NUM_COUNTRIES);
+				if (SITE == 1) // master
+				{
+					System.out.println("COUNTRIES");
+					insertCountries(NUM_COUNTRIES); // XXX 1 node
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertAddresses(NUM_ADDRESSES, true);
+				insertAddresses(NUM_ADDRESSES, true); // XXX ??????????????????
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertCustomers(NUM_CUSTOMERS);
+				if (IS_GROUP_MASTER)
+				{
+					int sections = NUM_CUSTOMERS;
+					int firstSection = 0;
+					int rest = 0;
+
+					if (NUM_GROUPS == 1)
+					{
+						firstSection = NUM_CUSTOMERS;
+					}
+					else
+					{
+						sections = (int) Math.floor(NUM_CUSTOMERS / NUM_GROUPS);
+						rest = NUM_CUSTOMERS - (NUM_GROUPS * sections);
+						firstSection = sections + rest;
+					}
+					int size = PR_GROUP_ID == 0 ? firstSection : sections;
+					int base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size
+							: PR_GROUP_ID * size + rest;
+
+					Constants.CUSTOMER_MIN = base;
+					Constants.CUSTOMER_MAX = base + size;
+					System.out.println("CUSTOMERS base=" + base + " size="
+							+ size + " [" + Constants.CUSTOMER_MIN + ", "
+							+ Constants.CUSTOMER_MAX + "[");
+					insertCustomers(size, base); // XXX all nodes
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertAuthors(NUM_AUTHORS, true);
+				if (SITE == 1) // master
+				{
+					System.out.println("AUTHORS");
+					insertAuthors(NUM_AUTHORS, true); // XXX 1 node
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertItems(NUM_ITEMS);
+				if (IS_GROUP_MASTER)
+				{
+					int sections = NUM_ITEMS;
+					int firstSection = 0;
+					int rest = 0;
+
+					if (NUM_GROUPS == 1)
+					{
+						firstSection = NUM_ITEMS;
+					}
+					else
+					{
+						sections = (int) Math.floor(NUM_ITEMS / NUM_GROUPS);
+						rest = NUM_ITEMS - (NUM_GROUPS * sections);
+						firstSection = sections + rest;
+					}
+					int size = PR_GROUP_ID == 0 ? firstSection : sections;
+					int base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size
+							: PR_GROUP_ID * size + rest;
+
+					Constants.ITEM_MIN = base;
+					Constants.ITEM_MAX = base + size;
+					System.out.println("ITEMS base=" + base + " size=" + size
+							+ " [" + Constants.ITEM_MIN + ", "
+							+ Constants.ITEM_MAX + "[");
+					insertItems(size, base); // XXX all nodes??????????????????
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertOrder_and_CC_XACTS(NUM_ORDERS);
+				if (IS_GROUP_MASTER)
+				{
+					int sections = NUM_ITEMS;
+					int firstSection = 0;
+					int rest = 0;
+
+					if (NUM_GROUPS == 1)
+					{
+						firstSection = NUM_ORDERS;
+					}
+					else
+					{
+						sections = (int) Math.floor(NUM_ORDERS / NUM_GROUPS);
+						rest = NUM_ORDERS - (NUM_GROUPS * sections);
+						firstSection = sections + rest;
+					}
+					int size = PR_GROUP_ID == 0 ? firstSection : sections;
+					int base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size
+							: PR_GROUP_ID * size + rest;
+
+					Constants.ORDER_MIN = base;
+					Constants.ORDER_MAX = base + size;
+					System.out.println("ORDERS CC_XACTS base=" + base
+							+ " size=" + size + " [" + Constants.ORDER_MIN
+							+ ", " + Constants.ORDER_MAX + "[");
+					insertOrder_and_CC_XACTS(size, base); // XXX all nodes
+				}
 
 				System.out.println("***Finished***");
-
 			}
 			catch (InterruptedException ex)
 			{
@@ -497,7 +604,7 @@ public class Populator extends AbstractBenchmarkPopulator
 	/**
 	 * ************ Customers* **************
 	 */
-	public void insertCustomers(int n) throws InterruptedException
+	public void insertCustomers(int n, int _base) throws InterruptedException
 	{
 
 		int threads = num_threads;
@@ -523,7 +630,8 @@ public class Populator extends AbstractBenchmarkPopulator
 		for (int i = threads; i > 0; i--)
 		{
 
-			int base = (threads - i) * sections;
+			int base = _base + (threads - i) * sections;
+			System.out.println(">> " + i + " - " + base); // XXX
 			CustomerPopulator populator = null;
 			if (i == 0)
 			{
@@ -662,7 +770,7 @@ public class Populator extends AbstractBenchmarkPopulator
 				String c_DATA = BenchmarkUtil.getRandomAString(100, 500);
 				// insert(C_DATA, key, "Customer", "C_DATA", writeCon);
 
-				int c_ADDR_ID = addresses.get(rand.nextInt(addresses.size()));
+				int c_ADDR_ID = addresses.get(rand.nextInt(addresses.size())); // XXX
 				// insert(address.getAddr_id(), key, "Customer", "C_ADDR_ID",
 				// writeCon);
 
@@ -708,7 +816,7 @@ public class Populator extends AbstractBenchmarkPopulator
 	/**
 	 * ************ Items* **************
 	 */
-	public void insertItems(int n) throws InterruptedException
+	public void insertItems(int n, int _base) throws InterruptedException
 	{
 		int threads = num_threads;
 		int sections = n;
@@ -734,8 +842,8 @@ public class Populator extends AbstractBenchmarkPopulator
 		for (int i = threads; i > 0; i--)
 		{
 
-			int base = (threads - i) * sections;
-
+			int base = _base + (threads - i) * sections;
+			System.out.println(">> " + i + " - " + base); // XXX
 			ItemPopulator populator = null;
 			if (i == 0)
 			{
@@ -849,7 +957,7 @@ public class Populator extends AbstractBenchmarkPopulator
 
 				for (int z = 0; z < 5; z++)
 				{
-					i_RELATED[z] = rand.nextInt(NUM_ITEMS);
+					i_RELATED[z] = rand.nextInt(NUM_ITEMS); // XXX
 				}
 
 				i_PAGE = rand.nextInt(500) + 10;
@@ -1162,7 +1270,8 @@ public class Populator extends AbstractBenchmarkPopulator
 	/**
 	 * **************** Order and XACTS * ******************
 	 */
-	public void insertOrder_and_CC_XACTS(int n) throws InterruptedException
+	public void insertOrder_and_CC_XACTS(int n, int _base)
+			throws InterruptedException
 	{
 
 		int threads = num_threads;
@@ -1190,10 +1299,11 @@ public class Populator extends AbstractBenchmarkPopulator
 		for (int i = threads; i > 0; i--)
 		{
 
-			int base = (threads - i) * sections; // /code copy form above
-													// constructors, if
-													// reactivated please revise
-
+			int base = _base + (threads - i) * sections; // /code copy form
+															// above
+			// constructors, if
+			// reactivated please revise
+			System.out.println(">> " + i + " - " + base); // XXX
 			Order_and_XACTSPopulator populator = null;
 			if (i == 0)
 			{
@@ -1269,7 +1379,7 @@ public class Populator extends AbstractBenchmarkPopulator
 				int o_SHIP_ADDR_ID;
 				String o_STATUS;
 
-				o_C_ID = customers.get(rand.nextInt(customers.size()));
+				o_C_ID = customers.get(rand.nextInt(customers.size())); // XXX
 
 				GregorianCalendar call = new GregorianCalendar();
 				o_DATE = call.getTime();
@@ -1336,7 +1446,7 @@ public class Populator extends AbstractBenchmarkPopulator
 
 					oL_ID = i;
 
-					oL_I_ID = items.get(rand.nextInt(items.size()));
+					oL_I_ID = items.get(rand.nextInt(items.size())); // XXX
 					oL_O_ID = order.O_ID;
 
 					oL_QTY = rand.nextInt(4) + 1;

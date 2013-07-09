@@ -29,7 +29,6 @@ import java.util.TreeMap;
 
 public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 {
-
 	Logger logger = Logger.getLogger(TPCWWorkloadGeneration.class);
 
 	// The probability distribution
@@ -80,7 +79,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 			ProbabilityDistribution distribution, BenchmarkNodeID nodeID,
 			int personal_number, ProgressBar progressBar)
 	{
-
 		this.resultHandler = handler;
 		this.item_titles = items;
 
@@ -92,7 +90,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 		for (String operation : workload.keySet())
 		{
 			this.workload_values.put(operation, workload.get(operation));
-
 		}
 
 		this.distribution = distribution.getNewInstance();
@@ -104,18 +101,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 		this.private_id = personal_number;
 
 		rand = new Random();
-
-		// home
-		// shoppingCart
-		// register/login
-		// buy_request
-		// buy_confirm
-		// order_inquiry
-		// search
-		// new_products
-		// best_sellers
-		// product_detail
-		// admin_change
 
 		// prepare probabilities
 		double aggregated_probability = 0;
@@ -153,11 +138,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 		workload_values.put("shoppingCart", prob + aggregated_probability);
 		aggregated_probability += prob;
 
-		// //cheats
-		// double rest = 100 - aggregated_probability;
-		// prob = workload.get("shoppingCart");
-		// workload_values.put("shoppingCart", 100d);
-
 		// set buy options probabilities
 		double sc_prob = workload.get("shoppingCart");
 		double br_prob = workload.get("buy_request");
@@ -166,29 +146,17 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 		buy_confirm_prob = bc_prob / br_prob;
 	}
 
-	// home
-	// shoppingCart
-	// register/login
-	// buy_request
-	// buy_confirm
-	// order_inquiry
-	// search
-	// new_products
-	// best_sellers
-	// product_detail
-	// admin_change
-
-	int i1 = 0;
-	int i2 = 0;
-	int i3 = 0;
-	int i4 = 0;
-	int i5 = 0;
-	int i6 = 0;
-	int i7 = 0;
-	int i8 = 0;
-	int i9 = 0;
-	int i10 = 0;
-	int i11 = 0;
+	int i1 = 0; // home
+	int i2 = 0; // new_products
+	int i3 = 0; // best_sellers
+	int i4 = 0; // product_detail
+	int i5 = 0; // search
+	int i6 = 0; // register/login
+	int i7 = 0; // order_inquiry
+	int i8 = 0; // admin_change
+	int i9 = 0; // shoppingCart
+	int i10 = 0; // buy_request
+	int i11 = 0; // buy_confirm
 
 	String subject = "AUTHOR";// "SUBJECT","TITLE"
 
@@ -197,9 +165,11 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 	int operation_num = 0;
 	boolean miss_print = false;
 
+	private static float REMOTE = Float.parseFloat(System.getProperty(
+			"tribu.distributed.partial.remote", "0.1"));
+
 	public Operation getNextOperation()
 	{
-
 		if (!miss_print)
 		{
 			progressBar.increment(private_id);
@@ -215,10 +185,8 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 		if (shopping)
 		{
-
 			if (confirm)
 			{
-
 				i11++;
 				shopping = false;
 				confirm = false;
@@ -227,19 +195,26 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 				parametros.put("CART", nodeID.getId() + "." + private_id + "."
 						+ shop_id);
-				parametros.put("CUSTOMER",
-						rand.nextInt(Constants.NUM_CUSTOMERS) + "");
+
+				float decision = rand.nextFloat();
+				int c = 0;
+				if (decision < REMOTE)
+					c = rand.nextInt(Constants.NUM_CUSTOMERS);
+				else
+					c = rand.nextInt(Constants.CUSTOMER_MAX
+							- Constants.CUSTOMER_MIN)
+							+ Constants.CUSTOMER_MIN;
+
+				parametros.put("CUSTOMER", c + ""); // XXX
 
 				op = new Operation("OP_BUY_CONFIRM", parametros);
 
 				shop_id++;
 				create = true;
 				return op;
-
 			}
 			else
 			{
-
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("CART", nodeID.getId() + "." + private_id + "."
 						+ shop_id);
@@ -250,7 +225,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 				if (d < buy_confirm_prob)
 				{
 					confirm = true;
-
 				}
 				else
 				{
@@ -264,20 +238,35 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 			double d = rand.nextDouble() * 100;
 			if (d < workload_values.get("home"))
 			{
-
 				Map<String, Object> parametros = new TreeMap<String, Object>();
-				parametros.put("ITEM", rand.nextInt(Constants.NUM_ITEMS));
-				parametros.put("COSTUMER",
-						rand.nextInt(Constants.NUM_CUSTOMERS));
+
+				float decision1 = rand.nextFloat();
+				int c1 = 0;
+				if (decision1 < REMOTE)
+					c1 = rand.nextInt(Constants.NUM_ITEMS);
+				else
+					c1 = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
+							+ Constants.ITEM_MIN;
+
+				parametros.put("ITEM", c1); // XXX
+
+				float decision2 = rand.nextFloat();
+				int c2 = 0;
+				if (decision2 < REMOTE)
+					c2 = rand.nextInt(Constants.NUM_CUSTOMERS);
+				else
+					c2 = rand.nextInt(Constants.CUSTOMER_MAX
+							- Constants.CUSTOMER_MIN)
+							+ Constants.CUSTOMER_MIN;
+
+				parametros.put("COSTUMER", c2); // XXX
 
 				op = new Operation("OP_HOME", parametros);
 
 				i1++;
-
 			}
 			else if (d < workload_values.get("new_products"))
 			{
-
 				i2++;
 
 				String subject_field = subjects[rand.nextInt(subjects.length)];
@@ -287,7 +276,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 				op = new Operation("OP_NEW_PRODUCTS", parametros);
 				return op;
-
 			}
 			else if (d < workload_values.get("best_sellers"))
 			{
@@ -300,19 +288,26 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 				op = new Operation("OP_BEST_SELLERS", parametros);
 
 				return op;
-
 			}
 			else if (d < workload_values.get("product_detail"))
 			{
 				i4++;
-				int item = rand.nextInt(Constants.NUM_ITEMS);
+
+				float decision = rand.nextFloat();
+				int c = 0;
+				if (decision < REMOTE)
+					c = rand.nextInt(Constants.NUM_ITEMS);
+				else
+					c = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
+							+ Constants.ITEM_MIN;
+
+				int item = c; // XXX
 
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("ITEM", item);
 
 				op = new Operation("OP_ITEM_INFO", parametros);
 				return op;
-
 			}
 			else if (d < workload_values.get("search"))
 			{
@@ -331,12 +326,19 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 					op = new Operation("OP_SEARCH", parametros);
 					return op;
-
 				}
 				else if (subject.equals("TITLE"))
 				{
-					String subject_field = item_titles.get(rand
-							.nextInt(item_titles.size()));
+					float decision = rand.nextFloat();
+					int c = 0;
+					if (decision < REMOTE)
+						c = rand.nextInt(Constants.NUM_ITEMS);
+					else
+						c = rand.nextInt(Constants.ITEM_MAX
+								- Constants.ITEM_MIN)
+								+ Constants.ITEM_MIN;
+
+					String subject_field = item_titles.get(c); // XXX
 
 					Map<String, Object> parametros = new TreeMap<String, Object>();
 
@@ -345,7 +347,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 					op = new Operation("OP_SEARCH", parametros);
 					return op;
-
 				}
 				else if (subject.equals("SUBJECT"))
 				{
@@ -359,14 +360,11 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 					op = new Operation("OP_SEARCH", parametros);
 					return op;
-
 				}
 				else
 				{
-
 					System.out.println("OPTION NOT RECOGNIZED");
 				}
-
 			}
 			else if (d < workload_values.get("register/login"))
 			{
@@ -382,38 +380,59 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 				}
 				else
 				{
-					parametros.put("CUSTOMER",
-							rand.nextInt(Constants.NUM_CUSTOMERS) + "");
+					float decision = rand.nextFloat();
+					int c = 0;
+					if (decision < REMOTE)
+						c = rand.nextInt(Constants.NUM_CUSTOMERS);
+					else
+						c = rand.nextInt(Constants.CUSTOMER_MAX
+								- Constants.CUSTOMER_MIN)
+								+ Constants.CUSTOMER_MIN;
+
+					parametros.put("CUSTOMER", c + ""); // XXX
 					op = new Operation("OP_LOGIN", parametros);
 				}
 
 				i6++;
-
 			}
 			else if (d < workload_values.get("order_inquiry"))
 			{
 				i7++;
 				Map<String, Object> parametros = new TreeMap<String, Object>();
-				parametros.put("CUSTOMER",
-						rand.nextInt(Constants.NUM_CUSTOMERS) + "");
-				op = new Operation("OP_ORDER_INQUIRY", parametros);
 
+				float decision = rand.nextFloat();
+				int c = 0;
+				if (decision < REMOTE)
+					c = rand.nextInt(Constants.NUM_CUSTOMERS);
+				else
+					c = rand.nextInt(Constants.CUSTOMER_MAX
+							- Constants.CUSTOMER_MIN)
+							+ Constants.CUSTOMER_MIN;
+
+				parametros.put("CUSTOMER", c + ""); // XXX
+				op = new Operation("OP_ORDER_INQUIRY", parametros);
 			}
 			else if (d < workload_values.get("admin_change"))
 			{
-
 				i8++;
-				int item = rand.nextInt(Constants.NUM_ITEMS);
+
+				float decision = rand.nextFloat();
+				int c = 0;
+				if (decision < REMOTE)
+					c = rand.nextInt(Constants.NUM_ITEMS);
+				else
+					c = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
+							+ Constants.ITEM_MIN;
+
+				int item = c; // XXX
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("ITEM", item);
 				op = new Operation("OP_ADMIN_CHANGE", parametros);
 
 				return op;
-
 			}
 			else if (d <= workload_values.get("shoppingCart"))
 			{
-
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("CART", nodeID.getId() + "." + private_id + "."
 						+ shop_id);
@@ -441,7 +460,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 					shopping = false;
 					confirm = false;
 				}
-
 			}
 			else
 			{
@@ -451,12 +469,10 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 					op = getNextOperation();
 				}
 			}
-
 		}
 		if (op.getOperation().equals("ERROR"))
 		{
 			System.out.println("ERROR");
-
 		}
 
 		return op;
@@ -464,7 +480,6 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 
 	public void printStats()
 	{
-
 		if (operation_num == progressBar.getTop_limit())
 		{
 			resultHandler.concurrent_countEvent("WORKLOAD", "HOME", i1);
@@ -481,34 +496,8 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 			resultHandler
 					.concurrent_countEvent("WORKLOAD", "SHOPPING CART", i9);
 			resultHandler.concurrent_countEvent("WORKLOAD", "BUY REQUEST", i10);
-			resultHandler.concurrent_countEvent("WORKLOAD", "BUY CONFIRM", i10);
-
-			// System.out.println("-------");
-			// System.out.println("OP1 H:" + ((i1 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP2 NP:" + ((i2 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP3 BS:" + ((i3 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP4 PD:" + ((i4 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP5 S:" + ((i5 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP6 CR:" + ((i6 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP7 OI:" + ((i7 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP8 AC:" + ((i8 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP9 SC:" + ((i9 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP10 BR:" + ((i10 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("OP11 BC:" + ((i11 / (operation_num * 1d)) *
-			// 100));
-			// System.out.println("-------");
+			resultHandler.concurrent_countEvent("WORKLOAD", "BUY CONFIRM", i11);
 		}
 
 	}
-
 }

@@ -276,7 +276,7 @@ public class BenchmarkMain
 					return;
 				}
 
-				if (cleanDB || populate)
+				if (cleanDB /*|| populate*/) // XXX slaves have to populate
 				{
 					logger.debug("SLAVE DOES NOT ALLOW CLEAN OR POPULATION OPTIONS ");
 				}
@@ -373,6 +373,13 @@ public class BenchmarkMain
 
 		if (slave)
 		{
+			if (populate) { // XXX slaves have to populate
+				boolean population_success = populator.populate();
+				if (!population_success) {
+					return;
+				}
+			}
+			
 			barrierPop.join();
 			BenchmarkSlave slaveHandler = new BenchmarkSlave(SlavePort,
 					executor);
