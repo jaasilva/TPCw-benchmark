@@ -646,8 +646,9 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.3.0.Final.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+    <pathelement location="${basedir}/libs/guava-14.0.jar"/>
   </path>
   
   <path id="tpcw_dstm_implementation.runtime.production.module.classpath">
@@ -659,8 +660,9 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.3.0.Final.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+    <pathelement location="${basedir}/libs/guava-14.0.jar"/>
   </path>
   
   <path id="tpcw_dstm_implementation.module.classpath">
@@ -673,8 +675,9 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.3.0.Final.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+    <pathelement location="${basedir}/libs/guava-14.0.jar"/>
   </path>
   
   <path id="tpcw_dstm_implementation.runtime.module.classpath">
@@ -687,8 +690,9 @@
     <pathelement location="${basedir}/libs/appia-groupcomm-4.1.2.jar"/>
     <pathelement location="${basedir}/libs/flanagan.jar"/>
     <pathelement location="${basedir}/libs/jgcs-0.6.1.jar"/>
-    <pathelement location="${basedir}/libs/jgroups-3.1.0.Beta1.jar"/>
+    <pathelement location="${basedir}/libs/jgroups-3.3.0.Final.jar"/>
     <pathelement location="${basedir}/libs/spread-4.2.0.jar"/>
+    <pathelement location="${basedir}/libs/guava-14.0.jar"/>
   </path>
   
   

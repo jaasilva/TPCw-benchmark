@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.deuce.Atomic;
-import org.deuce.distribution.replication.full.Bootstrap;
+import org.deuce.distribution.replication.Bootstrap;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.generic.Constants;

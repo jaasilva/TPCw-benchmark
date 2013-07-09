@@ -1,7 +1,7 @@
 package pt.unl.citi.tpcw.util;
 
 import org.deuce.Atomic;
-import org.deuce.distribution.replication.full.Bootstrap;
+import org.deuce.distribution.replication.Bootstrap;
 
 public class HashMap<K, V> {
 	private static final int DEFAULT_TABLE_SIZE = 128;
