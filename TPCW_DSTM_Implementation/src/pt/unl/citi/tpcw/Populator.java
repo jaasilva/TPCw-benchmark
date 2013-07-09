@@ -33,7 +33,6 @@ import pt.unl.citi.tpcw.entities.OrderLine;
 /* Adapted from MySQL populator */
 public class Populator extends AbstractBenchmarkPopulator
 {
-
 	/**
 	 * Time measurements
 	 */

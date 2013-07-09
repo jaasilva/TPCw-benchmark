@@ -9,13 +9,11 @@ import pt.unl.citi.tpcw.util.HashMap;
 
 public class ExecutorFactory extends AbstractDatabaseExecutorFactory
 {
-
 	public ExecutorFactory(BenchmarkExecutor executor, String conf_file)
 	{
 		super(executor, conf_file);
 		init();
 		HashMap.init();
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override
@@ -30,5 +28,4 @@ public class ExecutorFactory extends AbstractDatabaseExecutorFactory
 	{
 		initTPMCounting();
 	}
-
 }

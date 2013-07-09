@@ -24,7 +24,6 @@ import org.deuce.profiling.Profiler;
 
 public class BenchmarkSlave
 {
-
 	public static boolean terminated = false;
 	private int PersonalClientID;
 	private int port;
@@ -66,7 +65,6 @@ public class BenchmarkSlave
 				}
 				if (message != null && message.equalsIgnoreCase("START"))
 				{
-
 					Runnable run = new Runnable()
 					{
 						public void run()
@@ -82,7 +80,6 @@ public class BenchmarkSlave
 					BenchmarkMain.barrierStart.join();
 					Profiler.enabled = true;
 					t.start();
-
 				}
 				if (message != null && message.equalsIgnoreCase("ACK"))
 				{
@@ -105,5 +102,4 @@ public class BenchmarkSlave
 									// Settings | File Templates.
 		}
 	}
-
 }

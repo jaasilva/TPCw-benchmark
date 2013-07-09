@@ -13,8 +13,6 @@
 
 package org.uminho.gsd.benchmarks.benchmark;
 
-import org.deuce.distribution.TribuDSTM;
-import org.deuce.profiling.Profiler;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.interfaces.Workload.AbstractWorkloadGeneratorFactory;
 import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;
@@ -29,7 +27,6 @@ import java.util.concurrent.CountDownLatch;
 
 public class BenchmarkExecutor
 {
-
 	// Node id
 	private BenchmarkNodeID nodeId;
 
@@ -52,10 +49,8 @@ public class BenchmarkExecutor
 			String workload_conf, Class databaseInterface_class,
 			String database_conf, int num_operations, int num_clients)
 	{
-
 		try
 		{
-
 			databaseInterface = (AbstractDatabaseExecutorFactory) databaseInterface_class
 					.getConstructor(BenchmarkExecutor.class, String.class)
 					.newInstance(this, database_conf);
@@ -63,7 +58,6 @@ public class BenchmarkExecutor
 					.getConstructor(BenchmarkExecutor.class, String.class)
 					.newInstance(this, workload_conf);
 			workloadInterface.setDatabaseFactory(databaseInterface);
-
 		}
 		catch (NoSuchMethodException e)
 		{
@@ -90,7 +84,6 @@ public class BenchmarkExecutor
 		this.num_clients = num_clients;
 
 		results = new ArrayList<ResultHandler>();
-
 	}
 
 	public void prepare() throws Exception
@@ -100,7 +93,6 @@ public class BenchmarkExecutor
 
 	public void run(BenchmarkNodeID id)
 	{
-
 		workloadInterface.setNodeId(id);
 		databaseInterface.setNodeId(id);
 		workloadInterface.setClientNumber(num_clients);
@@ -120,7 +112,6 @@ public class BenchmarkExecutor
 
 		for (int client_index = 0; client_index < num_clients; client_index++)
 		{
-
 			final DatabaseExecutorInterface executor = databaseInterface
 					.getDatabaseClient();
 			final WorkloadGeneratorInterface workloadGenerator = workloadInterface
