@@ -205,7 +205,7 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 							- Constants.CUSTOMER_MIN)
 							+ Constants.CUSTOMER_MIN;
 
-				parametros.put("CUSTOMER", c + ""); // XXX
+				parametros.put("CUSTOMER", c + "");
 
 				op = new Operation("OP_BUY_CONFIRM", parametros);
 
@@ -240,26 +240,18 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 			{
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 
-				float decision1 = rand.nextFloat();
-				int c1 = 0;
-				if (decision1 < REMOTE)
-					c1 = rand.nextInt(Constants.NUM_ITEMS);
-				else
-					c1 = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
-							+ Constants.ITEM_MIN;
+				parametros.put("ITEM", rand.nextInt(Constants.NUM_ITEMS));
 
-				parametros.put("ITEM", c1); // XXX
-
-				float decision2 = rand.nextFloat();
-				int c2 = 0;
-				if (decision2 < REMOTE)
-					c2 = rand.nextInt(Constants.NUM_CUSTOMERS);
+				float decision = rand.nextFloat();
+				int c = 0;
+				if (decision < REMOTE)
+					c = rand.nextInt(Constants.NUM_CUSTOMERS);
 				else
-					c2 = rand.nextInt(Constants.CUSTOMER_MAX
+					c = rand.nextInt(Constants.CUSTOMER_MAX
 							- Constants.CUSTOMER_MIN)
 							+ Constants.CUSTOMER_MIN;
 
-				parametros.put("COSTUMER", c2); // XXX
+				parametros.put("COSTUMER", c);
 
 				op = new Operation("OP_HOME", parametros);
 
@@ -293,15 +285,7 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 			{
 				i4++;
 
-				float decision = rand.nextFloat();
-				int c = 0;
-				if (decision < REMOTE)
-					c = rand.nextInt(Constants.NUM_ITEMS);
-				else
-					c = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
-							+ Constants.ITEM_MIN;
-
-				int item = c; // XXX
+				int item = rand.nextInt(Constants.NUM_ITEMS);
 
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("ITEM", item);
@@ -329,16 +313,8 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 				}
 				else if (subject.equals("TITLE"))
 				{
-					float decision = rand.nextFloat();
-					int c = 0;
-					if (decision < REMOTE)
-						c = rand.nextInt(Constants.NUM_ITEMS);
-					else
-						c = rand.nextInt(Constants.ITEM_MAX
-								- Constants.ITEM_MIN)
-								+ Constants.ITEM_MIN;
-
-					String subject_field = item_titles.get(c); // XXX
+					String subject_field = item_titles.get(rand
+							.nextInt(Constants.NUM_ITEMS));
 
 					Map<String, Object> parametros = new TreeMap<String, Object>();
 
@@ -389,7 +365,7 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 								- Constants.CUSTOMER_MIN)
 								+ Constants.CUSTOMER_MIN;
 
-					parametros.put("CUSTOMER", c + ""); // XXX
+					parametros.put("CUSTOMER", c + "");
 					op = new Operation("OP_LOGIN", parametros);
 				}
 
@@ -409,22 +385,14 @@ public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 							- Constants.CUSTOMER_MIN)
 							+ Constants.CUSTOMER_MIN;
 
-				parametros.put("CUSTOMER", c + ""); // XXX
+				parametros.put("CUSTOMER", c + "");
 				op = new Operation("OP_ORDER_INQUIRY", parametros);
 			}
 			else if (d < workload_values.get("admin_change"))
 			{
 				i8++;
 
-				float decision = rand.nextFloat();
-				int c = 0;
-				if (decision < REMOTE)
-					c = rand.nextInt(Constants.NUM_ITEMS);
-				else
-					c = rand.nextInt(Constants.ITEM_MAX - Constants.ITEM_MIN)
-							+ Constants.ITEM_MIN;
-
-				int item = c; // XXX
+				int item = rand.nextInt(Constants.NUM_ITEMS);
 				Map<String, Object> parametros = new TreeMap<String, Object>();
 				parametros.put("ITEM", item);
 				op = new Operation("OP_ADMIN_CHANGE", parametros);

@@ -20,7 +20,7 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.deuce.profiling.Profiler;
+import org.deuce.profiling.PRProfiler;
 
 public class BenchmarkSlave
 {
@@ -78,7 +78,7 @@ public class BenchmarkSlave
 					};
 					Thread t = new Thread(run);
 					BenchmarkMain.barrierStart.join();
-					Profiler.enabled = true;
+					PRProfiler.enabled = true;
 					t.start();
 				}
 				if (message != null && message.equalsIgnoreCase("ACK"))

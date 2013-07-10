@@ -1114,7 +1114,7 @@ public class Executor implements DatabaseExecutorInterface
 		// within a single database transaction.
 		final double i_cost = random.nextInt(100);
 		final String i_image = new String("img" + random.nextInt(1000) % 100
-				+ "/image_" + random.nextInt(1000) + ".gif");
+				+ "/image_" + random.nextInt(1000) + ".gif"); //XXX image
 		final String i_thumb = i_image.replace("image", "thumb");
 		// 2.16.3.3 The SUT performs the following processing steps:
 		// ? Of all the orders sorted by descending O_DATE, obtain the set of
@@ -1664,30 +1664,24 @@ public class Executor implements DatabaseExecutorInterface
 	public Object insert(String key, String path, Entity value)
 			throws Exception
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void remove(String key, String path, String column) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void update(String key, String path, String column, Object value,
 			String superfield) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Object read(String key, String path, String column, String superfield)
 			throws Exception
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1820,36 +1814,27 @@ public class Executor implements DatabaseExecutorInterface
 	@Override
 	public void truncate(String path) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void index(String key, String path, Object value) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void index(String key, String path, String indexed_key,
 			Map<String, Object> value) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void closeClient()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Map<String, String> getInfo()
 	{
-		// TODO Auto-generated method stub
 		return new TreeMap<String, String>();
 	}
 
