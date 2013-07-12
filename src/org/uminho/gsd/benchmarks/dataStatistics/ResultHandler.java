@@ -419,7 +419,7 @@ public class ResultHandler
 
 		int unknown = 0;
 
-		System.out.println("\n\n-------WRITING RESULTS FOR: " + test_name
+		System.out.println("\n-------WRITING RESULTS FOR: " + test_name
 				+ "-------");
 		File enclosing_folder = new File(folder_name);
 		System.out

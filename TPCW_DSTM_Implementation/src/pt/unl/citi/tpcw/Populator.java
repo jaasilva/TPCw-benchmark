@@ -167,6 +167,7 @@ public class Populator extends AbstractBenchmarkPopulator
 		{
 			try
 			{
+				System.out.println();
 				insertCountries(NUM_COUNTRIES);
 				if (delay_inserts)
 				{
@@ -454,7 +455,7 @@ public class Populator extends AbstractBenchmarkPopulator
 						+ " authors inserted");
 			}
 
-			System.out.println();
+			System.out.println("\n");
 			barrier.countDown();
 		}
 
@@ -640,7 +641,7 @@ public class Populator extends AbstractBenchmarkPopulator
 				System.out.print("\nThread finished: " + num_Customers
 						+ " Customers inserted");
 			}
-			System.out.println();
+			System.out.println("\n");
 			barrier.countDown();
 		}
 
@@ -834,7 +835,7 @@ public class Populator extends AbstractBenchmarkPopulator
 				System.out.print("\nThread finished: " + num_items
 						+ " items inserted");
 			}
-			System.out.println();
+			System.out.println("\n");
 			barrier.countDown();
 		}
 
@@ -974,7 +975,7 @@ public class Populator extends AbstractBenchmarkPopulator
 						+ " addresses.");
 			}
 
-			System.out.println();
+			System.out.println("\n");
 			barrier.countDown();
 		}
 
@@ -1269,7 +1270,7 @@ public class Populator extends AbstractBenchmarkPopulator
 				System.out.print("\nThread finished: " + number_keys
 						+ " orders and xact inserted.");
 			}
-			System.out.println();
+			System.out.println("\n");
 			barrier.countDown();
 		}
 

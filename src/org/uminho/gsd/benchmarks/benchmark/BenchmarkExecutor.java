@@ -152,7 +152,7 @@ public class BenchmarkExecutor
 
 		try
 		{
-			System.out.println("Waiting for " + num_clients + " clients...");
+			System.out.println("\nWaiting for " + num_clients + " clients...");
 			synchronizationBarrier.await();
 		}
 		catch (InterruptedException e)

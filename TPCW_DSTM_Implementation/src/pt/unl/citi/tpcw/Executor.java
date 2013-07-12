@@ -80,6 +80,7 @@ public class Executor implements DatabaseExecutorInterface
 	private void createTrees(final int num_countries, final int num_authors,
 			final int num_customers, final int num_items)
 	{
+		System.out.println();
 		createCountries(num_countries);
 		System.out.println("COUNTRIES created.");
 		createAuthors(num_authors);
@@ -96,11 +97,11 @@ public class Executor implements DatabaseExecutorInterface
 		System.out.println("LAST_CUSTOMER_ORDER created.");
 		createItems(num_items);
 		System.out.println("ITEMS created.");
-		createItemsBySubject();
+		createItemsBySubject(25);
 		System.out.println("ITEMS_BY_SUBJECT created.");
-		createItemsByAuthorLastName();
+		createItemsByAuthorLastName(num_authors);
 		System.out.println("ITEMS_BY_AUTHOR created.");
-		createItemsByTitle();
+		createItemsByTitle(num_items);
 		System.out.println("ITEMS_BY_TITLE created.");
 		createCcxact();
 		System.out.println("CCXACT created.");
@@ -111,7 +112,7 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	private final void createShoppingCarts(final int num_customers)
 	{
-		shopCarts = new HashMap_pr<Integer, ShoppingCart>();
+		shopCarts = new HashMap_pr<Integer, ShoppingCart>(num_customers);
 	}
 
 	@Atomic
@@ -121,21 +122,23 @@ public class Executor implements DatabaseExecutorInterface
 	}
 
 	@Atomic
-	private final void createItemsByTitle()
+	private final void createItemsByTitle(final int num_items)
 	{
-		itemsByTitle = new HashMap<String, List<Item>>();
+		itemsByTitle = new HashMap<String, List<Item>>(num_items);
 	}
 
 	@Atomic
-	private final void createItemsByAuthorLastName()
+	private final void createItemsByAuthorLastName(final int num_authors)
 	{
-		itemsByAuthorLastName = new HashMap<String, List<Item>>();
+		int n = (int) (num_authors / 0.75) + 5;
+		itemsByAuthorLastName = new HashMap<String, List<Item>>(n);
 	}
 
 	@Atomic
-	private final void createItemsBySubject()
+	private final void createItemsBySubject(final int num_subjects)
 	{
-		itemsBySubject = new HashMap<String, List<Item>>(25); // # dif. subj.
+		int n = (int) (num_subjects / 0.75) + 5;
+		itemsBySubject = new HashMap<String, List<Item>>(n); // # dif. subj.
 	}
 
 	@Atomic
@@ -1728,7 +1731,7 @@ public class Executor implements DatabaseExecutorInterface
 		{
 			System.out.print("\r");
 			System.out.print("Indexing item " + val.I_ID);
-			
+
 			// subject index
 			final String subject = val.I_SUBJECT;
 			if (!itemsBySubject.containsKey(subject))
@@ -1741,7 +1744,7 @@ public class Executor implements DatabaseExecutorInterface
 				list = itemsBySubject.get(subject);
 			}
 			list.add(val);
-			
+
 			// author index
 			final String lname = getAuthor(val.I_A_ID).A_LNAME;
 			if (!itemsByAuthorLastName.containsKey(lname))
@@ -1754,7 +1757,7 @@ public class Executor implements DatabaseExecutorInterface
 				list = itemsByAuthorLastName.get(lname);
 			}
 			list.add(val);
-			
+
 			// title index
 			final String title = val.I_TITLE;
 			if (!itemsByTitle.containsKey(title))
@@ -1769,7 +1772,7 @@ public class Executor implements DatabaseExecutorInterface
 			list.add(val);
 		}
 		System.out.println("\nIndexes created.");
-		
+
 		System.out.println("Sorting indexes...");
 		// subject index
 		for (List<Item> l : itemsBySubject.getValues())
@@ -1784,7 +1787,7 @@ public class Executor implements DatabaseExecutorInterface
 				}
 			});
 		}
-		
+
 		// author index
 		for (List<Item> l : itemsByAuthorLastName.getValues())
 		{
@@ -1798,7 +1801,7 @@ public class Executor implements DatabaseExecutorInterface
 				}
 			});
 		}
-		
+
 		// title index
 		for (List<Item> l : itemsByTitle.getValues())
 		{

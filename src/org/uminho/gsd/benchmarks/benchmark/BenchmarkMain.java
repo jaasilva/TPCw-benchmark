@@ -446,6 +446,7 @@ public class BenchmarkMain
 			{ // single node run
 				logger.info("[INFO:] EXECUTING IN SINGLE NODE MODE");
 				executor.prepare();
+				PRProfiler.enabled = true;
 				executor.run(new BenchmarkNodeID(1));
 				executor.consolidate();
 			}
