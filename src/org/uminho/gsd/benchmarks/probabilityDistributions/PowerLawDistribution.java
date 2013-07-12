@@ -15,12 +15,14 @@ package org.uminho.gsd.benchmarks.probabilityDistributions;
 
 import cern.jet.random.Distributions;
 import org.apache.log4j.Logger;
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkMain;
 import org.uminho.gsd.benchmarks.interfaces.ProbabilityDistribution;
 
 import java.util.Map;
 import java.util.TreeMap;
 
+@ExcludeTM
 public class PowerLawDistribution implements ProbabilityDistribution
 {
 

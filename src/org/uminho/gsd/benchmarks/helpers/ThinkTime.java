@@ -13,10 +13,12 @@
 
 package org.uminho.gsd.benchmarks.helpers;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkMain;
 
 import java.util.Random;
 
+@ExcludeTM
 public class ThinkTime
 {
 

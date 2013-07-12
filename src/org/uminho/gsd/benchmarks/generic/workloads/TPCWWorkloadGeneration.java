@@ -14,6 +14,7 @@
 package org.uminho.gsd.benchmarks.generic.workloads;
 
 import org.apache.log4j.Logger;
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.generic.Constants;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
@@ -27,6 +28,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+@ExcludeTM
 public class TPCWWorkloadGeneration implements WorkloadGeneratorInterface
 {
 

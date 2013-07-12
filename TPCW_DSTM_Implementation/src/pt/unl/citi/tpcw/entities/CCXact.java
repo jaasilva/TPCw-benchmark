@@ -29,8 +29,6 @@ public final class CCXact implements Entity
 	public final Date CX_XACT_DATE;
 	public final int CX_CO_ID;
 
-	// public final Country CX_CO;
-
 	public CCXact(int cX_O_ID, String cX_TYPE, int cX_CC_NUM,
 			String cX_CC_NAME, Date cX_EXPIRY, int cX_AUTH_ID,
 			double cX_XACT_AMT, Date cX_XACT_DATE, int cX_CO_ID)
@@ -44,7 +42,6 @@ public final class CCXact implements Entity
 		CX_AUTH_ID = cX_AUTH_ID;
 		CX_XACT_AMT = cX_XACT_AMT;
 		CX_XACT_DATE = cX_XACT_DATE;
-		// CX_CO = cX_CO;
 		CX_CO_ID = cX_CO_ID;
 	}
 

@@ -15,6 +15,7 @@ package org.uminho.gsd.benchmarks.benchmark;
 
 import org.deuce.distribution.TribuDSTM;
 import org.deuce.profiling.Profiler;
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.interfaces.Workload.AbstractWorkloadGeneratorFactory;
 import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+@ExcludeTM
 public class BenchmarkExecutor
 {
 
@@ -120,7 +122,6 @@ public class BenchmarkExecutor
 
 		for (int client_index = 0; client_index < num_clients; client_index++)
 		{
-
 			final DatabaseExecutorInterface executor = databaseInterface
 					.getDatabaseClient();
 			final WorkloadGeneratorInterface workloadGenerator = workloadInterface
@@ -143,7 +144,7 @@ public class BenchmarkExecutor
 			Thread clientThread = new Thread(clientRunnable, "client:"
 					+ client_index);
 			clientThread.start();
-			System.out.println("Started client " + client_index + ".");
+			System.out.print("\nStarted client " + client_index + ".");
 		}
 
 		DataStatistics dataStatistics = new DataStatistics();

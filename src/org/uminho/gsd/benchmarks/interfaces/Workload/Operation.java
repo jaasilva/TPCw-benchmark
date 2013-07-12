@@ -15,10 +15,13 @@ package org.uminho.gsd.benchmarks.interfaces.Workload;
 
 import java.util.Map;
 
+import org.deuce.transform.ExcludeTM;
+
 /**
  * An operation contains the description of an operation to be executed by the
  * database executor. Its fields represent the operation name and parameters.
  */
+@ExcludeTM
 public class Operation
 {
 

@@ -13,9 +13,12 @@
 
 package org.uminho.gsd.benchmarks.mbean;
 
+import org.deuce.transform.ExcludeTM;
+
 /**
  * Interface for real time statistics retrieval
  */
+@ExcludeTM
 public interface DataStatisticsMBean
 {
 

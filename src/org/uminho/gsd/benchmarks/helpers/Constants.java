@@ -1,5 +1,7 @@
 package org.uminho.gsd.benchmarks.helpers;
 
+import org.deuce.transform.ExcludeTM;
+
 /**
  * Useful constants.
  * 
@@ -7,6 +9,7 @@ package org.uminho.gsd.benchmarks.helpers;
  * 
  * @version $Revision: 1.4 $ $Date: 2005/02/05 21:26:28 $ $Author: totok $
  */
+@ExcludeTM
 public class Constants
 {
 

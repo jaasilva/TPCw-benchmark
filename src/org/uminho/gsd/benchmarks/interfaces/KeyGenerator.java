@@ -13,6 +13,9 @@
 
 package org.uminho.gsd.benchmarks.interfaces;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public interface KeyGenerator
 {
 

@@ -20,6 +20,9 @@ import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class SqlReader
 {
 

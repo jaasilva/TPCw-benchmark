@@ -20,6 +20,9 @@ package org.uminho.gsd.benchmarks.interfaces;
 
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public interface Entity
 {
 

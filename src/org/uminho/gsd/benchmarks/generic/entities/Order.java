@@ -17,6 +17,7 @@
  */
 package org.uminho.gsd.benchmarks.generic.entities;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import java.sql.Date;
@@ -26,6 +27,7 @@ import java.util.TreeMap;
  * O_ID O_C_ID O_DATE O_SUB_TOTAL O_TAX O_TOTAL O_SHIP_TYPE O_SHIP_DATE
  * O_BILL_ADDR_ID O_SHIP_ADDR_ID O_STATUS
  */
+@ExcludeTM
 public class Order implements Entity
 {
 

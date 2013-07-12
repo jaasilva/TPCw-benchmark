@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.interfaces.executor;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
@@ -27,6 +28,7 @@ import java.util.Map;
  * the {@linkplain WorkloadGeneratorInterface workload generation client} , and
  * store important results in the result handler
  */
+@ExcludeTM
 public interface DatabaseExecutorInterface
 {
 

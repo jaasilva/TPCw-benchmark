@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.interfaces.Workload;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
@@ -38,6 +39,7 @@ import java.util.logging.Logger;
  * 3.finish - after all clients, in all nodes have finished, the consolidate
  * method is called. <br>
  */
+@ExcludeTM
 public abstract class AbstractWorkloadGeneratorFactory
 {
 

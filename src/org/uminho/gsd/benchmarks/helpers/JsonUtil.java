@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.deuce.transform.ExcludeTM;
 
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -19,6 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@ExcludeTM
 public class JsonUtil
 {
 

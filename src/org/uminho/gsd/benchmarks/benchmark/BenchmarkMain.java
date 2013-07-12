@@ -28,7 +28,7 @@ import org.deuce.Atomic;
 import org.deuce.benchmark.Barrier;
 import org.deuce.distribution.TribuDSTM;
 import org.deuce.distribution.replication.Bootstrap;
-import org.deuce.profiling.Profiler;
+import org.deuce.profiling.PRProfiler;
 import org.deuce.trove.THashMap;
 import org.uminho.gsd.benchmarks.helpers.JsonUtil;
 import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
@@ -306,8 +306,8 @@ public class BenchmarkMain
 		new BenchmarkMain(master, slave, cleanDB, cleanFB, populate, ocp,
 				workload_alias, database_alias, num_thread, num_operations,
 				distributionFactor);
-		Profiler.enabled = false;
-		Profiler.print();
+		PRProfiler.enabled = false;
+		PRProfiler.print();
 		barrierEnd.join();
 		TribuDSTM.close();
 	}

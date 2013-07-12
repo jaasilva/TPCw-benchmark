@@ -20,9 +20,7 @@ public final class OrderLine implements Entity
 {
 	public final int OL_ID;
 	public final int OL_O_ID;
-	// public final Order OL_O;
 	public final int OL_I_ID;
-	// public final Item OL_I;
 	public final int OL_QTY;
 	public final double OL_DISCOUNT;
 	public final String OL_COMMENT;
@@ -32,9 +30,7 @@ public final class OrderLine implements Entity
 	{
 		super();
 		OL_ID = oL_ID;
-		// OL_O = oL_O;
 		OL_O_ID = oL_O_ID;
-		// OL_I = oL_I;
 		OL_I_ID = oL_I_ID;
 		OL_QTY = oL_QTY;
 		OL_DISCOUNT = oL_DISCOUNT;
@@ -50,5 +46,4 @@ public final class OrderLine implements Entity
 	{
 		return "OL_ID";
 	}
-
 }

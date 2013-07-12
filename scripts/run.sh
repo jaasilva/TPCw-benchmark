@@ -11,7 +11,7 @@ CLASSPATH="${CLASSPATH}:libs/appia-core-4.1.2.jar"
 CLASSPATH="${CLASSPATH}:libs/appia-groupcomm-4.1.2.jar"
 CLASSPATH="${CLASSPATH}:libs/flanagan.jar"
 CLASSPATH="${CLASSPATH}:libs/jgcs-0.6.1.jar"
-CLASSPATH="${CLASSPATH}:libs/jgroups-3.1.0.Beta1.jar"
+CLASSPATH="${CLASSPATH}:libs/jgroups-3.3.0.Final.jar"
 CLASSPATH="${CLASSPATH}:libs/spread-4.2.0.jar"
 
 INCLUDE="pt.unl.citi.tpcw.*"

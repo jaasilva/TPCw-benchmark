@@ -27,7 +27,6 @@ public final class Order implements Entity
 {
 	public final int O_ID;
 	public final int O_C_ID;
-	// public final Customer O_C;
 	public final Date O_DATE; // date and time
 	public final double O_SUB_TOTAL;
 	public final double O_TAX;
@@ -35,11 +34,8 @@ public final class Order implements Entity
 	public final String O_SHIP_TYPE;
 	public final Date O_SHIP_DATE; // date and time
 	public final int O_BILL_ADDR_ID;
-	// public final Address O_BILL_ADDR;
 	public final int O_SHIP_ADDR_ID;
-	// public final Address O_SHIP_ADDR;
 	public final String O_STATUS;
-	// public RBTree orderLines;
 	public final List<OrderLine> orderLines;
 
 	public Order(int o_ID, int o_C_ID, Date o_DATE, double o_SUB_TOTAL,
@@ -48,7 +44,6 @@ public final class Order implements Entity
 	{
 		super();
 		O_ID = o_ID;
-		// O_C = o_C;
 		O_C_ID = o_C_ID;
 		O_DATE = o_DATE;
 		O_SUB_TOTAL = o_SUB_TOTAL;
@@ -56,12 +51,9 @@ public final class Order implements Entity
 		O_TOTAL = o_TOTAL;
 		O_SHIP_TYPE = o_SHIP_TYPE;
 		O_SHIP_DATE = o_SHIP_DATE;
-		// O_BILL_ADDR = o_BILL_ADDR;
 		O_BILL_ADDR_ID = o_BILL_ADDR_ID;
-		// O_SHIP_ADDR = o_SHIP_ADDR;
 		O_SHIP_ADDR_ID = o_SHIP_ADDR_ID;
 		O_STATUS = o_STATUS;
-		// orderLines = new RBTree();
 		orderLines = new java.util.LinkedList<OrderLine>();
 	}
 

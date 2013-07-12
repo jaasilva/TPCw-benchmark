@@ -13,9 +13,12 @@
 
 package org.uminho.gsd.benchmarks.interfaces.Workload;
 
+import org.deuce.transform.ExcludeTM;
+
 /**
  * A workload generation client that assigned to a execution client, should
  */
+@ExcludeTM
 public interface WorkloadGeneratorInterface
 {
 

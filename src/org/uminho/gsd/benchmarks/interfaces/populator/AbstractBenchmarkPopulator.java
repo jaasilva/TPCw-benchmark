@@ -18,6 +18,7 @@
 
 package org.uminho.gsd.benchmarks.interfaces.populator;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.helpers.JsonUtil;
 import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
 
@@ -26,6 +27,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@ExcludeTM
 public abstract class AbstractBenchmarkPopulator
 {
 

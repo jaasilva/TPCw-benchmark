@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.generic.workloads;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkMain;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkSlave;
@@ -33,6 +34,7 @@ import java.util.*;
  * Workload that generates operations to generate possible inconsistency in the
  * database due to the lack of ACID transactions.
  */
+@ExcludeTM
 public class ConsistencyTestWorkloadFactory extends
 		AbstractWorkloadGeneratorFactory
 {

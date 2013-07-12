@@ -19,18 +19,17 @@ import org.uminho.gsd.benchmarks.interfaces.Entity;
 public final class ShoppingCartLine implements Entity
 {
 	public final int SCL_I_ID;
-	// public final Item SCL_I;
-	public int SCL_QTY;
-	public double SCL_COST;
 	public final double SCL_SRP;
 	public final String SCL_TITLE;
 	public final String SCL_BACKING;
+
+	public int SCL_QTY;
+	public double SCL_COST;
 
 	public ShoppingCartLine(int sCL_I_ID, int sCL_QTY, double sCL_COST,
 			double sCL_SRP, String sCL_TITLE, String sCL_BACKING)
 	{
 		super();
-		// SCL_I = sCL_I;
 		SCL_I_ID = sCL_I_ID;
 		SCL_QTY = sCL_QTY;
 		SCL_COST = sCL_COST;

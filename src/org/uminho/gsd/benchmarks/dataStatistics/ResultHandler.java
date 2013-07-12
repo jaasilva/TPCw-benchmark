@@ -17,6 +17,7 @@
  */
 package org.uminho.gsd.benchmarks.dataStatistics;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.helpers.Pair;
 
 import java.io.*;
@@ -25,6 +26,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@ExcludeTM
 public class ResultHandler
 {
 

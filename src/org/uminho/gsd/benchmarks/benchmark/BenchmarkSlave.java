@@ -20,8 +20,10 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import org.deuce.profiling.Profiler;
+import org.deuce.profiling.PRProfiler;
+import org.deuce.transform.ExcludeTM;
 
+@ExcludeTM
 public class BenchmarkSlave
 {
 
@@ -80,7 +82,7 @@ public class BenchmarkSlave
 					};
 					Thread t = new Thread(run);
 					BenchmarkMain.barrierStart.join();
-					Profiler.enabled = true;
+					PRProfiler.enabled = true;
 					t.start();
 
 				}

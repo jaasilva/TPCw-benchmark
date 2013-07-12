@@ -28,7 +28,8 @@ EXCLUDE="${EXCLUDE},spread.*"
 EXCLUDE="${EXCLUDE},org.deuce.trove.*"
 EXCLUDE="${EXCLUDE},org.codehaus.jackson.*"
 EXCLUDE="${EXCLUDE},cern.jet.*"
-EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.helpers.*"
+EXCLUDE="${EXCLUDE},cern.colt.*"
+EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.*"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.HashFunctions"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.PrimeFinder"
 
@@ -50,6 +51,7 @@ ZIP=true
 GROUP="TPCW_${WORKERS}_${_REP}_${REPLICAS}_${RUN}"
 FNAME="TPCW_t${WORKERS}_${_REP}_${_COMM}_id${SITE}-${REPLICAS}_run${RUN}"
 LOG=logs/${FNAME}.res
+DATA_PART=org.deuce.distribution.replication.partitioner.data.RandomDataPartitioner
 
 echo "#####"
 echo "Benchmark: TPCW, run ${RUN}"
@@ -59,9 +61,9 @@ echo "Comm: ${_COMM}"
 echo `date +%H:%M`
 echo "#####"
 
-shift 5
+shift 7
 
-java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
+java -Xmx1g -Xms1g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dlog=$LOG4J \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
@@ -72,6 +74,7 @@ java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dtribu.replicas=$REPLICAS \
     -Dtribu.distributed.protocolClass=$REP \
     -Dtribu.serialization.compress=$ZIP \
+    -Dtribu.distributed.DataPartitionerClass=$DATA_PART \
     -Dtribu.distributed.PartialReplicationMode=true \
 	-Dtribu.groups=1 \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \

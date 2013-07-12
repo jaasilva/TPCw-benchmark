@@ -25,20 +25,18 @@ public final class Customer implements Entity
 	public final String C_FNAME;
 	public final String C_LNAME;
 	public final int C_ADDR_ID;
-	// public final Address C_ADDR;
 	public final String C_PHONE;
 	public final String C_EMAIL;
 	public final Date C_SINCE;
 	public final Date C_LAST_VISIT;
-	public Date C_LOGIN; // date and time
-	public Date C_EXPIRATION; // date and time
 	public final double C_DISCOUNT;
 	public final double C_BALANCE;
 	public final double C_YTD_PMT;
 	public final Date C_BIRTHDATE;
 	public final String C_DATA;
 
-	// public final RBTree orders;
+	public Date C_LOGIN; // date and time
+	public Date C_EXPIRATION; // date and time
 
 	public Customer(int c_ID, String c_UNAME, String c_PASSWD, String c_FNAME,
 			String c_LNAME, int c_ADDR_ID, String c_PHONE, String c_EMAIL,
@@ -52,7 +50,6 @@ public final class Customer implements Entity
 		C_PASSWD = c_PASSWD;
 		C_FNAME = c_FNAME;
 		C_LNAME = c_LNAME;
-		// C_ADDR = c_ADDR;
 		C_ADDR_ID = c_ADDR_ID;
 		C_PHONE = c_PHONE;
 		C_EMAIL = c_EMAIL;
@@ -65,7 +62,6 @@ public final class Customer implements Entity
 		C_YTD_PMT = c_YTD_PMT;
 		C_BIRTHDATE = c_BIRTHDATE;
 		C_DATA = c_DATA;
-		// orders = new RBTree();
 	}
 
 	public TreeMap<String, Object> getValuesToInsert()
@@ -77,5 +73,4 @@ public final class Customer implements Entity
 	{
 		return "C_ID";
 	}
-
 }

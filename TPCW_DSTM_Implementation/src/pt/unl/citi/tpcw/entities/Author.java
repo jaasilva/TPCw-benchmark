@@ -47,5 +47,4 @@ public final class Author implements Entity
 	{
 		return "A_ID";
 	}
-
 }

@@ -23,7 +23,10 @@ public final class ShoppingCart implements Entity
 {
 	public final int SC_SHOPPING_ID;
 	public final int SC_C_ID;
-	// public final Customer SC_C;
+	public final String SC_C_FNAME; // C_FNAME of the Customer
+	public final String SC_C_LNAME; // C_LNAME of the Customer
+	public final double SC_C_DISCOUNT; // C_DISCOUNT of the Customer
+
 	// The date and time when the CART was last updated
 	public Date SC_DATE;
 	// The gross total amount of all items in the CART
@@ -31,9 +34,6 @@ public final class ShoppingCart implements Entity
 	public double SC_TAX; // The tax based on the gross total amount
 	public double SC_SHIP_COST; // The total shipping and handling charges
 	public double SC_TOTAL; // The total amount of the order
-	public final String SC_C_FNAME; // C_FNAME of the Customer
-	public final String SC_C_LNAME; // C_LNAME of the Customer
-	public final double SC_C_DISCOUNT; // C_DISCOUNT of the Customer
 	public RBTree cartLines;
 
 	public ShoppingCart(int sC_SHOPPING_ID, int sC_C_ID, Date sC_DATE,
@@ -43,7 +43,6 @@ public final class ShoppingCart implements Entity
 	{
 		super();
 		SC_SHOPPING_ID = sC_SHOPPING_ID;
-		// SC_C = sC_C;
 		SC_C_ID = sC_C_ID;
 		SC_DATE = sC_DATE;
 		SC_SUB_TOTAL = sC_SUB_TOTAL;

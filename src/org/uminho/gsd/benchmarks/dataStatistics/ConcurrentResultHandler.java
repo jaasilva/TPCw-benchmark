@@ -21,6 +21,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class ConcurrentResultHandler
 {
 

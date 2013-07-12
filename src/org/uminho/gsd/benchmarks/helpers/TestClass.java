@@ -19,6 +19,7 @@ package org.uminho.gsd.benchmarks.helpers;
 // import org.apache.thrift.transport.TSocket;
 // import org.apache.thrift.transport.TTransport;
 // import org.apache.thrift.transport.TTransportException;
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.probabilityDistributions.PowerLawDistribution;
 
 import java.io.*;
@@ -36,6 +37,7 @@ import java.util.concurrent.CountDownLatch;
  * Created by IntelliJ IDEA. User: pedro Date: Apr 12, 2010 Time: 9:58:15 AM To
  * change this template use File | Settings | File Templates.
  */
+@ExcludeTM
 public class TestClass
 {
 	private static int number_keys = 0;

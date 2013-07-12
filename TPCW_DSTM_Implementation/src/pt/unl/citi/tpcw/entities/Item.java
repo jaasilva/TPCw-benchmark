@@ -22,11 +22,17 @@ public final class Item implements Entity
 	public final int I_ID;
 	public final String I_TITLE;
 	public final int I_A_ID;
-	// public final Author I_A;
-	public Date I_PUB_DATE;
 	public final String I_PUBLISHER;
 	public final String I_SUBJECT;
 	public final String I_DESC;
+	public final double I_SRP;
+	public final Date I_AVAIL;
+	public final String I_ISBN;
+	public final int I_PAGE;
+	public final String I_BACKING;
+	public final String I_DIMENSION;
+
+	public Date I_PUB_DATE;
 	public int I_RELATED1;
 	public int I_RELATED2;
 	public int I_RELATED3;
@@ -34,16 +40,8 @@ public final class Item implements Entity
 	public int I_RELATED5;
 	public String I_THUMBNAIL;
 	public String I_IMAGE;
-	public final double I_SRP;
 	public double I_COST;
-	public final Date I_AVAIL;
 	public int I_STOCK;
-	public final String I_ISBN;
-	public final int I_PAGE;
-	public final String I_BACKING;
-	public final String I_DIMENSION;
-
-	// public final RBTree orderLines;
 
 	public Item(int i_ID, String i_TITLE, int i_A_ID, Date i_PUB_DATE,
 			String i_PUBLISHER, String i_SUBJECT, String i_DESC,
@@ -55,7 +53,6 @@ public final class Item implements Entity
 		super();
 		I_ID = i_ID;
 		I_TITLE = i_TITLE;
-		// I_A = i_A;
 		I_A_ID = i_A_ID;
 		I_PUB_DATE = i_PUB_DATE;
 		I_PUBLISHER = i_PUBLISHER;
@@ -76,7 +73,6 @@ public final class Item implements Entity
 		I_PAGE = i_PAGE;
 		I_BACKING = i_BACKING;
 		I_DIMENSION = i_DIMENSION;
-		// orderLines = new RBTree();
 	}
 
 	public TreeMap<String, Object> getValuesToInsert()

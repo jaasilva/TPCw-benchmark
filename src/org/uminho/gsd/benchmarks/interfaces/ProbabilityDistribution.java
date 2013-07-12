@@ -15,6 +15,9 @@ package org.uminho.gsd.benchmarks.interfaces;
 
 import java.util.Map;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public interface ProbabilityDistribution
 {
 

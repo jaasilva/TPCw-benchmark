@@ -18,6 +18,7 @@
 
 package org.uminho.gsd.benchmarks.generic.entities;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import java.util.TreeMap;
@@ -25,6 +26,7 @@ import java.util.TreeMap;
 /**
  * OL_ID OL_O_ID OL_I_ID OL_QTY OL_DISCOUNT OL_COMMENT
  */
+@ExcludeTM
 public class OrderLine implements Entity
 {
 

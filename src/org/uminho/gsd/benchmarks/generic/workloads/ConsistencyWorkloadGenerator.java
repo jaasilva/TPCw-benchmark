@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.generic.workloads;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.helpers.ProgressBar;
 import org.uminho.gsd.benchmarks.interfaces.ProbabilityDistribution;
 import org.uminho.gsd.benchmarks.interfaces.Workload.Operation;
@@ -20,6 +21,7 @@ import org.uminho.gsd.benchmarks.interfaces.Workload.WorkloadGeneratorInterface;
 
 import java.util.*;
 
+@ExcludeTM
 public class ConsistencyWorkloadGenerator implements WorkloadGeneratorInterface
 {
 

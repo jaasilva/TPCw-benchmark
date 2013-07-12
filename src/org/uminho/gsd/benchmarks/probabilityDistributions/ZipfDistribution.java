@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.probabilityDistributions;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkMain;
 import org.uminho.gsd.benchmarks.interfaces.ProbabilityDistribution;
 
@@ -23,6 +24,7 @@ import java.util.TreeMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+@ExcludeTM
 public class ZipfDistribution implements ProbabilityDistribution
 {
 

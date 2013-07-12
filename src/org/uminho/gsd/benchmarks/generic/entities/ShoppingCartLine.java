@@ -18,10 +18,12 @@
 
 package org.uminho.gsd.benchmarks.generic.entities;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import java.util.TreeMap;
 
+@ExcludeTM
 public class ShoppingCartLine implements Entity
 {
 

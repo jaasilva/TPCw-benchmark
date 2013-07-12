@@ -17,6 +17,7 @@
  */
 package org.uminho.gsd.benchmarks.generic.entities;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import java.sql.Date;
@@ -27,6 +28,7 @@ import java.util.TreeMap;
  * I_THUMBNAIL X I_IMAGE X I_SRP X I_COST I_AVAIL I_STOCK I_ISBN I_PAGE
  * I_BACKING I_DIMENSION
  */
+@ExcludeTM
 public class Item implements Entity
 {
 

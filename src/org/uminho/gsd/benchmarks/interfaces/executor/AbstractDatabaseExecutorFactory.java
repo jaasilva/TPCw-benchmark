@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.interfaces.executor;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkExecutor;
 import org.uminho.gsd.benchmarks.benchmark.BenchmarkNodeID;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
@@ -30,9 +31,9 @@ import java.util.logging.Logger;
  * 
  * @see org.uminho.gsd.benchmarks.interfaces.executor.DatabaseExecutorInterface
  */
+@ExcludeTM
 public abstract class AbstractDatabaseExecutorFactory
 {
-
 	/**
 	 * Information collected from the configuration file *
 	 */
@@ -63,7 +64,6 @@ public abstract class AbstractDatabaseExecutorFactory
 	protected AbstractDatabaseExecutorFactory(BenchmarkExecutor executor,
 			String conf_file)
 	{
-
 		this.dataStore_file_name = conf_file;
 		this.executor = executor;
 		loadFile();
@@ -74,7 +74,6 @@ public abstract class AbstractDatabaseExecutorFactory
 	 */
 	private void loadFile()
 	{
-
 		FileInputStream in = null;
 		String jsonString_r = "";
 
@@ -157,7 +156,6 @@ public abstract class AbstractDatabaseExecutorFactory
 
 	TimerTask tpm_calculation = new TimerTask()
 	{
-
 		public void run()
 		{
 			int tpm = 0;
@@ -170,7 +168,6 @@ public abstract class AbstractDatabaseExecutorFactory
 				if (stats_handler != null)
 				{
 					stats_handler.logResult("TPM", (tpm));
-					// System.out.println("TPM:" + tpm);
 				}
 			}
 
@@ -186,5 +183,4 @@ public abstract class AbstractDatabaseExecutorFactory
 	{
 		do_tmp_counting = true;
 	}
-
 }

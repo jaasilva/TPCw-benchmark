@@ -13,6 +13,7 @@
 
 package org.uminho.gsd.benchmarks.mbean;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.helpers.Pair;
 
@@ -23,6 +24,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+@ExcludeTM
 public class DataStatistics implements DataStatisticsMBean
 {
 

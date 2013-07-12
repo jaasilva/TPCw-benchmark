@@ -15,6 +15,9 @@ package org.uminho.gsd.benchmarks.helpers;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class ProgressBar
 {
 

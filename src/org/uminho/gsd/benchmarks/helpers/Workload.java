@@ -17,7 +17,10 @@ import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
 
+import org.deuce.transform.ExcludeTM;
+
 /** Test class */
+@ExcludeTM
 public class Workload
 {
 

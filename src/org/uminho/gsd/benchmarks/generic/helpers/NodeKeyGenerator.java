@@ -13,8 +13,10 @@
 
 package org.uminho.gsd.benchmarks.generic.helpers;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.KeyGenerator;
 
+@ExcludeTM
 public class NodeKeyGenerator implements KeyGenerator
 {
 

@@ -26,8 +26,6 @@ public final class Address implements Entity
 	public final String ADDR_ZIP;
 	public final int ADDR_CO_ID;
 
-	// public final Country ADDR_CO;
-
 	public Address(int aDDR_ID, String aDDR_STREET1, String aDDR_STREET2,
 			String aDDR_CITY, String aDDR_STATE, String aDDR_ZIP, int aDDR_CO_ID)
 	{
@@ -38,7 +36,6 @@ public final class Address implements Entity
 		ADDR_CITY = aDDR_CITY;
 		ADDR_STATE = aDDR_STATE;
 		ADDR_ZIP = aDDR_ZIP;
-		// ADDR_CO = aDDR_CO;
 		ADDR_CO_ID = aDDR_CO_ID;
 	}
 

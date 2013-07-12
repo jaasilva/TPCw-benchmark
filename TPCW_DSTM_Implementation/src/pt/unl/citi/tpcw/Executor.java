@@ -37,59 +37,51 @@ import pt.unl.citi.tpcw.entities.OrderLine;
 import pt.unl.citi.tpcw.entities.ShoppingCart;
 import pt.unl.citi.tpcw.entities.ShoppingCartLine;
 import pt.unl.citi.tpcw.util.HashMap;
+import pt.unl.citi.tpcw.util.HashMap_pr;
 import pt.unl.citi.tpcw.util.LastOrders;
 import pt.unl.citi.tpcw.util.RBTree;
+import pt.unl.citi.tpcw.util.RBTree_pr;
 
 public class Executor implements DatabaseExecutorInterface
 {
 	/* Database */
 	@Bootstrap(id = 1)
-	// static RBTree countries;
-	static Country[] countries; // read-only!
+	static Country[] countries; // read-only! TR
 	@Bootstrap(id = 2)
-	// static RBTree authors;
-	static Author[] authors; // read-only!
+	static Author[] authors; // read-only! TR
 	@Bootstrap(id = 3)
-	static RBTree addresses;
+	static RBTree_pr addresses; // PR
 	@Bootstrap(id = 4)
-	static RBTree customers;
-	// static HashMap<Integer, Customer> customers;
+	static RBTree_pr customers; // PR
 	@Bootstrap(id = 5)
-	static RBTree orders;
-	// static HashMap<Integer, Order> orders;
+	static RBTree_pr orders; // PR
 	@Bootstrap(id = 6)
-	static LastOrders lastOrders;
+	static LastOrders lastOrders; // TR
 	@Bootstrap(id = 7)
-	static HashMap<Integer, Order> lastCustomerOrder;
+	static HashMap<Integer, Order> lastCustomerOrder; // TR
 	@Bootstrap(id = 8)
-	// static RBTree items;
-	static Item[] items; // fixed-size!
+	static Item[] items; // fixed-size! // TR
 	@Bootstrap(id = 9)
-	static HashMap<String, List<Item>> itemsBySubject;
+	static HashMap<String, List<Item>> itemsBySubject; // TR
 	@Bootstrap(id = 10)
-	static HashMap<String, List<Item>> itemsByAuthorLastName;
+	static HashMap<String, List<Item>> itemsByAuthorLastName; // TR
 	@Bootstrap(id = 11)
-	static HashMap<String, List<Item>> itemsByTitle;
+	static HashMap<String, List<Item>> itemsByTitle; // TR
 	@Bootstrap(id = 12)
-	static RBTree ccXacts;
-	// static HashMap<Integer, CCXact> ccXacts;
+	static RBTree_pr ccXacts; // PR
 	@Bootstrap(id = 13)
-	// static RBTree shopCarts;
-	static HashMap<Integer, ShoppingCart> shopCarts;
+	static HashMap_pr<Integer, ShoppingCart> shopCarts; // PR
 
 	public Executor(TPM_counter tpm_counter)
 	{
 		this.counter = tpm_counter;
 	}
 
-	// @Atomic
 	private void createTrees(final int num_countries, final int num_authors,
 			final int num_customers, final int num_items)
 	{
-		// countries = new RBTree();
 		createCountries(num_countries);
 		System.out.println("COUNTRIES created.");
-		// authors = new RBTree();
 		createAuthors(num_authors);
 		System.out.println("AUTHORS created.");
 		createAddresses();
@@ -102,7 +94,6 @@ public class Executor implements DatabaseExecutorInterface
 		System.out.println("LAST_ORDERS created.");
 		createLastCustomerOrders(num_customers);
 		System.out.println("LAST_CUSTOMER_ORDER created.");
-		// items = new RBTree();
 		createItems(num_items);
 		System.out.println("ITEMS created.");
 		createItemsBySubject();
@@ -120,15 +111,13 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	private final void createShoppingCarts(final int num_customers)
 	{
-		// shopCarts = new RBTree();
-		shopCarts = new HashMap<Integer, ShoppingCart>();
+		shopCarts = new HashMap_pr<Integer, ShoppingCart>();
 	}
 
 	@Atomic
 	private final void createCcxact()
 	{
-		ccXacts = new RBTree();
-		// ccXacts = new HashMap<Integer, CCXact>();
+		ccXacts = new RBTree_pr();
 	}
 
 	@Atomic
@@ -176,21 +165,19 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	private final void createOrders()
 	{
-		orders = new RBTree();
-		// orders = new HashMap<Integer, Order>();
+		orders = new RBTree_pr();
 	}
 
 	@Atomic
 	private final void createCustomers(final int num_customers)
 	{
-		customers = new RBTree();
-		// customers = new HashMap<Integer, Customer>(num_customers);
+		customers = new RBTree_pr();
 	}
 
 	@Atomic
 	private final void createAddresses()
 	{
-		addresses = new RBTree();
+		addresses = new RBTree_pr();
 	}
 
 	@Atomic
@@ -208,21 +195,16 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	public static final void insertCountry(int key, Country val)
 	{
-		// countries.insert(key, val);
 		countries[key] = val;
 	}
 
-	// @Atomic
 	public static final Country getCountry(int key)
 	{
-		// return (Country) countries.find(key);
 		return countries[key];
 	}
 
-	// @Atomic
 	public static final Author getAuthor(int key)
 	{
-		// return (Author) authors.find(key);
 		return authors[key];
 	}
 
@@ -250,7 +232,6 @@ public class Executor implements DatabaseExecutorInterface
 	public static final void insertCustomer(int key, Customer val)
 	{
 		final boolean b = customers.insert(key, val);
-		// final boolean b = customers.put(key, val);
 		if (!b)
 			throw new Error("Customer(" + key + ") already exists.");
 	}
@@ -259,17 +240,14 @@ public class Executor implements DatabaseExecutorInterface
 	public static final Customer getCustomer(int key)
 	{
 		return (Customer) customers.find(key);
-		// return customers.get(key);
 	}
 
 	@Atomic
 	public static final void insertAuthor(int key, Author val)
 	{
-		// authors.insert(key, val);
 		authors[key] = val;
 	}
 
-	// @Atomic
 	public static final List<Author> getAuthors()
 	{
 		final List<Author> results = new java.util.LinkedList<Author>();
@@ -283,42 +261,12 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	public static final void insertItem(int key, Item val)
 	{
-		// items.insert(key, val);
 		items[key] = val;
-		// List<Item> list;
-		// // subject index
-		// final String subject = val.I_SUBJECT;
-		// if (!itemsBySubject.containsKey(subject)) {
-		// list = new java.util.LinkedList<Item>();
-		// itemsBySubject.put(subject, list);
-		// } else {
-		// list = itemsBySubject.get(subject);
-		// }
-		// list.add(val);
-		// // author index
-		// final String lname = getAuthor(val.I_A_ID).A_LNAME;
-		// if (!itemsByAuthorLastName.containsKey(lname)) {
-		// list = new java.util.LinkedList<Item>();
-		// itemsByAuthorLastName.put(lname, list);
-		// } else {
-		// list = itemsByAuthorLastName.get(lname);
-		// }
-		// list.add(val);
-		// // title index
-		// final String title = val.I_TITLE;
-		// if (!itemsByTitle.containsKey(title)) {
-		// list = new java.util.LinkedList<Item>();
-		// itemsByTitle.put(title, list);
-		// } else {
-		// list = itemsByTitle.get(title);
-		// }
-		// list.add(val);
 	}
 
 	// @Atomic
 	public static final Item getItem(int key)
 	{
-		// return (Item) items.find(key);
 		return items[key];
 	}
 
@@ -337,45 +285,29 @@ public class Executor implements DatabaseExecutorInterface
 	public static final void insertOrder(int key, Order val)
 	{
 		final boolean b = orders.insert(key, val);
-		// final boolean b = orders.put(key, val);
 		if (!b)
 			throw new Error("Order(" + key + ") already exists.");
 		lastOrders.prepend(val);
 		lastCustomerOrder.put(val.O_C_ID, val);
 	}
 
-	// @Atomic
-	// public static final List<Order> getOrders(Filter<Order> f) {
-	// return orders.findAll(f);
-	// }
-
 	@Atomic
 	public static final void insertOrderLine(int key, OrderLine val)
 	{
 		final Order order = (Order) orders.find(val.OL_O_ID);
-		// final Order order = orders.get(val.OL_O_ID);
-		// order.orderLines.insert(key, val);
 		order.orderLines.add(val);
 	}
-
-	// @Atomic
-	// public static final List<OrderLine> getOrderLines(Order order,
-	// Filter<OrderLine> f) {
-	// return order.orderLines.findAll(f);
-	// }
 
 	@Atomic
 	public static final CCXact getCCXact(int key)
 	{
 		return (CCXact) ccXacts.find(key);
-		// return ccXacts.get(key);
 	}
 
 	@Atomic
 	public static final void insertCcXact(int key, CCXact val)
 	{
 		final boolean b = ccXacts.insert(key, val);
-		// final boolean b = ccXacts.put(key, val);
 		if (!b)
 			throw new Error("CCXact(" + key + ") already exists.");
 	}
@@ -383,7 +315,6 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	public static final void insertShoppingCart(int key, ShoppingCart val)
 	{
-		// final boolean b = shopCarts.insert(key, val);
 		final boolean b = shopCarts.put(key, val);
 		if (!b)
 			throw new Error("ShoppingCart(" + key + ") already exists.");
@@ -392,7 +323,6 @@ public class Executor implements DatabaseExecutorInterface
 	@Atomic
 	public static final ShoppingCart getShoppingCart(int key)
 	{
-		// return (ShoppingCart) shopCarts.find(key);
 		return shopCarts.get(key);
 	}
 
@@ -444,7 +374,6 @@ public class Executor implements DatabaseExecutorInterface
 	public void start(WorkloadGeneratorInterface workload,
 			BenchmarkNodeID nodeId, int operation_number, ResultHandler handler)
 	{
-		// TODO Auto-generated method stub
 		this.node_id = nodeId.getId();
 		client_result_handler = handler;
 		this.num_operations = operation_number;
@@ -452,16 +381,11 @@ public class Executor implements DatabaseExecutorInterface
 		long g_init_time = System.nanoTime();
 		for (int operation = 0; operation < operation_number; operation++)
 		{
-
-			// long g_init_time = System.currentTimeMillis();
-
 			try
 			{
 				Operation op = workload.getNextOperation();
-				// long init_time = System.currentTimeMillis();
 				long init_time = System.nanoTime();
 				execute(op);
-				// long end_time = System.currentTimeMillis();
 				long end_time = System.nanoTime();
 				client_result_handler.logResult(op.getOperation(),
 						((end_time / 1000 / 1000) - (init_time / 1000 / 1000)));
@@ -472,7 +396,6 @@ public class Executor implements DatabaseExecutorInterface
 				{
 					Thread.sleep(simulatedDelay);
 				}
-
 			}
 			catch (NoSuchFieldException e)
 			{
@@ -489,10 +412,7 @@ public class Executor implements DatabaseExecutorInterface
 			{
 				e.printStackTrace();
 			}
-			// long end_time = System.currentTimeMillis();
 			counter.increment();
-			// client_result_handler.logResult("OPERATIONS", (end_time -
-			// g_init_time));
 
 		}
 		final long g_end_time = System.nanoTime();
@@ -501,13 +421,6 @@ public class Executor implements DatabaseExecutorInterface
 		final double tps = num_operations / g_time;
 		client_result_handler.logResult("TPS", (long) tps);
 
-		// client_result_handler.getResulSet().put("bought", partialBought);
-		// client_result_handler.getResulSet().put("total_bought", bought_qty);
-		// client_result_handler.getResulSet().put("buying_actions",
-		// bought_actions);
-		// client_result_handler.getResulSet().put("bought_carts",
-		// bought_carts);
-		// client_result_handler.getResulSet().put("zeros", zeros);
 	}
 
 	@Override
@@ -520,7 +433,6 @@ public class Executor implements DatabaseExecutorInterface
 		}
 
 		String method_name = op.getOperation();
-		// System.out.println("Executor will execute " + method_name);
 
 		if (method_name.equalsIgnoreCase(OP_POPULATE))
 		{
@@ -601,9 +513,11 @@ public class Executor implements DatabaseExecutorInterface
 			int cart_id = getIDfromString(cart);
 			BuyConfirm(cust_id, process_id, cart_id);
 		}
-
-		// TODO Auto-generated method stub
-
+		else
+		{
+			System.out.println("Unknown operation: " + method_name);
+			System.out.println("Skiping...");
+		}
 	}
 
 	public final void HomeOperation(final int c_id, final int i_id)
@@ -686,12 +600,6 @@ public class Executor implements DatabaseExecutorInterface
 			if (n == 50)
 				break;
 		}
-		// StringBuilder sb = new StringBuilder();
-		// for (Item i : fiftyItems) {
-		// sb.append(i.I_PUB_DATE + ", " + i.I_TITLE + ", " + i.I_SUBJECT);
-		// sb.append("\n");
-		// }
-		// System.err.println(sb.toString());
 	}
 
 	@Atomic
@@ -1614,7 +1522,6 @@ public class Executor implements DatabaseExecutorInterface
 
 		int id_id = Integer.parseInt(parts[2]);
 
-		// int length_id = parts[2].length();
 		int length_id = (num_operations + "").length();
 
 		int final_id = (int) (node_id * Math.pow(10,
@@ -1635,7 +1542,6 @@ public class Executor implements DatabaseExecutorInterface
 
 		int id_id = Integer.parseInt(parts[2]);
 
-		// int length_id = parts[2].length();
 		int length_id = ((num + num_operations) + "").length();
 
 		int final_id = (int) (node_id * Math.pow(10,
@@ -1760,30 +1666,24 @@ public class Executor implements DatabaseExecutorInterface
 	public Object insert(String key, String path, Entity value)
 			throws Exception
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public void remove(String key, String path, String column) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void update(String key, String path, String column, Object value,
 			String superfield) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Object read(String key, String path, String column, String superfield)
 			throws Exception
 	{
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1822,13 +1722,14 @@ public class Executor implements DatabaseExecutorInterface
 	{
 		if (indexesCreated)
 			return;
-		System.out.println("Creating indexes.");
+		System.out.println("\nCreating indexes...");
 		List<Item> list;
 		for (final Item val : items)
 		{
-			// subject index
 			System.out.print("\r");
-			System.out.print("Indexing item " + val.I_ID + " (subject)");
+			System.out.print("Indexing item " + val.I_ID);
+			
+			// subject index
 			final String subject = val.I_SUBJECT;
 			if (!itemsBySubject.containsKey(subject))
 			{
@@ -1840,9 +1741,8 @@ public class Executor implements DatabaseExecutorInterface
 				list = itemsBySubject.get(subject);
 			}
 			list.add(val);
+			
 			// author index
-			System.out.print("\r");
-			System.out.print("Indexing item " + val.I_ID + " (author)");
 			final String lname = getAuthor(val.I_A_ID).A_LNAME;
 			if (!itemsByAuthorLastName.containsKey(lname))
 			{
@@ -1854,9 +1754,8 @@ public class Executor implements DatabaseExecutorInterface
 				list = itemsByAuthorLastName.get(lname);
 			}
 			list.add(val);
+			
 			// title index
-			System.out.print("\r");
-			System.out.print("Indexing item " + val.I_ID + " (title)");
 			final String title = val.I_TITLE;
 			if (!itemsByTitle.containsKey(title))
 			{
@@ -1869,7 +1768,9 @@ public class Executor implements DatabaseExecutorInterface
 			}
 			list.add(val);
 		}
-		System.out.println("Indexes created.");
+		System.out.println("\nIndexes created.");
+		
+		System.out.println("Sorting indexes...");
 		// subject index
 		for (List<Item> l : itemsBySubject.getValues())
 		{
@@ -1883,6 +1784,7 @@ public class Executor implements DatabaseExecutorInterface
 				}
 			});
 		}
+		
 		// author index
 		for (List<Item> l : itemsByAuthorLastName.getValues())
 		{
@@ -1896,6 +1798,7 @@ public class Executor implements DatabaseExecutorInterface
 				}
 			});
 		}
+		
 		// title index
 		for (List<Item> l : itemsByTitle.getValues())
 		{
@@ -1909,44 +1812,34 @@ public class Executor implements DatabaseExecutorInterface
 				}
 			});
 		}
-		System.out.println("Indexed sorted.");
+		System.out.println("Indexes sorted.");
 		indexesCreated = true;
 	}
 
 	@Override
 	public void truncate(String path) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void index(String key, String path, Object value) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void index(String key, String path, String indexed_key,
 			Map<String, Object> value) throws Exception
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void closeClient()
 	{
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public Map<String, String> getInfo()
 	{
-		// TODO Auto-generated method stub
 		return new TreeMap<String, String>();
 	}
-
 }

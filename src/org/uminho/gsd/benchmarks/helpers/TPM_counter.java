@@ -13,6 +13,9 @@
 
 package org.uminho.gsd.benchmarks.helpers;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class TPM_counter
 {
 

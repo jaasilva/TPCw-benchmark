@@ -13,6 +13,9 @@
 
 package org.uminho.gsd.benchmarks.generic;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class Constants
 {
 

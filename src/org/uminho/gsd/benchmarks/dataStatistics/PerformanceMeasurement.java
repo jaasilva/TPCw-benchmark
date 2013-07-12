@@ -6,6 +6,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class PerformanceMeasurement
 {
 

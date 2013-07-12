@@ -18,11 +18,13 @@
 
 package org.uminho.gsd.benchmarks.generic.entities;
 
+import org.deuce.transform.ExcludeTM;
 import org.uminho.gsd.benchmarks.interfaces.Entity;
 
 import java.sql.Timestamp;
 import java.util.TreeMap;
 
+@ExcludeTM
 public class ShoppingCart implements Entity
 {
 

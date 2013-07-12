@@ -13,6 +13,9 @@
 
 package org.uminho.gsd.benchmarks.benchmark;
 
+import org.deuce.transform.ExcludeTM;
+
+@ExcludeTM
 public class BenchmarkNodeID
 {
 
