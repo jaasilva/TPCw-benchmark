@@ -416,14 +416,12 @@ public class Executor2 implements DatabaseExecutorInterface
 				e.printStackTrace();
 			}
 			counter.increment();
-
 		}
 		final long g_end_time = System.nanoTime();
 		double g_time = g_end_time - g_init_time; // in ns
 		g_time = g_time / 1000 / 1000 / 1000; // in s
 		final double tps = num_operations / g_time;
 		client_result_handler.logResult("TPS", (long) tps);
-
 	}
 
 	@Override
@@ -1121,7 +1119,7 @@ public class Executor2 implements DatabaseExecutorInterface
 		// within a single database transaction.
 		final double i_cost = random.nextInt(100);
 		final String i_image = new String("img" + random.nextInt(1000) % 100
-				+ "/image_" + random.nextInt(1000) + ".gif");
+				+ "/image_" + random.nextInt(1000) + ".gif"); //XXX image
 		final String i_thumb = i_image.replace("image", "thumb");
 		// 2.16.3.3 The SUT performs the following processing steps:
 		// ? Of all the orders sorted by descending O_DATE, obtain the set of

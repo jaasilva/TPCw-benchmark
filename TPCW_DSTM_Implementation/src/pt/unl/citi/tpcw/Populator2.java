@@ -13,6 +13,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.deuce.distribution.TribuDSTM;
 import org.uminho.gsd.benchmarks.dataStatistics.ResultHandler;
 import org.uminho.gsd.benchmarks.generic.Constants;
 import org.uminho.gsd.benchmarks.helpers.BenchmarkUtil;
@@ -33,6 +34,15 @@ import pt.unl.citi.tpcw.entities.OrderLine;
 /* Adapted from MySQL populator */
 public class Populator2 extends AbstractBenchmarkPopulator
 {
+	public static int PR_GROUP_ID = TribuDSTM.getLocalGroup().getId();
+	public static int NUM_GROUPS = TribuDSTM.getNumGroups();
+	private static org.deuce.distribution.groupcomm.Address LOCAL_ADDR = TribuDSTM
+			.getLocalAddress();
+	private static org.deuce.distribution.groupcomm.Address MASTER_ADDR = TribuDSTM
+			.getLocalGroup().getAll().iterator().next();
+	public static boolean IS_GROUP_MASTER = LOCAL_ADDR.equals(MASTER_ADDR);
+	public static int SITE = Integer.getInteger("tribu.site");
+
 	/**
 	 * Time measurements
 	 */
@@ -159,6 +169,16 @@ public class Populator2 extends AbstractBenchmarkPopulator
 			return false;
 		}
 
+		System.out.println("------------------------------------------------");
+		System.out.println("------------------------------------------------");
+		System.out.println("NODE: " + SITE + " GROUP: " + PR_GROUP_ID + " of "
+				+ NUM_GROUPS);
+		System.out.println("ADDR: " + LOCAL_ADDR + " MASTER ADDR: "
+				+ MASTER_ADDR);
+		System.out.println("AM I THE GROUP MASTER: " + IS_GROUP_MASTER);
+		System.out.println("------------------------------------------------");
+		System.out.println("------------------------------------------------");
+
 		if (error)
 		{
 			return false;
@@ -167,33 +187,135 @@ public class Populator2 extends AbstractBenchmarkPopulator
 		{
 			try
 			{
-				System.out.println();
-				insertCountries(NUM_COUNTRIES);
+				// ################################### countries
+				if (SITE == 1) // master (only 1 node)
+				{
+					System.out.println("COUNTRIES");
+					insertCountries(NUM_COUNTRIES);
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertAddresses(NUM_ADDRESSES, true);
+
+				// ################################### addresses
+				int sections = NUM_ADDRESSES;
+				int firstSection = 0;
+				int rest = 0;
+
+				if (NUM_GROUPS == 1)
+				{
+					firstSection = NUM_ADDRESSES;
+				}
+				else
+				{
+					sections = (int) Math.floor(NUM_ADDRESSES / NUM_GROUPS);
+					rest = NUM_ADDRESSES - (NUM_GROUPS * sections);
+					firstSection = sections + rest;
+				}
+				int size = PR_GROUP_ID == 0 ? firstSection : sections;
+				int base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size : PR_GROUP_ID
+						* size + rest;
+
+				Constants.ADDRESS_MIN = base;
+				Constants.ADDRESS_MAX = base + size;
+				System.out.println("ADDRESSES base=" + base + " size=" + size
+						+ " [" + Constants.ADDRESS_MIN + ", "
+						+ Constants.ADDRESS_MAX + "[");
+
+				if (IS_GROUP_MASTER) // all group masters
+				{
+					insertAddresses(size, base, true);
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertCustomers(NUM_CUSTOMERS);
+
+				// ################################### customers
+				sections = NUM_CUSTOMERS;
+				firstSection = 0;
+				rest = 0;
+
+				if (NUM_GROUPS == 1)
+				{
+					firstSection = NUM_CUSTOMERS;
+				}
+				else
+				{
+					sections = (int) Math.floor(NUM_CUSTOMERS / NUM_GROUPS);
+					rest = NUM_CUSTOMERS - (NUM_GROUPS * sections);
+					firstSection = sections + rest;
+				}
+				size = PR_GROUP_ID == 0 ? firstSection : sections;
+				base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size : PR_GROUP_ID
+						* size + rest;
+
+				Constants.CUSTOMER_MIN = base;
+				Constants.CUSTOMER_MAX = base + size;
+				System.out.println("CUSTOMERS base=" + base + " size=" + size
+						+ " [" + Constants.CUSTOMER_MIN + ", "
+						+ Constants.CUSTOMER_MAX + "[");
+
+				if (IS_GROUP_MASTER) // all group masters
+				{
+					insertCustomers(size, base);
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertAuthors(NUM_AUTHORS, true);
+
+				// ################################### authors
+				if (SITE == 1) // master (only 1 node)
+				{
+					System.out.println("AUTHORS");
+					insertAuthors(NUM_AUTHORS, true);
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertItems(NUM_ITEMS);
+
+				// ################################### items
+				if (SITE == 1) // master (only 1 node)
+				{
+					insertItems(NUM_ITEMS);
+				}
 				if (delay_inserts)
 				{
 					Thread.sleep(delay_time);
 				}
-				insertOrder_and_CC_XACTS(NUM_ORDERS);
+
+				// ################################### orders
+				sections = NUM_ITEMS;
+				firstSection = 0;
+				rest = 0;
+
+				if (NUM_GROUPS == 1)
+				{
+					firstSection = NUM_ORDERS;
+				}
+				else
+				{
+					sections = (int) Math.floor(NUM_ORDERS / NUM_GROUPS);
+					rest = NUM_ORDERS - (NUM_GROUPS * sections);
+					firstSection = sections + rest;
+				}
+				size = PR_GROUP_ID == 0 ? firstSection : sections;
+				base = PR_GROUP_ID == 0 ? PR_GROUP_ID * size : PR_GROUP_ID
+						* size + rest;
+
+				Constants.ORDER_MIN = base;
+				Constants.ORDER_MAX = base + size;
+				System.out.println("ORDERS CC_XACTS base=" + base + " size="
+						+ size + " [" + Constants.ORDER_MIN + ", "
+						+ Constants.ORDER_MAX + "[");
+
+				if (IS_GROUP_MASTER) // all group masters
+				{
+					insertOrder_and_CC_XACTS(size, base);
+				}
 
 				System.out.println("***Finished***");
 			}
@@ -473,7 +595,7 @@ public class Populator2 extends AbstractBenchmarkPopulator
 	/**
 	 * ************ Customers* **************
 	 */
-	public void insertCustomers(int n) throws InterruptedException
+	public void insertCustomers(int n, int _base) throws InterruptedException
 	{
 		int threads = num_threads;
 		int sections = n;
@@ -497,12 +619,12 @@ public class Populator2 extends AbstractBenchmarkPopulator
 		CustomerPopulator[] partial_Customers = new CustomerPopulator[threads];
 		for (int i = threads; i > 0; i--)
 		{
-			int base = (threads - i) * sections;
+			int base = _base + (threads - i) * sections;
+			System.out.println(">> " + i + " - " + base + " " + n);
 			CustomerPopulator populator = null;
 			if (i == 0)
 			{
 				populator = new CustomerPopulator(firstSection, base);
-
 			}
 			else
 			{
@@ -513,7 +635,6 @@ public class Populator2 extends AbstractBenchmarkPopulator
 					+ (threads - i));
 			t.start();
 		}
-
 		barrier.await();
 		for (CustomerPopulator populator : partial_Customers)
 		{
@@ -524,7 +645,6 @@ public class Populator2 extends AbstractBenchmarkPopulator
 			}
 			results.addResults(populator.returnResults());
 			populator.partial_results.cleanResults();
-
 		}
 		partial_Customers = null;
 		System.gc();
@@ -615,7 +735,10 @@ public class Populator2 extends AbstractBenchmarkPopulator
 
 				String c_DATA = BenchmarkUtil.getRandomAString(100, 500);
 
-				int c_ADDR_ID = addresses.get(rand.nextInt(addresses.size()));
+				int a = rand.nextInt(Constants.ADDRESS_MAX
+						- Constants.ADDRESS_MIN)
+						+ Constants.ADDRESS_MIN;
+				int c_ADDR_ID = addresses.get(a);
 
 				Customer c = new Customer(c_ID, c_UNAME, c_PASSWD, c_FNAME,
 						c_LNAME, c_ADDR_ID, c_PHONE + "", c_EMAIL, c_SINCE,
@@ -685,12 +808,10 @@ public class Populator2 extends AbstractBenchmarkPopulator
 		for (int i = threads; i > 0; i--)
 		{
 			int base = (threads - i) * sections;
-
 			ItemPopulator populator = null;
 			if (i == 0)
 			{
 				populator = new ItemPopulator(firstSection, base);
-
 			}
 			else
 			{
@@ -853,7 +974,7 @@ public class Populator2 extends AbstractBenchmarkPopulator
 	/**
 	 * *********** Addresses* ***********
 	 */
-	public void insertAddresses(int n, boolean insert)
+	public void insertAddresses(int n, int _base, boolean insert)
 			throws InterruptedException
 	{
 		int threads = num_threads;
@@ -879,13 +1000,12 @@ public class Populator2 extends AbstractBenchmarkPopulator
 		AddressPopulator[] partial_addresses = new AddressPopulator[threads];
 		for (int i = threads; i > 0; i--)
 		{
-			int base = (threads - i) * sections;
-
+			int base = _base + (threads - i) * sections;
+			System.out.println(">> " + i + " - " + base + " " + n);
 			AddressPopulator populator = null;
 			if (i == 0)
 			{
 				populator = new AddressPopulator(firstSection, insert, base);
-
 			}
 			else
 			{
@@ -1073,7 +1193,8 @@ public class Populator2 extends AbstractBenchmarkPopulator
 	/**
 	 * **************** Order and XACTS * ******************
 	 */
-	public void insertOrder_and_CC_XACTS(int n) throws InterruptedException
+	public void insertOrder_and_CC_XACTS(int n, int _base)
+			throws InterruptedException
 	{
 		int threads = num_threads;
 		int sections = n;
@@ -1099,9 +1220,9 @@ public class Populator2 extends AbstractBenchmarkPopulator
 		Order_and_XACTSPopulator[] partial_orders = new Order_and_XACTSPopulator[threads];
 		for (int i = threads; i > 0; i--)
 		{
-			int base = (threads - i) * sections; // /code copy form above
-			// constructors, if reactivated please revise
-
+			int base = _base + (threads - i) * sections; // code copy form
+			// above constructors, if reactivated please revise
+			System.out.println(">> " + i + " - " + base + " " + n);
 			Order_and_XACTSPopulator populator = null;
 			if (i == 0)
 			{
@@ -1167,7 +1288,10 @@ public class Populator2 extends AbstractBenchmarkPopulator
 				int o_SHIP_ADDR_ID;
 				String o_STATUS;
 
-				o_C_ID = customers.get(rand.nextInt(customers.size()));
+				int c = rand.nextInt(Constants.CUSTOMER_MAX
+						- Constants.CUSTOMER_MIN)
+						+ Constants.CUSTOMER_MIN;
+				o_C_ID = customers.get(c);
 
 				GregorianCalendar call = new GregorianCalendar();
 				o_DATE = call.getTime();
