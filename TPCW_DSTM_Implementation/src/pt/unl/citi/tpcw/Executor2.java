@@ -42,7 +42,7 @@ import pt.unl.citi.tpcw.util.LastOrders;
 import pt.unl.citi.tpcw.util.RBTree;
 import pt.unl.citi.tpcw.util.RBTree_pr;
 
-public class Executor implements DatabaseExecutorInterface
+public class Executor2 implements DatabaseExecutorInterface
 {
 	/* Database */
 	@Bootstrap(id = 1)
@@ -72,7 +72,7 @@ public class Executor implements DatabaseExecutorInterface
 	@Bootstrap(id = 13)
 	static HashMap_pr<Integer, ShoppingCart> shopCarts; // PR
 
-	public Executor(TPM_counter tpm_counter)
+	public Executor2(TPM_counter tpm_counter)
 	{
 		this.counter = tpm_counter;
 	}

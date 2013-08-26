@@ -107,7 +107,6 @@ public abstract class AbstractDatabaseExecutorFactory
 		{
 			Logger.getLogger(AbstractDatabaseExecutorFactory.class.getName())
 					.log(Level.SEVERE, null, ex);
-
 		}
 		finally
 		{

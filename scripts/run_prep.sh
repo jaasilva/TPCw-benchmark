@@ -33,12 +33,11 @@ EXCLUDE="${EXCLUDE},org.uminho.gsd.benchmarks.*"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.HashFunctions"
 EXCLUDE="${EXCLUDE},pt.unl.citi.tpcw.util.trove.PrimeFinder"
 
-SITE=$2
-THREADS=$3
-REPLICAS=$4
-RUN=$5
-LOG4J=$6
-OPS=$7
+THREADS=$2
+REPLICAS=$3
+RUN=$4
+OPS=$5
+GROUPS=$6
 
 _STM=score.SCOReContext
 _REP=score.SCOReProtocol
@@ -51,7 +50,9 @@ ZIP=true
 GROUP="TPCW_${WORKERS}_${_REP}_${REPLICAS}_${RUN}"
 FNAME="TPCW_t${WORKERS}_${_REP}_${_COMM}_id${SITE}-${REPLICAS}_run${RUN}"
 LOG=logs/${FNAME}.res
-DATA_PART=org.deuce.distribution.replication.partitioner.data.RandomDataPartitioner
+#DATA_PART=org.deuce.distribution.replication.partitioner.data.RandomDataPartitioner
+#DATA_PART=org.deuce.distribution.replication.partitioner.data.SimpleDataPartitioner
+DATA_PART=org.deuce.distribution.replication.partitioner.data.RoundRobinDataPartitioner
 
 echo "#####"
 echo "Benchmark: TPCW, run ${RUN}"
@@ -61,24 +62,22 @@ echo "Comm: ${_COMM}"
 echo `date +%H:%M`
 echo "#####"
 
-shift 7
+shift 6
 
 java -Xmx1g -Xms1g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
-    -Dlog=$LOG4J \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
     -Dorg.deuce.include=$INCLUDE \
     -Dtribu.groupcommunication.class=$COMM \
     -Dtribu.groupcommunication.group=$GROUP \
-    -Dtribu.site=$SITE \
     -Dtribu.replicas=$REPLICAS \
     -Dtribu.distributed.protocolClass=$REP \
     -Dtribu.serialization.compress=$ZIP \
     -Dtribu.distributed.DataPartitionerClass=$DATA_PART \
     -Dtribu.distributed.PartialReplicationMode=true \
-	-Dtribu.groups=1 \
+	-Dtribu.groups=$GROUPS \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -p -w browsing -t $THREADS -o $OPS -tt 0 $@ # -m ou -s <port>
+        -d dstm -w browsing -t $THREADS -o $OPS -tt 0 $@ # -p -m ou -s <port>
 
 # -w browsing | -w consistency | -w ordering
 

@@ -29,7 +29,6 @@ import org.deuce.transform.ExcludeTM;
 @ExcludeTM
 public class BenchmarkMaster
 {
-
 	private int PersonalClientID;
 	Map<String, Object> slaves;
 	BenchmarkExecutor executor;
@@ -45,7 +44,6 @@ public class BenchmarkMaster
 
 	public void run() throws Exception
 	{
-
 		slaveHandlers = new ArrayList<SlaveHandler>();
 		PersonalClientID = 1;
 		countBarrier = new CountDownLatch(slaves.size());
@@ -131,7 +129,6 @@ public class BenchmarkMaster
 
 	class SlaveHandler implements Runnable
 	{
-
 		String host;
 		int port;
 		PrintWriter writer;
@@ -172,7 +169,6 @@ public class BenchmarkMaster
 
 		public void run()
 		{
-
 			writer.write("PREPARE " + ClientID + "\n");
 			System.out.println("Sent PREPARE to " + ClientID);
 			writer.flush();
@@ -241,7 +237,6 @@ public class BenchmarkMaster
 
 	class ensureEnd implements Runnable
 	{
-
 		ServerSocket s;
 
 		public void run()
@@ -293,7 +288,6 @@ public class BenchmarkMaster
 				e.printStackTrace(); // To change body of catch statement use
 										// File | Settings | File Templates.
 			}
-
 		}
 	}
 }

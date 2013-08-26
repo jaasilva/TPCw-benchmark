@@ -18,7 +18,6 @@ import org.deuce.transform.ExcludeTM;
 @ExcludeTM
 public class Constants
 {
-
 	public static/* final */int NUM_EBS = 1;
 	public static/* final */int NUM_ITEMS = 1000;
 	public static/* final */int NUM_CUSTOMERS = NUM_EBS * 2880;
@@ -28,4 +27,10 @@ public class Constants
 	public static/* final */int NUM_COUNTRIES = 92; // this is constant. Never
 													// changes!
 
+	public static int CUSTOMER_MIN = 0;
+	public static int CUSTOMER_MAX = 0;
+	public static int ADDRESS_MIN = 0;
+	public static int ADDRESS_MAX = 0;
+	public static int ORDER_MIN = 0;
+	public static int ORDER_MAX = 0;
 }

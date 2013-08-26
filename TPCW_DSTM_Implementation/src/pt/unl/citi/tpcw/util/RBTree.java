@@ -816,6 +816,11 @@ public class RBTree
 
 		return (n != null);
 	}
+	
+	public void clear()
+	{
+		this.root = null;
+	}
 
 }
 

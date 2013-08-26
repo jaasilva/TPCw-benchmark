@@ -26,13 +26,13 @@ public final class ShoppingCart implements Entity
 	public final String SC_C_FNAME; // C_FNAME of the Customer
 	public final String SC_C_LNAME; // C_LNAME of the Customer
 	public final double SC_C_DISCOUNT; // C_DISCOUNT of the Customer
+	public final RBTree cartLines;
 
 	public Date SC_DATE; // Date and time when the CART was last updated
 	public double SC_SUB_TOTAL; // Gross total amount of all items in the CART
 	public double SC_TAX; // Tax based on the gross total amount
 	public double SC_SHIP_COST; // Total shipping and handling charges
 	public double SC_TOTAL; // Total amount of the order
-	public RBTree cartLines;
 
 	public ShoppingCart(int sC_SHOPPING_ID, int sC_C_ID, Date sC_DATE,
 			double sC_SUB_TOTAL, double sC_TAX, double sC_SHIP_COST,

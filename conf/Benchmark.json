@@ -15,7 +15,7 @@
       },
    "BenchmarkSlaves" :
       {
-          "node8" : "8080"
+          "localhost" : "8080"
       },
    "Database_alias" :
       {
@@ -59,6 +59,12 @@
             {
                 "DataEngineInterface" : "pt.unl.citi.tpcw.ExecutorFactory",
                 "BenchmarkPopulator" : "pt.unl.citi.tpcw.Populator",
+                "databaseExecutorConfiguration" : "dstm.json"
+            },
+         "dstm2" :
+            {
+                "DataEngineInterface" : "pt.unl.citi.tpcw.ExecutorFactory2",
+                "BenchmarkPopulator" : "pt.unl.citi.tpcw.Populator2",
                 "databaseExecutorConfiguration" : "dstm.json"
             }
       },

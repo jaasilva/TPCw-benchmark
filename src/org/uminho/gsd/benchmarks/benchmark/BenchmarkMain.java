@@ -29,7 +29,6 @@ import org.deuce.benchmark.Barrier;
 import org.deuce.distribution.TribuDSTM;
 import org.deuce.distribution.replication.Bootstrap;
 import org.deuce.profiling.PRProfiler;
-import org.deuce.trove.THashMap;
 import org.uminho.gsd.benchmarks.helpers.JsonUtil;
 import org.uminho.gsd.benchmarks.interfaces.executor.AbstractDatabaseExecutorFactory;
 import org.uminho.gsd.benchmarks.interfaces.executor.DatabaseExecutorInterface;
@@ -37,7 +36,6 @@ import org.uminho.gsd.benchmarks.interfaces.populator.AbstractBenchmarkPopulator
 
 public class BenchmarkMain
 {
-
 	private static Logger logger = Logger.getLogger(BenchmarkMain.class);
 
 	public static double distribution_factor = -1;
@@ -102,7 +100,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-d"))
 			{
 				if ((i + 1) != args.length)
@@ -117,7 +114,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-t"))
 			{
 				if ((i + 1) != args.length)
@@ -141,7 +137,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-o"))
 			{
 				if ((i + 1) != args.length)
@@ -165,7 +160,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-df"))
 			{
 				if ((i + 1) != args.length)
@@ -190,7 +184,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-tt"))
 			{
 				if ((i + 1) != args.length)
@@ -214,7 +207,6 @@ public class BenchmarkMain
 					return;
 				}
 			}
-
 			else if (arg.equalsIgnoreCase("-cb"))
 			{
 				cleanFB = true;
@@ -264,12 +256,10 @@ public class BenchmarkMain
 			}
 			else if (arg.equalsIgnoreCase("-s"))
 			{
-
 				slave = true;
 
 				if ((i + 1) != args.length)
 				{
-
 					try
 					{
 						SlavePort = Integer.parseInt(args[i + 1]);
@@ -285,10 +275,9 @@ public class BenchmarkMain
 				{
 					System.out.println("[ERROR:] SLAVE WITH NO AVAILABLE PORT");
 					return;
-
 				}
 
-				if (cleanDB || populate)
+				if (cleanDB /* || populate */) // XXX slaves have to populate
 				{
 					logger.debug("SLAVE DOES NOT ALLOW CLEAN OR POPULATION OPTIONS ");
 				}
@@ -334,7 +323,6 @@ public class BenchmarkMain
 			e.printStackTrace();
 			return;
 		}
-
 	}
 
 	@Bootstrap(id = 1000)
@@ -370,7 +358,6 @@ public class BenchmarkMain
 	public void run(boolean master, boolean slave, boolean cleanDB,
 			boolean cleanFB, boolean populate, boolean cap) throws Exception
 	{
-
 		// to avoid extra instantiations.
 		// if(cap || populate || cleanFB || cleanFB){
 		populator = (AbstractBenchmarkPopulator) Class
@@ -387,15 +374,22 @@ public class BenchmarkMain
 
 		if (slave)
 		{
+			if (populate)
+			{ // XXX slaves have to populate
+				boolean population_success = populator.populate();
+				if (!population_success)
+				{
+					return;
+				}
+			}
+
 			barrierPop.join();
 			BenchmarkSlave slaveHandler = new BenchmarkSlave(SlavePort,
 					executor);
 			slaveHandler.run();
-
 		}
 		else
 		{
-
 			if (cleanDB)
 			{
 				populator.cleanDB();
@@ -415,6 +409,7 @@ public class BenchmarkMain
 					return;
 				}
 			}
+
 			if (cleanFB)
 			{
 				if (cleanDB && populate)
@@ -440,7 +435,6 @@ public class BenchmarkMain
 				BenchmarkMaster masterHandler = new BenchmarkMaster(executor,
 						benchmarkExecutorSlaves);
 				masterHandler.run();
-
 			}
 			else
 			{ // single node run
@@ -459,12 +453,10 @@ public class BenchmarkMain
 	{
 		try
 		{
-
 			FileInputStream in = null;
 			String jsonString_r = "";
 			try
 			{
-
 				in = new FileInputStream("conf/Benchmark.json");
 				BufferedReader bin = new BufferedReader(new InputStreamReader(
 						in));
@@ -478,7 +470,6 @@ public class BenchmarkMain
 				jsonString_r = sb.toString().replace("\n", "");
 				bin.close();
 				in.close();
-
 			}
 			catch (FileNotFoundException ex)
 			{
@@ -487,7 +478,6 @@ public class BenchmarkMain
 			catch (IOException ex)
 			{
 				logger.error("", ex);
-
 			}
 			finally
 			{
@@ -524,7 +514,6 @@ public class BenchmarkMain
 
 			if (data_alias == null || data_alias.isEmpty())
 			{
-
 				databaseClass = (String) databaseInfo
 						.get("DataEngineInterface");
 				if (databaseClass == null || databaseClass.isEmpty())
@@ -551,11 +540,9 @@ public class BenchmarkMain
 					logger.fatal("[ERROR:] NO DEFAULT CONFIGURATION FILE FOR DATABASE EXECUTOR");
 					return false;
 				}
-
 			}
 			else
 			{
-
 				if (!map.containsKey("Database_alias"))
 				{
 					logger.fatal("No available data alias");
@@ -599,7 +586,6 @@ public class BenchmarkMain
 							+ data_alias);
 					return false;
 				}
-
 			}
 
 			databaseExecutor = Class.forName(databaseClass);
@@ -626,7 +612,6 @@ public class BenchmarkMain
 			}
 			else
 			{
-
 				if (!map.containsKey("Workload_alias"))
 				{
 					logger.fatal("No available workload alias");
@@ -683,7 +668,6 @@ public class BenchmarkMain
 				{
 					number_threads = Integer.parseInt((String) info
 							.get("thread_number"));
-
 				}
 			}
 			else
@@ -693,7 +677,6 @@ public class BenchmarkMain
 
 			if (num_operations == -1)
 			{
-
 				if (!info.containsKey("operation_number"))
 				{
 					operation_number = 1000;
@@ -701,7 +684,6 @@ public class BenchmarkMain
 				}
 				else
 				{
-
 					operation_number = Integer.parseInt((String) info
 							.get("operation_number"));
 					logger.debug("[INFO:] NUMBER OF OPERATIONS -> "

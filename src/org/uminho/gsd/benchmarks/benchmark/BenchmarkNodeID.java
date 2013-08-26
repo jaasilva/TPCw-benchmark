@@ -18,7 +18,6 @@ import org.deuce.transform.ExcludeTM;
 @ExcludeTM
 public class BenchmarkNodeID
 {
-
 	private int id;
 
 	public BenchmarkNodeID(int id)
@@ -39,7 +38,5 @@ public class BenchmarkNodeID
 	public boolean isMaster()
 	{
 		return id == 1;
-
 	}
-
 }

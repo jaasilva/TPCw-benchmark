@@ -26,5 +26,4 @@ public enum BuyingResult
 	DOES_NOT_EXIST, // debug result, the item does not exist
 	CANT_COMFIRM // debug result, when we can't see the item stock after being
 					// bought
-
 }
