@@ -39,7 +39,6 @@ import pt.unl.citi.tpcw.entities.ShoppingCartLine;
 import pt.unl.citi.tpcw.util.HashMap;
 import pt.unl.citi.tpcw.util.HashMap_pr;
 import pt.unl.citi.tpcw.util.LastOrders;
-import pt.unl.citi.tpcw.util.RBTree;
 import pt.unl.citi.tpcw.util.RBTree_pr;
 
 public class Executor2 implements DatabaseExecutorInterface

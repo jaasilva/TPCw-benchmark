@@ -47,24 +47,28 @@ STM="org.deuce.transaction.${_STM}"
 COMM="org.deuce.distribution.groupcomm.${_COMM}GroupCommunication"
 REP="org.deuce.distribution.replication.partial.protocol.${_REP}"
 ZIP=true
-GROUP="TPCW_${WORKERS}_${_REP}_${REPLICAS}_${RUN}"
-FNAME="TPCW_t${WORKERS}_${_REP}_${_COMM}_id${SITE}-${REPLICAS}_run${RUN}"
+GROUP="TPCW_${THREADS}_${_REP}_${REPLICAS}_${RUN}"
+_dpart=$7
+DATA_PART=org.deuce.distribution.replication.partitioner.data.${_dpart}DataPartitioner
+FNAME="TPCW_t${THREADS}_${_REP}_${_COMM}_id${SITE}-${REPLICAS}_run${RUN}_g${GROUPS}_${_dpart}"
 LOG=logs/${FNAME}.res
-#DATA_PART=org.deuce.distribution.replication.partitioner.data.RandomDataPartitioner
-#DATA_PART=org.deuce.distribution.replication.partitioner.data.SimpleDataPartitioner
-DATA_PART=org.deuce.distribution.replication.partitioner.data.RoundRobinDataPartitioner
+MEM=${LOG}.mem
 
 echo "#####"
 echo "Benchmark: TPCW, run ${RUN}"
 echo "Threads: ${THREADS}"
 echo "Protocol: ${_REP}, site ${SITE} of ${REPLICAS}"
 echo "Comm: ${_COMM}"
-echo `date +%H:%M`
+echo `date +'%F %H:%M:%S'`
 echo "#####"
 
-shift 6
+shift 7
 
-java -Xmx1g -Xms1g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
+dstat -m -M topmem > $MEM &
+PID2=$!
+sleep 1
+
+java -Xmx8g -Xms8g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dorg.deuce.transaction.contextClass=$STM \
     -Dorg.deuce.exclude=$EXCLUDE \
     -Dorg.deuce.include=$INCLUDE \
@@ -77,7 +81,12 @@ java -Xmx1g -Xms1g -cp $CLASSPATH -javaagent:libs/deuceAgent.jar \
     -Dtribu.distributed.PartialReplicationMode=true \
 	-Dtribu.groups=$GROUPS \
     org.uminho.gsd.benchmarks.benchmark.BenchmarkMain \
-        -d dstm -w browsing -t $THREADS -o $OPS -tt 0 $@ # -p -m ou -s <port>
+        -d dstm -w browsing -t $THREADS -o $OPS -tt 0 $@ > $LOG # -p -m ou -s <port>
+
+echo "ended: `date +'%F %H:%M:%S'`"
+sleep 1
+kill $PID2
+wait $PID2 2> /dev/null
 
 # -w browsing | -w consistency | -w ordering
 

@@ -15,7 +15,13 @@
       },
    "BenchmarkSlaves" :
       {
-          "localhost" : "8080"
+          "node2" : "8081",
+          "node3" : "8081",
+          "node4" : "8081",
+          "node5" : "8081",
+          "node6" : "8081",
+          "node7" : "8081",
+          "node8" : "8081"
       },
    "Database_alias" :
       {
